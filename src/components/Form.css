@@ -1,0 +1,26 @@
+.form {
+  display: flex;
+  gap: 2.4rem;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.form__username {
+  color: #555;
+  font-size: 2rem;
+  outline: none;
+  width: 45%;
+  padding: 1.2rem 2.4rem;
+}
+
+.form__submit {
+  font-family: inherit;
+  background-color: #f03e3e;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 1.2rem 2.4rem;
+  font-size: 1.6rem;
+}
