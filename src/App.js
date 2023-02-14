@@ -190,118 +190,127 @@ const App = () => {
   }, [state.favs])
 
   return (
-    <div className="container">
-      <Form state={state} dispatch={dispatch} formSubmit={formSubmit} />
+    // <div className="container">
+    //   <Form state={state} dispatch={dispatch} formSubmit={formSubmit} />
 
-      <Button dispatch={dispatch} state={state} />
+    //   <Button dispatch={dispatch} state={state} />
 
-      <div className="vods">
-        {state.mode === 'vods'
-          ? state.vods.map((vod) => {
-              const { id, thumbnail_url, url, title, published_at, duration } =
-                vod
+    //   <div className="vods">
+    //     {state.mode === 'vods'
+    //       ? state.vods.map((vod) => {
+    //           const { id, thumbnail_url, url, title, published_at, duration } =
+    //             vod
 
-              const final_src = thumbnail_url.replace(
-                /%{width}x%{height}/g,
-                '1280x720'
-              )
+    //           const final_src = thumbnail_url.replace(
+    //             /%{width}x%{height}/g,
+    //             '1280x720'
+    //           )
 
-              const date = new Date(published_at)
+    //           const date = new Date(published_at)
 
-              const [month, day, year] = [
-                date.getMonth(),
-                date.getDate(),
-                date.getFullYear(),
-              ]
+    //           const [month, day, year] = [
+    //             date.getMonth(),
+    //             date.getDate(),
+    //             date.getFullYear(),
+    //           ]
 
-              return (
-                <div className="one-vod" key={id}>
-                  <img className="image" src={final_src} alt="thumbnail" />
-                  <div className="box">
-                    <h2 className="title">
-                      <a className="link" href={url}>
-                        {title}
-                      </a>
-                    </h2>
-                    <div className="text-box">
-                      <p className="date">
-                        <FaRegCalendarAlt className="icon" />
-                        <span>{`${day}/${month + 1}/${year}`}</span>
-                      </p>
-                      <FaCheck
-                        className="icon-fav"
-                        data-id={id}
-                        onClick={(e) =>
-                          dispatch({
-                            type: 'ADD_FAV',
-                            payload: e.currentTarget.dataset.id,
-                          })
-                        }
-                      />
-                      <p className="duration">
-                        <FaRegClock className="icon" />
-                        <span>{duration}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
-          : state.favs.map((fav) => {
-              const { id, thumbnail_url, url, title, published_at, duration } =
-                fav
+    //           return (
+    //             <div className="one-vod" key={id}>
+    //               <img className="image" src={final_src} alt="thumbnail" />
+    //               <div className="box">
+    //                 <h2 className="title">
+    //                   <a className="link" href={url}>
+    //                     {title}
+    //                   </a>
+    //                 </h2>
+    //                 <div className="text-box">
+    //                   <p className="date">
+    //                     <FaRegCalendarAlt className="icon" />
+    //                     <span>{`${day}/${month + 1}/${year}`}</span>
+    //                   </p>
+    //                   <FaCheck
+    //                     className="icon-fav"
+    //                     data-id={id}
+    //                     onClick={(e) =>
+    //                       dispatch({
+    //                         type: 'ADD_FAV',
+    //                         payload: e.currentTarget.dataset.id,
+    //                       })
+    //                     }
+    //                   />
+    //                   <p className="duration">
+    //                     <FaRegClock className="icon" />
+    //                     <span>{duration}</span>
+    //                   </p>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           )
+    //         })
+    //       : state.favs.map((fav) => {
+    //           const { id, thumbnail_url, url, title, published_at, duration } =
+    //             fav
 
-              const final_src = thumbnail_url.replace(
-                /%{width}x%{height}/g,
-                '1280x720'
-              )
+    //           const final_src = thumbnail_url.replace(
+    //             /%{width}x%{height}/g,
+    //             '1280x720'
+    //           )
 
-              const date = new Date(published_at)
+    //           const date = new Date(published_at)
 
-              const [month, day, year] = [
-                date.getMonth(),
-                date.getDate(),
-                date.getFullYear(),
-              ]
+    //           const [month, day, year] = [
+    //             date.getMonth(),
+    //             date.getDate(),
+    //             date.getFullYear(),
+    //           ]
 
-              return (
-                <div className="one-vod" key={id}>
-                  <img className="image" src={final_src} alt="thumbnail" />
-                  <div className="box">
-                    <h2 className="title">
-                      <a className="link" href={url}>
-                        {title}
-                      </a>
-                    </h2>
-                    <div className="text-box">
-                      <p className="date">
-                        <FaRegCalendarAlt className="icon" />
-                        <span>{`${day}/${month + 1}/${year}`}</span>
-                      </p>
-                      <button
-                        onClick={() =>
-                          dispatch({
-                            type: 'REMOVE_FAV',
-                            payload: id,
-                          })
-                        }
-                        className="del-btn"
-                        data-id={id}
-                      >
-                        <FaRegTrashAlt className="icon-fav" />
-                      </button>
+    //           return (
+    //             <div className="one-vod" key={id}>
+    //               <img className="image" src={final_src} alt="thumbnail" />
+    //               <div className="box">
+    //                 <h2 className="title">
+    //                   <a className="link" href={url}>
+    //                     {title}
+    //                   </a>
+    //                 </h2>
+    //                 <div className="text-box">
+    //                   <p className="date">
+    //                     <FaRegCalendarAlt className="icon" />
+    //                     <span>{`${day}/${month + 1}/${year}`}</span>
+    //                   </p>
+    //                   <button
+    //                     onClick={() =>
+    //                       dispatch({
+    //                         type: 'REMOVE_FAV',
+    //                         payload: id,
+    //                       })
+    //                     }
+    //                     className="del-btn"
+    //                     data-id={id}
+    //                   >
+    //                     <FaRegTrashAlt className="icon-fav" />
+    //                   </button>
 
-                      <p className="duration">
-                        <FaRegClock className="icon" />
-                        <span>{duration}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-      </div>
-    </div>
+    //                   <p className="duration">
+    //                     <FaRegClock className="icon" />
+    //                     <span>{duration}</span>
+    //                   </p>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           )
+    //         })}
+    //   </div>
+    // </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/vods" element={<Movies />} />
+          <Route path="*" element={<Error />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
