@@ -1,13 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Form from './components/Form'
-import Button from './components/Button'
+import Home from './pages/Home'
+import Error from './pages/Error'
+import SharedLayout from './pages/SharedLayout'
+import Favorites from './pages/Favorites'
 import { useEffect, useReducer } from 'react'
-import {
-  FaCheck,
-  FaRegTrashAlt,
-  FaRegClock,
-  FaRegCalendarAlt,
-} from 'react-icons/fa'
 
 const reducer = (state, action) => {
   console.log(state, action)
@@ -21,13 +17,10 @@ const reducer = (state, action) => {
     })
 
     if (!isAdded) {
-      // showAlert()
       const newFavs = [...state.favs, vod]
       return {
         ...state,
         favs: newFavs,
-        showNotification: true,
-        notificationContent: 'VOD was added',
       }
     }
 
@@ -79,10 +72,10 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === 'CLOSE_NOTIF') {
+  if (action.type === 'SET_LOADED') {
     return {
       ...state,
-      showNotification: false,
+      loaded: action.payload,
     }
   }
 
@@ -94,8 +87,7 @@ const defaultState = {
   vods: [],
   favs: JSON.parse(localStorage.getItem('favs')) || [],
   mode: 'vods',
-  showNotification: false,
-  notificationContent: '',
+  loaded: false,
 }
 
 const App = () => {
@@ -150,39 +142,8 @@ const App = () => {
     document.querySelector('.spinner').classList.add('show')
   }
 
-  function showAlert() {
-    const alertEl = document.querySelector('.alert')
-    alertEl.classList.add('show')
-
-    setTimeout(() => {
-      alertEl.classList.remove('show')
-    }, 2000)
-  }
-
   function removeSpinner() {
     document.querySelector('.spinner').classList.remove('show')
-  }
-
-  const formSubmit = (e) => {
-    e.preventDefault()
-
-    dispatch({
-      type: 'DELETE_ALL_VODS',
-      payload: [],
-    })
-
-    dispatch({
-      type: 'SET_MODE',
-      payload: 'vods',
-    })
-
-    if (state.username) {
-      getTwitchUser(state.username)
-    } else {
-      alert('Please fill the form')
-    }
-
-    // dispatch({ type: 'CHANGE_USERNAME', payload: '' })
   }
 
   useEffect(() => {
@@ -190,123 +151,23 @@ const App = () => {
   }, [state.favs])
 
   return (
-    // <div className="container">
-    //   <Form state={state} dispatch={dispatch} formSubmit={formSubmit} />
-
-    //   <Button dispatch={dispatch} state={state} />
-
-    //   <div className="vods">
-    //     {state.mode === 'vods'
-    //       ? state.vods.map((vod) => {
-    //           const { id, thumbnail_url, url, title, published_at, duration } =
-    //             vod
-
-    //           const final_src = thumbnail_url.replace(
-    //             /%{width}x%{height}/g,
-    //             '1280x720'
-    //           )
-
-    //           const date = new Date(published_at)
-
-    //           const [month, day, year] = [
-    //             date.getMonth(),
-    //             date.getDate(),
-    //             date.getFullYear(),
-    //           ]
-
-    //           return (
-    //             <div className="one-vod" key={id}>
-    //               <img className="image" src={final_src} alt="thumbnail" />
-    //               <div className="box">
-    //                 <h2 className="title">
-    //                   <a className="link" href={url}>
-    //                     {title}
-    //                   </a>
-    //                 </h2>
-    //                 <div className="text-box">
-    //                   <p className="date">
-    //                     <FaRegCalendarAlt className="icon" />
-    //                     <span>{`${day}/${month + 1}/${year}`}</span>
-    //                   </p>
-    //                   <FaCheck
-    //                     className="icon-fav"
-    //                     data-id={id}
-    //                     onClick={(e) =>
-    //                       dispatch({
-    //                         type: 'ADD_FAV',
-    //                         payload: e.currentTarget.dataset.id,
-    //                       })
-    //                     }
-    //                   />
-    //                   <p className="duration">
-    //                     <FaRegClock className="icon" />
-    //                     <span>{duration}</span>
-    //                   </p>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           )
-    //         })
-    //       : state.favs.map((fav) => {
-    //           const { id, thumbnail_url, url, title, published_at, duration } =
-    //             fav
-
-    //           const final_src = thumbnail_url.replace(
-    //             /%{width}x%{height}/g,
-    //             '1280x720'
-    //           )
-
-    //           const date = new Date(published_at)
-
-    //           const [month, day, year] = [
-    //             date.getMonth(),
-    //             date.getDate(),
-    //             date.getFullYear(),
-    //           ]
-
-    //           return (
-    //             <div className="one-vod" key={id}>
-    //               <img className="image" src={final_src} alt="thumbnail" />
-    //               <div className="box">
-    //                 <h2 className="title">
-    //                   <a className="link" href={url}>
-    //                     {title}
-    //                   </a>
-    //                 </h2>
-    //                 <div className="text-box">
-    //                   <p className="date">
-    //                     <FaRegCalendarAlt className="icon" />
-    //                     <span>{`${day}/${month + 1}/${year}`}</span>
-    //                   </p>
-    //                   <button
-    //                     onClick={() =>
-    //                       dispatch({
-    //                         type: 'REMOVE_FAV',
-    //                         payload: id,
-    //                       })
-    //                     }
-    //                     className="del-btn"
-    //                     data-id={id}
-    //                   >
-    //                     <FaRegTrashAlt className="icon-fav" />
-    //                   </button>
-
-    //                   <p className="duration">
-    //                     <FaRegClock className="icon" />
-    //                     <span>{duration}</span>
-    //                   </p>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           )
-    //         })}
-    //   </div>
-    // </div>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SharedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/vods" element={<Movies />} />
+        <Route
+          path="/"
+          element={
+            <SharedLayout
+              state={state}
+              dispatch={dispatch}
+              getTwitchUser={getTwitchUser}
+            />
+          }
+        >
+          <Route index element={<Home state={state} dispatch={dispatch} />} />
+          <Route
+            path="/favorites"
+            element={<Favorites state={state} dispatch={dispatch} />}
+          />
           <Route path="*" element={<Error />} />
         </Route>
       </Routes>

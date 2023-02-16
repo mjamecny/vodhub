@@ -1,0 +1,30 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-right: 1.8rem;
+  margin-left: 1.8rem;
+}
+
+.logo {
+  width: 200px;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  background-color: #f03e3e;
+  /* border-radius: 10px; */
+  padding: 1.2rem 2.4rem;
+  color: #fff;
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+.activeLink {
+  background-color: #ff6b6b;
+}
