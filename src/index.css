@@ -4,8 +4,10 @@
   padding: 0;
 }
 
-html {
+html,
+body {
   font-size: 62.5%;
+  height: 100%;
 }
 
 body {
@@ -14,20 +16,14 @@ body {
   font-family: "Rubik", sans-serif;
   font-weight: 400;
   line-height: 1;
-  margin-bottom: 2.4rem;
-  position: relative;
-}
 
-.container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin: 0 auto;
-  width: 75vw;
 }
 
-.section-vods {
+.section-content {
   padding: 3.2rem 8rem;
+  flex: 1;
 }
 
 .initial {
@@ -41,11 +37,9 @@ body {
 }
 
 .vods {
-  grid-gap: 2.4rem;
   display: grid;
-  gap: 2.4rem;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  margin-top: 2rem;
+  gap: 2.4rem;
 }
 
 .one-vod {
@@ -54,11 +48,20 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.favs-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .image {
   display: block;
   width: 100%;
+  background-size: cover;
 }
 
 .box {
@@ -66,11 +69,13 @@ body {
   flex-direction: column;
   gap: 2.4rem;
   padding: 1.2rem;
+  flex: 1;
 }
 
 .title {
   font-size: 2rem;
   line-height: 1.1;
+  flex: 1;
 }
 
 .link:link,
@@ -144,7 +149,7 @@ body {
   cursor: pointer;
 }
 
-.novods {
+.nofavs {
   display: flex;
   justify-content: center;
   align-items: center;

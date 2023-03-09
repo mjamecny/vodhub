@@ -1,8 +1,8 @@
-import { FaCheck, FaRegClock, FaRegCalendarAlt } from 'react-icons/fa'
+import { FaCheck, FaRegClock, FaRegCalendarAlt } from "react-icons/fa"
 
 const Home = (props) => {
   return (
-    <section className="section-vods">
+    <section className="section-content">
       {!props.state.loaded ? (
         <div className="initial">
           <h1>Welcome to VODhub</h1>
@@ -16,7 +16,7 @@ const Home = (props) => {
 
             const final_src = thumbnail_url.replace(
               /%{width}x%{height}/g,
-              '1280x720'
+              "1280x720"
             )
 
             const date = new Date(published_at)
@@ -46,7 +46,7 @@ const Home = (props) => {
                       data-id={id}
                       onClick={(e) =>
                         props.dispatch({
-                          type: 'ADD_FAV',
+                          type: "ADD_FAV",
                           payload: e.currentTarget.dataset.id,
                         })
                       }

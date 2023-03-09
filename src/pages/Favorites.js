@@ -3,9 +3,9 @@ import Button from "../components/Button"
 
 const Favorites = (props) => {
   return (
-    <section className="section-vods">
+    <section className="section-content">
       {props.state.favs.length !== 0 ? (
-        <div>
+        <div className="favs-box">
           <Button dispatch={props.dispatch} />
           <div className="vods">
             {!props.state.filtering
@@ -134,7 +134,7 @@ const Favorites = (props) => {
           </div>
         </div>
       ) : (
-        <div className="novods">
+        <div className="nofavs">
           Don't have any favorite videos saved yet? No problem! Just browse
           selection of videos from any Twitch streamer and click the "checkmark"
           button on any video you want to save for later.

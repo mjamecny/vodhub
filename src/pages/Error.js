@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom"
 
 const Error = () => {
   return (
-    <div>
+    <section className="section-content">
       <h2>404</h2>
       <p>Page not found</p>
       <p>
         <Link to="/">Home</Link>
       </p>
-    </div>
+    </section>
   )
 }
 
