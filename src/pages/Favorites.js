@@ -41,10 +41,10 @@ const Favorites = (props) => {
                           onClick={() => {
                             props.dispatch({
                               type: "OPEN_MODAL",
-                              payload: `https://player.twitch.tv/?video=${id}&parent=${
+                              payload: `https://player.twitch.tv/?video=${id}${
                                 process.env.NODE_ENV === "development"
-                                  ? "localhost"
-                                  : process.env.REACT_APP_URL
+                                  ? "&parent=localhost"
+                                  : `&parent=${process.env.REACT_APP_URL}`
                               }`,
                             })
                           }}
