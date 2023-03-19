@@ -116,6 +116,24 @@ const reducer = (state, action) => {
     }
   }
 
+  if (action.type === "OPEN_MODAL") {
+    const modal = document.getElementById("modal")
+    modal.style.display = "block"
+    return {
+      ...state,
+      videoId: action.payload,
+    }
+  }
+
+  if (action.type === "CLOSE_MODAL") {
+    const modal = document.getElementById("modal")
+    modal.style.display = "none"
+    return {
+      ...state,
+      videoId: action.payload,
+    }
+  }
+
   return new Error("Error - No match with action.type")
 }
 
@@ -128,6 +146,7 @@ const defaultState = {
   favs: JSON.parse(localStorage.getItem("favs")) || [],
   mode: "vods",
   loaded: false,
+  videoId: "",
 }
 
 const App = () => {

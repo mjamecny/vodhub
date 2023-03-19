@@ -11,8 +11,7 @@ const Home = (props) => {
       ) : (
         <div className="vods">
           {props.state.vods.map((vod) => {
-            const { id, thumbnail_url, url, title, published_at, duration } =
-              vod
+            const { id, thumbnail_url, title, published_at, duration } = vod
 
             const final_src = thumbnail_url.replace(
               /%{width}x%{height}/g,
@@ -31,10 +30,20 @@ const Home = (props) => {
               <div className="one-vod" key={id}>
                 <img className="image" src={final_src} alt="thumbnail" />
                 <div className="box">
-                  <h2 className="title">
-                    <a className="link" href={url}>
-                      {title}
-                    </a>
+                  <h2
+                    className="title"
+                    onClick={() => {
+                      props.dispatch({
+                        type: "OPEN_MODAL",
+                        payload: `https://player.twitch.tv/?video=${id}&parent=${
+                          process.env.NODE_ENV === "development"
+                            ? "localhost"
+                            : process.env.REACT_APP_URL
+                        }`,
+                      })
+                    }}
+                  >
+                    {title}
                   </h2>
                   <div className="text-box">
                     <p className="date">
@@ -62,7 +71,26 @@ const Home = (props) => {
           })}
         </div>
       )}
-
+      <div id="modal" className="modal">
+        <div className="modal-content">
+          <span
+            className="close"
+            onClick={() => {
+              props.dispatch({ type: "CLOSE_MODAL", payload: "" })
+            }}
+          >
+            &times;
+          </span>
+          <iframe
+            title="video"
+            src={props.state.videoId}
+            width="100%"
+            height="100%"
+            allow="fullscreen"
+            frameBorder="0"
+          ></iframe>
+        </div>
+      </div>
       <div className="spinner"></div>
     </section>
   )

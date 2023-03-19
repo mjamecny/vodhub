@@ -13,7 +13,7 @@ const Favorites = (props) => {
                   const {
                     id,
                     thumbnail_url,
-                    url,
+                    user_login,
                     title,
                     published_at,
                     duration,
@@ -36,10 +36,20 @@ const Favorites = (props) => {
                     <div className="one-vod" key={id}>
                       <img className="image" src={final_src} alt="thumbnail" />
                       <div className="box">
-                        <h2 className="title">
-                          <a className="link" href={url}>
-                            {title}
-                          </a>
+                        <h2
+                          className="title"
+                          onClick={() => {
+                            props.dispatch({
+                              type: "OPEN_MODAL",
+                              payload: `https://player.twitch.tv/?video=${id}&parent=${
+                                process.env.NODE_ENV === "development"
+                                  ? "localhost"
+                                  : process.env.REACT_APP_URL
+                              }`,
+                            })
+                          }}
+                        >
+                          {title}
                         </h2>
                         <div className="text-box">
                           <p className="date">
@@ -64,6 +74,7 @@ const Favorites = (props) => {
                             <span>{duration}</span>
                           </p>
                         </div>
+                        <p className="username">{user_login}</p>
                       </div>
                     </div>
                   )
@@ -140,6 +151,26 @@ const Favorites = (props) => {
           button on any video you want to save for later.
         </div>
       )}
+      <div id="modal" className="modal">
+        <div className="modal-content">
+          <span
+            className="close"
+            onClick={() => {
+              props.dispatch({ type: "CLOSE_MODAL", payload: "" })
+            }}
+          >
+            &times;
+          </span>
+          <iframe
+            title="video"
+            src={props.state.videoId}
+            width="100%"
+            height="100%"
+            allow="fullscreen"
+            frameBorder="0"
+          ></iframe>
+        </div>
+      </div>
 
       <div className="spinner"></div>
     </section>
