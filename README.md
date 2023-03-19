@@ -8,6 +8,7 @@ Little app built with React for searching and saving Twitch VODs. Favorites VODs
 - Add VOD to favorites
 - Delete VOD(s) from favorites
 - Favorites saved to localStorage
+- Open VOD in modal window
 
 ## Screenshot
 
