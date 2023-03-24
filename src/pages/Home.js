@@ -60,12 +60,20 @@ const Home = (props) => {
                       <FaCheck
                         className="icon-fav"
                         data-id={id}
-                        onClick={(e) =>
+                        onClick={(e) => {
                           props.dispatch({
                             type: "ADD_FAV",
                             payload: e.currentTarget.dataset.id,
                           })
-                        }
+
+                          toast({
+                            description: "VOD added to your favorites",
+                            status: "success",
+                            duration: 5000,
+                            position: "top",
+                            isClosable: false,
+                          })
+                        }}
                       />
                       <p className="duration">
                         <FaRegClock className="icon" />
