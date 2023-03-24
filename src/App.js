@@ -68,6 +68,19 @@ const reducer = (state, action) => {
     }
   }
 
+  if (action.type === "IS_ONLINE") {
+    return {
+      ...state,
+      isOnline: action.payload,
+    }
+  }
+  if (action.type === "SET_SEARCHED_STREAMER") {
+    return {
+      ...state,
+      searchedStreamer: action.payload,
+    }
+  }
+
   if (action.type === "DELETE_ALL_VODS") {
     return {
       ...state,
@@ -142,6 +155,8 @@ const defaultState = {
   filterText: "",
   filtering: false,
   filteredFavs: [],
+  isOnline: false,
+  searchedStreamer: "",
   vods: [],
   favs: JSON.parse(localStorage.getItem("favs")) || [],
   mode: "vods",
@@ -162,6 +177,7 @@ const App = () => {
 
   const getTwitchUser = async (username) => {
     showSpinner()
+
     const res = await fetch(
       `https://api.twitch.tv/helix/users?login=${username}`,
       {
@@ -173,7 +189,9 @@ const App = () => {
     )
 
     const data = await res.json()
+
     getVods(data.data[0].id)
+    getIsOnline(username)
   }
 
   const getVods = async (id) => {
@@ -195,6 +213,25 @@ const App = () => {
     })
 
     removeSpinner()
+  }
+
+  const getIsOnline = async (username) => {
+    const res = await fetch(
+      `https://api.twitch.tv/helix/streams?user_login=${username}`,
+      {
+        headers: {
+          "Client-Id": process.env.REACT_APP_CLIENT_ID,
+          Authorization: process.env.REACT_APP_TOKEN,
+        },
+      }
+    )
+
+    const data = await res.json()
+
+    dispatch({
+      type: "IS_ONLINE",
+      payload: data.data.length ? true : false,
+    })
   }
 
   function showSpinner() {

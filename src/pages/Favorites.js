@@ -74,7 +74,14 @@ const Favorites = (props) => {
                             <span>{duration}</span>
                           </p>
                         </div>
-                        <p className="username">{user_login}</p>
+                        <p className="username">
+                          <a
+                            href={`https://twitch.tv/${user_login}`}
+                            className="link"
+                          >
+                            {user_login}
+                          </a>
+                        </p>
                       </div>
                     </div>
                   )

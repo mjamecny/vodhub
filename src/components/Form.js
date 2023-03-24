@@ -25,6 +25,10 @@ export default function Form(props) {
 
     if (props.state.username) {
       props.getTwitchUser(props.state.username)
+      props.dispatch({
+        type: "SET_SEARCHED_STREAMER",
+        payload: props.state.username,
+      })
     } else {
       alert("Please fill the form")
     }
