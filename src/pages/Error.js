@@ -1,14 +1,22 @@
 import { Link } from "react-router-dom"
+import { Flex, Heading, Text } from "@chakra-ui/react"
 
 const Error = () => {
   return (
-    <section className="section-content">
-      <h2>404</h2>
-      <p>Page not found</p>
-      <p>
+    <Flex
+      bg="#212529"
+      color="#ced4da"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      height="85vh"
+    >
+      <Heading>404</Heading>
+      <Text>Page not found</Text>
+      <Text>
         <Link to="/">Home</Link>
-      </p>
-    </section>
+      </Text>
+    </Flex>
   )
 }
 

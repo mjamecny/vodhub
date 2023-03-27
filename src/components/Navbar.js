@@ -1,11 +1,60 @@
-import { NavLink, Link } from "react-router-dom"
-import "./Navbar.css"
-import Form from "./Form"
+import { NavLink, Link, useNavigate } from "react-router-dom"
 import logo from "../images/logo.png"
+import { SearchIcon } from "@chakra-ui/icons"
+import {
+  Image,
+  Flex,
+  Button,
+  FormControl,
+  Input,
+  IconButton,
+  Center,
+} from "@chakra-ui/react"
 
 const Navbar = (props) => {
+  const navigate = useNavigate()
+
+  const formSubmit = (e) => {
+    e.preventDefault()
+
+    if (props.state.mode === "favs") {
+      navigate("/", { replace: true })
+    }
+
+    props.dispatch({
+      type: "DELETE_ALL_VODS",
+      payload: [],
+    })
+
+    props.dispatch({
+      type: "SET_MODE",
+      payload: "vods",
+    })
+
+    props.dispatch({ type: "SET_LOADED", payload: true })
+
+    if (props.state.username) {
+      props.getTwitchUser(props.state.username)
+      props.dispatch({
+        type: "SET_SEARCHED_STREAMER",
+        payload: props.state.username,
+      })
+    } else {
+      alert("Please fill the form")
+    }
+
+    props.dispatch({ type: "CHANGE_USERNAME", payload: "" })
+  }
+
+  const formFilterSubmit = (e) => {
+    e.preventDefault()
+    props.dispatch({ type: "SET_FILTERING", payload: true })
+    props.dispatch({ type: "FILTER_FAVS_TITLE" })
+    props.dispatch({ type: "CHANGE_FILTER_TEXT", payload: "" })
+  }
+
   return (
-    <header>
+    <Flex bg="#212529" justifyContent="space-between" alignItems="center">
       <Link
         to="/"
         onClick={() => {
@@ -14,15 +63,65 @@ const Navbar = (props) => {
           props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
         }}
       >
-        <img className="logo" src={logo} alt="Logo" />
+        <Image width="200px" src={logo} alt="Logo" />
       </Link>
 
-      <Form
-        state={props.state}
-        dispatch={props.dispatch}
-        getTwitchUser={props.getTwitchUser}
-      />
-      <nav>
+      {props.state.mode === "vods" ? (
+        <FormControl>
+          <Center>
+            <Input
+              width="50%"
+              type="text"
+              placeholder="Twitch username"
+              _placeholder={{ opacity: 1, color: "gray.500" }}
+              bg="#fff"
+              name="username"
+              value={props.state.username}
+              onChange={(e) =>
+                props.dispatch({
+                  type: "CHANGE_USERNAME",
+                  payload: e.target.value,
+                })
+              }
+            />
+            <IconButton
+              marginLeft="1.5rem"
+              aria-label="Search database"
+              icon={<SearchIcon />}
+              onClick={formSubmit}
+            />
+          </Center>
+        </FormControl>
+      ) : (
+        <FormControl>
+          <Center>
+            <Input
+              width="50%"
+              type="text"
+              placeholder="Search in VOD title"
+              _placeholder={{ opacity: 1, color: "gray.500" }}
+              bg="#fff"
+              name="filterText"
+              value={props.state.filterText}
+              onChange={(e) =>
+                props.dispatch({
+                  type: "CHANGE_FILTER_TEXT",
+                  payload: e.target.value,
+                })
+              }
+            />
+
+            <IconButton
+              marginLeft="1.5rem"
+              aria-label="Search database"
+              icon={<SearchIcon />}
+              onClick={formFilterSubmit}
+            />
+          </Center>
+        </FormControl>
+      )}
+
+      <Flex gap="2rem" marginRight="2rem">
         <NavLink
           to="/"
           className={({ isActive }) =>
@@ -34,7 +133,16 @@ const Navbar = (props) => {
             props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
           }}
         >
-          Home
+          <Button
+            bg="#ff6b6b"
+            _hover={{
+              bg: "#ffa8a8",
+            }}
+            color="#fff"
+            textTransform="uppercase"
+          >
+            Home
+          </Button>
         </NavLink>
 
         <NavLink
@@ -48,10 +156,19 @@ const Navbar = (props) => {
             props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
           }}
         >
-          Favorites
+          <Button
+            bg="#ff6b6b"
+            _hover={{
+              bg: "#ffa8a8",
+            }}
+            color="#fff"
+            textTransform="uppercase"
+          >
+            Favorites
+          </Button>
         </NavLink>
-      </nav>
-    </header>
+      </Flex>
+    </Flex>
   )
 }
 

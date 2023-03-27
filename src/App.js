@@ -54,7 +54,7 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === "DELETE_ALL") {
+  if (action.type === "REMOVE_FAVS") {
     return {
       ...state,
       favs: action.payload,
@@ -68,12 +68,67 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === "IS_ONLINE") {
+  if (action.type === "SET_USER") {
     return {
       ...state,
-      isOnline: action.payload,
+      user: action.payload,
     }
   }
+
+  if (action.type === "SET_USERS") {
+    const isAdded = state.users.some((user) => {
+      return user.login === action.payload.login
+    })
+
+    if (!isAdded) {
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+      }
+    } else {
+      return {
+        ...state,
+        users: state.users,
+      }
+    }
+  }
+
+  if (action.type === "REMOVE_USER") {
+    const isInArr = state.favs.some((fav) => {
+      return fav.user_id === action.payload
+    })
+
+    if (!isInArr) {
+      const filteredUsers = state.users.filter((user) => {
+        return user.id !== action.payload
+      })
+
+      return {
+        ...state,
+        users: filteredUsers,
+      }
+    }
+
+    return {
+      ...state,
+      users: state.users,
+    }
+  }
+
+  if (action.type === "REMOVE_USERS") {
+    return {
+      ...state,
+      users: action.payload,
+    }
+  }
+
+  if (action.type === "SET_STREAM") {
+    return {
+      ...state,
+      stream: action.payload,
+    }
+  }
+
   if (action.type === "SET_SEARCHED_STREAMER") {
     return {
       ...state,
@@ -101,6 +156,7 @@ const reducer = (state, action) => {
       filterText: action.payload,
     }
   }
+
   if (action.type === "SET_FILTERING") {
     return {
       ...state,
@@ -130,8 +186,6 @@ const reducer = (state, action) => {
   }
 
   if (action.type === "OPEN_MODAL") {
-    const modal = document.getElementById("modal")
-    modal.style.display = "block"
     return {
       ...state,
       videoId: action.payload,
@@ -139,11 +193,23 @@ const reducer = (state, action) => {
   }
 
   if (action.type === "CLOSE_MODAL") {
-    const modal = document.getElementById("modal")
-    modal.style.display = "none"
     return {
       ...state,
       videoId: action.payload,
+    }
+  }
+
+  if (action.type === "SET_IS_LOADING") {
+    return {
+      ...state,
+      isLoading: action.payload,
+    }
+  }
+
+  if (action.type === "SET_IS_VODS_LOADING") {
+    return {
+      ...state,
+      isVodsLoading: action.payload,
     }
   }
 
@@ -151,11 +217,15 @@ const reducer = (state, action) => {
 }
 
 const defaultState = {
+  user: {},
+  users: [],
+  isLoading: false,
+  isVodsLoading: false,
   username: "",
   filterText: "",
   filtering: false,
   filteredFavs: [],
-  isOnline: false,
+  stream: {},
   searchedStreamer: "",
   vods: [],
   favs: JSON.parse(localStorage.getItem("favs")) || [],
@@ -167,16 +237,11 @@ const defaultState = {
 const App = () => {
   const [state, dispatch] = useReducer(reducer, defaultState)
 
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Slash") {
-      e.preventDefault()
-      const input = document.querySelector(".form__username")
-      input.focus()
-    }
-  })
-
   const getTwitchUser = async (username) => {
-    showSpinner()
+    dispatch({
+      type: "SET_IS_VODS_LOADING",
+      payload: true,
+    })
 
     const res = await fetch(
       `https://api.twitch.tv/helix/users?login=${username}`,
@@ -212,7 +277,42 @@ const App = () => {
       payload: data.data,
     })
 
-    removeSpinner()
+    dispatch({
+      type: "SET_IS_VODS_LOADING",
+      payload: false,
+    })
+  }
+
+  const getDetails = async (username) => {
+    dispatch({
+      type: "SET_IS_LOADING",
+      payload: true,
+    })
+    const res = await fetch(
+      `https://api.twitch.tv/helix/users?login=${username}`,
+      {
+        headers: {
+          "Client-Id": process.env.REACT_APP_CLIENT_ID,
+          Authorization: process.env.REACT_APP_TOKEN,
+        },
+      }
+    )
+
+    const data = await res.json()
+
+    dispatch({
+      type: "SET_USERS",
+      payload: data.data[0],
+    })
+
+    dispatch({
+      type: "SET_USER",
+      payload: data.data[0],
+    })
+    dispatch({
+      type: "SET_IS_LOADING",
+      payload: false,
+    })
   }
 
   const getIsOnline = async (username) => {
@@ -229,17 +329,9 @@ const App = () => {
     const data = await res.json()
 
     dispatch({
-      type: "IS_ONLINE",
-      payload: data.data.length ? true : false,
+      type: "SET_STREAM",
+      payload: data.data.length ? data.data[0] : {},
     })
-  }
-
-  function showSpinner() {
-    document.querySelector(".spinner").classList.add("show")
-  }
-
-  function removeSpinner() {
-    document.querySelector(".spinner").classList.remove("show")
   }
 
   useEffect(() => {
@@ -262,7 +354,13 @@ const App = () => {
           <Route index element={<Home state={state} dispatch={dispatch} />} />
           <Route
             path="/favorites"
-            element={<Favorites state={state} dispatch={dispatch} />}
+            element={
+              <Favorites
+                state={state}
+                dispatch={dispatch}
+                getDetails={getDetails}
+              />
+            }
           />
           <Route path="*" element={<Error />} />
         </Route>
