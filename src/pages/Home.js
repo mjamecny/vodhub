@@ -22,6 +22,7 @@ import {
 const Home = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
+
   return (
     <Box
       bg="#212529"
@@ -29,7 +30,7 @@ const Home = (props) => {
       flexGrow="1"
       flexShrink="1"
       paddingY="3.2rem"
-      paddingX="8rem"
+      paddingX={{ base: "3.2rem", md: "8rem" }}
     >
       {!props.state.loaded ? (
         <Flex
@@ -49,13 +50,21 @@ const Home = (props) => {
             </Center>
           ) : (
             <Box>
-              <Text fontSize="lg" textAlign="center" mb="2rem">
-                {props.state.searchedStreamer} is{" "}
-                {Object.keys(props.state.stream).length !== 0
-                  ? "online"
-                  : "offline"}
-              </Text>
-              <Grid templateColumns="repeat(4, 1fr)" gap="2.4rem">
+              {props.state.searchedStreamer && (
+                <Text fontSize="lg" textAlign="center" mb="2rem">
+                  {props.state.searchedStreamer} is{" "}
+                  {Object.keys(props.state.stream).length !== 0
+                    ? "online"
+                    : "offline"}
+                </Text>
+              )}
+              <Grid
+                templateColumns={{
+                  base: "repeat(1,1fr)",
+                  md: "repeat(4,1fr)",
+                }}
+                gap="2.4rem"
+              >
                 {props.state.vods.map((vod) => {
                   const { id, thumbnail_url, title, published_at, duration } =
                     vod

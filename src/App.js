@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, redirect } from "react-router-dom"
 import Home from "./pages/Home"
 import Error from "./pages/Error"
 import SharedLayout from "./pages/SharedLayout"
@@ -213,6 +213,13 @@ const reducer = (state, action) => {
     }
   }
 
+  if (action.type === "SET_ERROR_MSG") {
+    return {
+      ...state,
+      errorMsg: action.payload,
+    }
+  }
+
   return new Error("Error - No match with action.type")
 }
 
@@ -232,55 +239,92 @@ const defaultState = {
   mode: "vods",
   loaded: false,
   videoId: "",
+  errorMsg: "",
 }
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, defaultState)
 
-  const getTwitchUser = async (username) => {
-    dispatch({
-      type: "SET_IS_VODS_LOADING",
-      payload: true,
-    })
+  const getTwitchUser = async (username, redirect) => {
+    try {
+      dispatch({
+        type: "SET_IS_VODS_LOADING",
+        payload: true,
+      })
 
-    const res = await fetch(
-      `https://api.twitch.tv/helix/users?login=${username}`,
-      {
-        headers: {
-          "Client-Id": process.env.REACT_APP_CLIENT_ID,
-          Authorization: process.env.REACT_APP_TOKEN,
-        },
+      const res = await fetch(
+        `https://api.twitch.tv/helix/users?login=${username}`,
+        {
+          headers: {
+            "Client-Id": process.env.REACT_APP_CLIENT_ID,
+            Authorization: process.env.REACT_APP_TOKEN,
+          },
+        }
+      )
+
+      const data = await res.json()
+
+      if (!data || !data.data || !data.data[0]) {
+        throw new Error()
       }
-    )
 
-    const data = await res.json()
+      getVods(data.data[0].id)
+      getIsOnline(username)
+    } catch (err) {
+      redirect("/error")
+      dispatch({
+        type: "SET_IS_VODS_LOADING",
+        payload: false,
+      })
+      dispatch({
+        type: "SET_LOADED",
+        payload: false,
+      })
 
-    getVods(data.data[0].id)
-    getIsOnline(username)
+      dispatch({ type: "SET_ERROR_MSG", payload: "Streamer not found" })
+    }
   }
 
   const getVods = async (id) => {
-    const res = await fetch(
-      `https://api.twitch.tv/helix/videos?user_id=${id}`,
-      {
-        headers: {
-          "Client-Id": process.env.REACT_APP_CLIENT_ID,
-          Authorization: process.env.REACT_APP_TOKEN,
-        },
+    try {
+      const res = await fetch(
+        `https://api.twitch.tv/helix/videos?user_id=${id}`,
+        {
+          headers: {
+            "Client-Id": process.env.REACT_APP_CLIENT_ID,
+            Authorization: process.env.REACT_APP_TOKEN,
+          },
+        }
+      )
+
+      const data = await res.json()
+
+      if (!data || !data.data || !data.data[0]) {
+        throw new Error()
       }
-    )
 
-    const data = await res.json()
+      dispatch({
+        type: "LOAD_VODS",
+        payload: data.data,
+      })
 
-    dispatch({
-      type: "LOAD_VODS",
-      payload: data.data,
-    })
+      dispatch({
+        type: "SET_IS_VODS_LOADING",
+        payload: false,
+      })
+    } catch (err) {
+      redirect("/error")
+      dispatch({
+        type: "SET_IS_VODS_LOADING",
+        payload: false,
+      })
+      dispatch({
+        type: "SET_LOADED",
+        payload: false,
+      })
 
-    dispatch({
-      type: "SET_IS_VODS_LOADING",
-      payload: false,
-    })
+      dispatch({ type: "SET_ERROR_MSG", payload: "No VODs to be seen here" })
+    }
   }
 
   const getDetails = async (username) => {
@@ -362,7 +406,7 @@ const App = () => {
               />
             }
           />
-          <Route path="*" element={<Error />} />
+          <Route path="*" element={<Error state={state} />} />
         </Route>
       </Routes>
     </BrowserRouter>

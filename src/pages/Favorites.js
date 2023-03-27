@@ -56,7 +56,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
       flexGrow="1"
       flexShrink="1"
       paddingY="3.2rem"
-      paddingX="8rem"
+      paddingX={{ base: "3.2rem", md: "8rem" }}
     >
       {state.favs.length !== 0 ? (
         <Flex flexDirection="column" gap="2rem">
@@ -84,7 +84,13 @@ const Favorites = ({ state, dispatch, getDetails }) => {
           >
             Delete All
           </Button>
-          <Grid templateColumns="repeat(4, 1fr)" gap="2.4rem">
+          <Grid
+            templateColumns={{
+              base: "repeat(1,1fr)",
+              md: "repeat(4,1fr)",
+            }}
+            gap="2.4rem"
+          >
             {!state.filtering
               ? state.favs.map((fav) => {
                   const {
@@ -220,6 +226,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                             <PopoverBody>
                               {state.users.map((user) => {
                                 const {
+                                  id,
                                   login,
                                   profile_image_url,
                                   description,
@@ -241,6 +248,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                                       justifyContent="center"
                                       flexDirection="column"
                                       gap=".5rem"
+                                      key={id}
                                     >
                                       <Avatar
                                         name={login}

@@ -34,7 +34,7 @@ const Navbar = (props) => {
     props.dispatch({ type: "SET_LOADED", payload: true })
 
     if (props.state.username) {
-      props.getTwitchUser(props.state.username)
+      props.getTwitchUser(props.state.username, navigate)
       props.dispatch({
         type: "SET_SEARCHED_STREAMER",
         payload: props.state.username,
@@ -54,7 +54,16 @@ const Navbar = (props) => {
   }
 
   return (
-    <Flex bg="#212529" justifyContent="space-between" alignItems="center">
+    <Flex
+      bg="#212529"
+      flexDirection={{
+        base: "column",
+        md: "row",
+      }}
+      justifyContent="space-between"
+      alignItems="center"
+      gap={{ base: "2rem" }}
+    >
       <Link
         to="/"
         onClick={() => {
