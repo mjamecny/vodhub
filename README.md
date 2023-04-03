@@ -9,6 +9,7 @@ Little app built with React for searching and saving Twitch VODs. Favorites VODs
 - Delete VOD(s) from favorites
 - Favorites saved to localStorage
 - Open VOD in modal window
+- Check if streamer is live
 
 ## Screenshot
 
