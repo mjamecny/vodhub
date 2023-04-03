@@ -13,7 +13,7 @@ Little app built with React for searching and saving Twitch VODs. Favorites VODs
 
 ## Screenshot
 
-![frontpage](https://i.imgur.com/7dXrWDD.png)
+![frontpage](https://i.imgur.com/ZUKkY3C.png)
 
 ## Development
 
