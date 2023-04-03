@@ -1,4 +1,4 @@
-import { FaCheck, FaRegClock, FaRegCalendarAlt } from "react-icons/fa"
+import { FaCheck, FaRegClock, FaRegCalendarAlt } from 'react-icons/fa'
 import {
   Box,
   Flex,
@@ -17,7 +17,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Spinner,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react'
 
 const Home = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -30,7 +30,7 @@ const Home = (props) => {
       flexGrow="1"
       flexShrink="1"
       paddingY="3.2rem"
-      paddingX={{ base: "3.2rem", md: "8rem" }}
+      paddingX={{ base: '3.2rem', md: '8rem' }}
     >
       {!props.state.loaded ? (
         <Flex
@@ -52,16 +52,16 @@ const Home = (props) => {
             <Box>
               {props.state.searchedStreamer && (
                 <Text fontSize="lg" textAlign="center" mb="2rem">
-                  {props.state.searchedStreamer} is{" "}
+                  {props.state.searchedStreamer} is{' '}
                   {Object.keys(props.state.stream).length !== 0
-                    ? "online"
-                    : "offline"}
+                    ? 'online'
+                    : 'offline'}
                 </Text>
               )}
               <Grid
                 templateColumns={{
-                  base: "repeat(1,1fr)",
-                  md: "repeat(4,1fr)",
+                  base: 'repeat(1,1fr)',
+                  md: 'repeat(4,1fr)',
                 }}
                 gap="2.4rem"
               >
@@ -71,7 +71,7 @@ const Home = (props) => {
 
                   const final_src = thumbnail_url.replace(
                     /%{width}x%{height}/g,
-                    "1280x720"
+                    '1280x720'
                   )
 
                   const date = new Date(published_at)
@@ -108,15 +108,15 @@ const Home = (props) => {
                           cursor="pointer"
                           color="#ff6b6b"
                           _hover={{
-                            color: "#ffa8a8",
+                            color: '#ffa8a8',
                           }}
                           onClick={() => {
                             onOpen()
                             props.dispatch({
-                              type: "OPEN_MODAL",
+                              type: 'OPEN_MODAL',
                               payload: `https://player.twitch.tv/?video=${id}${
-                                process.env.NODE_ENV === "development"
-                                  ? "&parent=localhost"
+                                process.env.NODE_ENV === 'development'
+                                  ? '&parent=localhost'
                                   : `&parent=${process.env.REACT_APP_URL}`
                               }`,
                             })
@@ -143,19 +143,19 @@ const Home = (props) => {
                             data-id={id}
                             cursor="pointer"
                             _hover={{
-                              color: "#ffa8a8",
+                              color: '#ffa8a8',
                             }}
                             onClick={(e) => {
                               props.dispatch({
-                                type: "ADD_FAV",
+                                type: 'ADD_FAV',
                                 payload: e.currentTarget.dataset.id,
                               })
 
                               toast({
-                                description: "VOD added to your favorites",
-                                status: "success",
+                                description: 'VOD added to your favorites',
+                                status: 'success',
                                 duration: 5000,
-                                position: "top",
+                                position: 'top',
                                 isClosable: false,
                               })
                             }}
@@ -186,8 +186,8 @@ const Home = (props) => {
           <ModalCloseButton
             bg="transparent"
             _hover={{
-              bg: "transparent",
-              color: "#ff6b6b",
+              bg: 'transparent',
+              color: '#ff6b6b',
             }}
             color="#fff"
           />
