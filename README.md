@@ -10,10 +10,12 @@ Little app built with React for searching and saving Twitch VODs. Favorites VODs
 - Favorites saved to localStorage
 - Open VOD in modal window
 - Check if streamer is live
+- PWA support
+- Dark mode
 
 ## Screenshot
 
-![frontpage](https://i.imgur.com/ZUKkY3C.png)
+![frontpage](https://i.imgur.com/2puhQoL.png)
 
 ## Development
 
