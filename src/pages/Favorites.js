@@ -1,9 +1,8 @@
 import {
-  Grid,
+  SimpleGrid,
   Box,
   Button,
   Heading,
-  Icon,
   Image,
   Flex,
   Text,
@@ -24,9 +23,13 @@ import {
   PopoverCloseButton,
   Avatar,
   Spinner,
-} from "@chakra-ui/react"
-import { FaRegTrashAlt, FaRegClock, FaRegCalendarAlt } from "react-icons/fa"
-import { useEffect } from "react"
+  Card,
+  CardBody,
+  CardFooter,
+  IconButton,
+} from '@chakra-ui/react'
+import { DeleteIcon, CalendarIcon, RepeatClockIcon } from '@chakra-ui/icons'
+import { useEffect } from 'react'
 
 const Favorites = ({ state, dispatch, getDetails }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -49,47 +52,64 @@ const Favorites = ({ state, dispatch, getDetails }) => {
     })
   }, [state.favs])
 
+  const handleRemoveFav = (id, user_id) => {
+    dispatch({
+      type: 'REMOVE_FAV',
+      payload: id,
+    })
+
+    dispatch({
+      type: 'REMOVE_USER',
+      payload: user_id,
+    })
+
+    if (state.filtering) {
+      dispatch({
+        type: 'REMOVE_FILTER_FAV',
+        payload: id,
+      })
+
+      dispatch({
+        type: 'SET_FILTERING',
+        payload: false,
+      })
+    }
+
+    toast({
+      description: 'VOD deleted from your favorites',
+      status: 'info',
+      duration: 5000,
+      position: 'top',
+      isClosable: false,
+    })
+  }
+
   return (
-    <Box
-      bg="#212529"
-      color="#ced4da"
-      flexGrow="1"
-      flexShrink="1"
-      paddingY="3.2rem"
-      paddingX={{ base: "3.2rem", md: "8rem" }}
-    >
+    <Box flexGrow="1" flexShrink="1">
       {state.favs.length !== 0 ? (
-        <Flex flexDirection="column" gap="2rem">
+        <Flex flexDirection="column" gap="0.5rem" mt="2rem">
           <Button
-            bg="#ff6b6b"
-            _hover={{
-              bg: "#ffa8a8",
-            }}
-            color="#fff"
-            textTransform="uppercase"
-            width="xs"
+            size="lg"
             alignSelf="center"
             onClick={() => {
               dispatch({
-                type: "REMOVE_FAVS",
+                type: 'REMOVE_FAVS',
                 payload: [],
               })
               dispatch({
-                type: "REMOVE_USERS",
+                type: 'REMOVE_USERS',
                 payload: [],
               })
-              dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
-              dispatch({ type: "SET_FILTERING", payload: false })
+              dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
+              dispatch({ type: 'SET_FILTERING', payload: false })
             }}
           >
             Delete All
           </Button>
-          <Grid
-            templateColumns={{
-              base: "repeat(1,1fr)",
-              md: "repeat(4,1fr)",
-            }}
-            gap="2.4rem"
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
+            spacing="1rem"
+            p="2.5rem"
           >
             {!state.filtering
               ? state.favs.map((fav) => {
@@ -105,7 +125,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
 
                   const final_src = thumbnail_url.replace(
                     /%{width}x%{height}/g,
-                    "1280x720"
+                    '1280x720'
                   )
 
                   const date = new Date(published_at)
@@ -117,39 +137,25 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                   ]
 
                   return (
-                    <Flex
-                      border="2px solid #555"
-                      borderRadius="11px"
-                      flexDirection="column"
-                      overflow="hidden"
-                      gap="1rem"
-                      key={id}
-                    >
-                      <Image src={final_src} alt="thumbnail" />
-                      <Flex
-                        fontSize="sm"
-                        padding="1.2rem"
-                        flexDirection="column"
-                        flexGrow="1"
-                        flexShrink="1"
-                        gap="1.75rem"
-                      >
+                    <Card key={id}>
+                      <CardBody>
+                        <Image
+                          src={final_src}
+                          fallbackSrc="https://via.placeholder.com/150"
+                          borderRadius="lg"
+                        />
                         <Heading
-                          flexGrow="1"
-                          flexShrink="1"
-                          fontSize="lg"
+                          as="h2"
+                          size="md"
+                          mt="1rem"
                           cursor="pointer"
-                          color="#ff6b6b"
-                          _hover={{
-                            color: "#ffa8a8",
-                          }}
                           onClick={() => {
                             onOpen()
                             dispatch({
-                              type: "OPEN_MODAL",
+                              type: 'OPEN_MODAL',
                               payload: `https://player.twitch.tv/?video=${id}${
-                                process.env.NODE_ENV === "development"
-                                  ? "&parent=localhost"
+                                process.env.NODE_ENV === 'development'
+                                  ? '&parent=localhost'
                                   : `&parent=${process.env.REACT_APP_URL}`
                               }`,
                             })
@@ -157,122 +163,87 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                         >
                           {title}
                         </Heading>
-                        <Flex
-                          justifyContent="space-between"
-                          alignItems="center"
-                          gap=".5rem"
-                        >
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegCalendarAlt} />
-                            <Text>{`${day}/${month + 1}/${year}`}</Text>
-                          </Flex>
-                          <Icon
-                            as={FaRegTrashAlt}
-                            cursor="pointer"
-                            _hover={{
-                              color: "#ffa8a8",
-                            }}
-                            onClick={() => {
-                              dispatch({
-                                type: "REMOVE_FAV",
-                                payload: id,
-                              })
-
-                              dispatch({
-                                type: "REMOVE_USER",
-                                payload: user_id,
-                              })
-
-                              toast({
-                                description: "VOD deleted from your favorites",
-                                status: "info",
-                                duration: 5000,
-                                position: "top",
-                                isClosable: false,
-                              })
-                            }}
-                            data-id={id}
-                          />
-
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegClock} />
-                            <Text>{duration}</Text>
-                          </Flex>
+                      </CardBody>
+                      <CardFooter justify="space-between" align="center">
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <CalendarIcon />
+                          <Text>{`${day}/${month + 1}/${year}`}</Text>
                         </Flex>
+                        <IconButton
+                          onClick={() => handleRemoveFav(id, user_id)}
+                          aria-label="Remove from favorites"
+                          icon={<DeleteIcon />}
+                        />
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <RepeatClockIcon />
+                          <Text>{duration}</Text>
+                        </Flex>
+                      </CardFooter>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Link
+                            mb="1rem"
+                            href="#"
+                            alignSelf="center"
+                            onClick={() => {
+                              getDetails(user_login)
+                            }}
+                          >
+                            {user_login}
+                          </Link>
+                        </PopoverTrigger>
 
-                        <Popover>
-                          <PopoverTrigger>
-                            <Link
-                              href="#"
-                              alignSelf="center"
-                              onClick={() => {
-                                getDetails(user_login)
-                              }}
-                            >
-                              {user_login}
-                            </Link>
-                          </PopoverTrigger>
-                          <PopoverContent color="#000">
-                            <PopoverArrow />
-                            <PopoverCloseButton />
-                            <PopoverBody>
-                              {state.users.map((user) => {
-                                const {
-                                  id,
-                                  login,
-                                  profile_image_url,
-                                  description,
-                                  created_at,
-                                } = user
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverBody>
+                            {state.users.map((user) => {
+                              const {
+                                id,
+                                login,
+                                profile_image_url,
+                                description,
+                                created_at,
+                              } = user
 
-                                const date = new Date(created_at)
+                              const date = new Date(created_at)
 
-                                const [month, day, year] = [
-                                  date.getMonth(),
-                                  date.getDate(),
-                                  date.getFullYear(),
-                                ]
+                              const [month, day, year] = [
+                                date.getMonth(),
+                                date.getDate(),
+                                date.getFullYear(),
+                              ]
 
-                                if (login === user_login) {
-                                  return (
-                                    <Flex
-                                      alignItems="center"
-                                      justifyContent="center"
-                                      flexDirection="column"
-                                      gap=".5rem"
-                                      key={id}
-                                    >
-                                      <Avatar
-                                        name={login}
-                                        src={profile_image_url}
-                                      />
-                                      <Text>{description}</Text>
-                                      <Text>{`${day}/${
-                                        month + 1
-                                      }/${year}`}</Text>
-                                    </Flex>
-                                  )
-                                }
-                              })}
-                            </PopoverBody>
-                          </PopoverContent>
-                        </Popover>
-                      </Flex>
-                    </Flex>
+                              if (login === user_login) {
+                                return (
+                                  <Flex
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flexDirection="column"
+                                    gap=".5rem"
+                                    key={id}
+                                  >
+                                    <Avatar
+                                      name={login}
+                                      src={profile_image_url}
+                                    />
+                                    <Text>{description}</Text>
+                                    <Text>{`${day}/${month + 1}/${year}`}</Text>
+                                  </Flex>
+                                )
+                              }
+                            })}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Card>
                   )
                 })
               : state.filteredFavs.map((fav) => {
                   const {
                     id,
                     thumbnail_url,
+                    user_id,
                     user_login,
                     title,
                     published_at,
@@ -281,7 +252,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
 
                   const final_src = thumbnail_url.replace(
                     /%{width}x%{height}/g,
-                    "1280x720"
+                    '1280x720'
                   )
 
                   const date = new Date(published_at)
@@ -293,36 +264,24 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                   ]
 
                   return (
-                    <Flex
-                      border="2px solid #555"
-                      borderRadius="11px"
-                      flexDirection="column"
-                      overflow="hidden"
-                      gap="1rem"
-                      key={id}
-                    >
-                      <Image src={final_src} alt="thumbnail" />
-                      <Flex
-                        fontSize="sm"
-                        padding="1.2rem"
-                        flexDirection="column"
-                        gap="1.75rem"
-                      >
+                    <Card key={id}>
+                      <CardBody>
+                        <Image
+                          src={final_src}
+                          fallbackSrc="https://via.placeholder.com/150"
+                          borderRadius="lg"
+                        />
                         <Heading
-                          flexGrow="1"
-                          flexShrink="1"
-                          fontSize="lg"
+                          as="h2"
+                          size="md"
+                          mt="1rem"
                           cursor="pointer"
-                          color="#ff6b6b"
-                          _hover={{
-                            color: "#ffa8a8",
-                          }}
                           onClick={() => {
                             dispatch({
-                              type: "OPEN_MODAL",
+                              type: 'OPEN_MODAL',
                               payload: `https://player.twitch.tv/?video=${id}${
-                                process.env.NODE_ENV === "development"
-                                  ? "&parent=localhost"
+                                process.env.NODE_ENV === 'development'
+                                  ? '&parent=localhost'
                                   : `&parent=${process.env.REACT_APP_URL}`
                               }`,
                             })
@@ -330,69 +289,82 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                         >
                           {title}
                         </Heading>
-                        <Flex
-                          justifyContent="space-between"
-                          alignItems="center"
-                          gap=".5rem"
-                        >
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegCalendarAlt} />
-                            <Text>{`${day}/${month + 1}/${year}`}</Text>
-                          </Flex>
-                          <Icon
-                            as={FaRegTrashAlt}
-                            cursor="pointer"
-                            _hover={{
-                              color: "#ffa8a8",
-                            }}
-                            onClick={() => {
-                              dispatch({
-                                type: "REMOVE_FAV",
-                                payload: id,
-                              })
-
-                              dispatch({
-                                type: "REMOVE_FILTER_FAV",
-                                payload: id,
-                              })
-
-                              toast({
-                                description: "VOD deleted from your favorites",
-                                status: "info",
-                                duration: 5000,
-                                position: "top",
-                                isClosable: false,
-                              })
-                            }}
-                            data-id={id}
-                          />
-
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegClock} />
-                            <Text>{duration}</Text>
-                          </Flex>
+                      </CardBody>
+                      <CardFooter justify="space-between" align="center">
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <CalendarIcon />
+                          <Text>{`${day}/${month + 1}/${year}`}</Text>
                         </Flex>
-                        <Text alignSelf="center">
-                          <a
-                            href={`https://twitch.tv/${user_login}`}
-                            className="link"
+                        <IconButton
+                          onClick={() => handleRemoveFav(id, user_id)}
+                          aria-label="Remove from favorites"
+                          icon={<DeleteIcon />}
+                        />
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <RepeatClockIcon />
+                          <Text>{duration}</Text>
+                        </Flex>
+                      </CardFooter>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Link
+                            mb="1rem"
+                            href="#"
+                            alignSelf="center"
+                            onClick={() => {
+                              getDetails(user_login)
+                            }}
                           >
                             {user_login}
-                          </a>
-                        </Text>
-                      </Flex>
-                    </Flex>
+                          </Link>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverBody>
+                            {state.users.map((user) => {
+                              const {
+                                id,
+                                login,
+                                profile_image_url,
+                                description,
+                                created_at,
+                              } = user
+
+                              const date = new Date(created_at)
+
+                              const [month, day, year] = [
+                                date.getMonth(),
+                                date.getDate(),
+                                date.getFullYear(),
+                              ]
+
+                              if (login === user_login) {
+                                return (
+                                  <Flex
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flexDirection="column"
+                                    gap=".5rem"
+                                    key={id}
+                                  >
+                                    <Avatar
+                                      name={login}
+                                      src={profile_image_url}
+                                    />
+                                    <Text>{description}</Text>
+                                    <Text>{`${day}/${month + 1}/${year}`}</Text>
+                                  </Flex>
+                                )
+                              }
+                            })}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Card>
                   )
                 })}
-          </Grid>
+          </SimpleGrid>
         </Flex>
       ) : (
         <Flex
@@ -402,22 +374,15 @@ const Favorites = ({ state, dispatch, getDetails }) => {
           height="75vh"
         >
           Don't have any favorite videos saved yet? No problem! Just browse
-          selection of videos from any Twitch streamer and click the "checkmark"
+          selection of videos from any Twitch streamer and click the "plus"
           button on any video you want to save for later.
         </Flex>
       )}
       <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
         <ModalOverlay />
-        <ModalContent bg="blackAlpha.300" backdropFilter="blur(10px)">
-          <ModalHeader color="#fff">VOD</ModalHeader>
-          <ModalCloseButton
-            bg="transparent"
-            _hover={{
-              bg: "transparent",
-              color: "#ff6b6b",
-            }}
-            color="#fff"
-          />
+        <ModalContent backdropFilter="blur(10px)">
+          <ModalHeader>VOD</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             <iframe
               title="video"

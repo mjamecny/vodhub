@@ -1,182 +1,233 @@
-import { NavLink, Link, useNavigate } from "react-router-dom"
-import logo from "../images/logo.png"
-import { SearchIcon } from "@chakra-ui/icons"
+import { NavLink, Link, useNavigate } from 'react-router-dom'
+import logo from '../images/logo.png'
 import {
   Image,
   Flex,
   Button,
+  ButtonGroup,
   FormControl,
   Input,
+  InputGroup,
+  InputRightElement,
+  useColorMode,
   IconButton,
   Center,
-} from "@chakra-ui/react"
+  Spacer,
+  Kbd,
+} from '@chakra-ui/react'
+
+import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+
+import { useHotkeys } from 'react-hotkeys-hook'
+import { useRef } from 'react'
 
 const Navbar = (props) => {
   const navigate = useNavigate()
+  const { colorMode, toggleColorMode } = useColorMode()
+  const inputRef = useRef(null)
+
+  useHotkeys('ctrl + /', () => {
+    inputRef.current.focus()
+  })
 
   const formSubmit = (e) => {
     e.preventDefault()
 
-    if (props.state.mode === "favs") {
-      navigate("/", { replace: true })
+    if (props.state.mode === 'favs') {
+      navigate('/', { replace: true })
     }
 
     props.dispatch({
-      type: "DELETE_ALL_VODS",
+      type: 'DELETE_ALL_VODS',
       payload: [],
     })
 
     props.dispatch({
-      type: "SET_MODE",
-      payload: "vods",
+      type: 'SET_MODE',
+      payload: 'vods',
     })
 
-    props.dispatch({ type: "SET_LOADED", payload: true })
+    props.dispatch({ type: 'SET_LOADED', payload: true })
 
     if (props.state.username) {
       props.getTwitchUser(props.state.username, navigate)
       props.dispatch({
-        type: "SET_SEARCHED_STREAMER",
+        type: 'SET_SEARCHED_STREAMER',
         payload: props.state.username,
       })
     } else {
-      alert("Please fill the form")
+      alert('Please fill the form')
     }
 
-    props.dispatch({ type: "CHANGE_USERNAME", payload: "" })
+    props.dispatch({ type: 'CHANGE_USERNAME', payload: '' })
   }
 
   const formFilterSubmit = (e) => {
     e.preventDefault()
-    props.dispatch({ type: "SET_FILTERING", payload: true })
-    props.dispatch({ type: "FILTER_FAVS_TITLE" })
-    props.dispatch({ type: "CHANGE_FILTER_TEXT", payload: "" })
+    props.dispatch({ type: 'SET_FILTERING', payload: true })
+    props.dispatch({ type: 'FILTER_FAVS_TITLE' })
+    props.dispatch({ type: 'CHANGE_FILTER_TEXT', payload: '' })
   }
 
   return (
     <Flex
-      bg="#212529"
+      justify="center"
+      align="center"
+      mt="20px"
       flexDirection={{
-        base: "column",
-        md: "row",
+        base: 'column',
+        lg: 'row',
       }}
-      justifyContent="space-between"
-      alignItems="center"
-      gap={{ base: "2rem" }}
     >
       <Link
         to="/"
         onClick={() => {
-          props.dispatch({ type: "SET_MODE", payload: "vods" })
-          props.dispatch({ type: "SET_FILTERING", payload: false })
-          props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
+          props.dispatch({ type: 'SET_MODE', payload: 'vods' })
+          props.dispatch({ type: 'SET_FILTERING', payload: false })
+          props.dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
         }}
       >
         <Image width="200px" src={logo} alt="Logo" />
       </Link>
 
-      {props.state.mode === "vods" ? (
+      <Spacer />
+
+      {props.state.mode === 'vods' ? (
         <FormControl>
-          <Center>
-            <Input
-              width="50%"
-              type="text"
-              placeholder="Twitch username"
-              _placeholder={{ opacity: 1, color: "gray.500" }}
-              bg="#fff"
-              name="username"
-              value={props.state.username}
-              onChange={(e) =>
-                props.dispatch({
-                  type: "CHANGE_USERNAME",
-                  payload: e.target.value,
-                })
-              }
-            />
-            <IconButton
-              marginLeft="1.5rem"
-              aria-label="Search database"
-              icon={<SearchIcon />}
-              onClick={formSubmit}
-            />
-          </Center>
+          <form onSubmit={formSubmit}>
+            <Center>
+              <InputGroup
+                w={{ base: '100%', md: '50%' }}
+                ml={{ base: '1rem', md: '0' }}
+                mr={{ base: '1rem', md: '0' }}
+                size="lg"
+              >
+                <Input
+                  placeholder="Twitch username"
+                  name="username"
+                  value={props.state.username}
+                  onChange={(e) =>
+                    props.dispatch({
+                      type: 'CHANGE_USERNAME',
+                      payload: e.target.value,
+                    })
+                  }
+                  ref={inputRef}
+                />
+                <InputRightElement
+                  display={{ base: 'none', lg: 'flex' }}
+                  width="4.5rem"
+                  mr="1rem"
+                >
+                  <Kbd>ctrl</Kbd> + <Kbd>/</Kbd>
+                </InputRightElement>
+              </InputGroup>
+
+              <IconButton
+                display={{ base: 'none', md: 'block' }}
+                size="lg"
+                marginLeft="1.5rem"
+                aria-label="Search Twitch streamer"
+                icon={<SearchIcon />}
+                onClick={formSubmit}
+              />
+            </Center>
+          </form>
         </FormControl>
       ) : (
         <FormControl>
-          <Center>
-            <Input
-              width="50%"
-              type="text"
-              placeholder="Search in VOD title"
-              _placeholder={{ opacity: 1, color: "gray.500" }}
-              bg="#fff"
-              name="filterText"
-              value={props.state.filterText}
-              onChange={(e) =>
-                props.dispatch({
-                  type: "CHANGE_FILTER_TEXT",
-                  payload: e.target.value,
-                })
-              }
-            />
+          <form onSubmit={formFilterSubmit}>
+            <Center>
+              <InputGroup
+                w={{ base: '100%', md: '50%' }}
+                ml={{ base: '1rem', md: '0' }}
+                mr={{ base: '1rem', md: '0' }}
+                size="lg"
+              >
+                <Input
+                  placeholder="Search in VOD title"
+                  name="filterText"
+                  value={props.state.filterText}
+                  onChange={(e) =>
+                    props.dispatch({
+                      type: 'CHANGE_FILTER_TEXT',
+                      payload: e.target.value,
+                    })
+                  }
+                  ref={inputRef}
+                />
+                <InputRightElement
+                  display={{ base: 'none', lg: 'flex' }}
+                  width="4.5rem"
+                  mr="1rem"
+                >
+                  <Kbd>ctrl</Kbd> + <Kbd>/</Kbd>
+                </InputRightElement>
+              </InputGroup>
 
-            <IconButton
-              marginLeft="1.5rem"
-              aria-label="Search database"
-              icon={<SearchIcon />}
-              onClick={formFilterSubmit}
-            />
-          </Center>
+              <IconButton
+                display={{ base: 'none', md: 'block' }}
+                size="lg"
+                marginLeft="1.5rem"
+                aria-label="Filter VODs"
+                icon={<SearchIcon />}
+                onClick={formFilterSubmit}
+              />
+            </Center>
+          </form>
         </FormControl>
       )}
 
-      <Flex gap="2rem" marginRight="2rem">
+      <Spacer />
+
+      <ButtonGroup
+        spacing="3"
+        size="lg"
+        mr="2rem"
+        mt={{
+          base: '2rem',
+          lg: '0',
+        }}
+      >
         <NavLink
           to="/"
           className={({ isActive }) =>
-            isActive ? "activeLink" : "nonactiveLink"
+            isActive ? 'activeLink' : 'nonactiveLink'
           }
           onClick={() => {
-            props.dispatch({ type: "SET_MODE", payload: "vods" })
-            props.dispatch({ type: "SET_FILTERING", payload: false })
-            props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
+            props.dispatch({ type: 'SET_MODE', payload: 'vods' })
+            props.dispatch({ type: 'SET_FILTERING', payload: false })
+            props.dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
           }}
         >
-          <Button
-            bg="#ff6b6b"
-            _hover={{
-              bg: "#ffa8a8",
-            }}
-            color="#fff"
-            textTransform="uppercase"
-          >
-            Home
-          </Button>
+          <Button>Home</Button>
         </NavLink>
 
         <NavLink
           to="/favorites"
           className={({ isActive }) =>
-            isActive ? "activeLink" : "nonactiveLink"
+            isActive ? 'activeLink' : 'nonactiveLink'
           }
           onClick={() => {
-            props.dispatch({ type: "SET_MODE", payload: "favs" })
-            props.dispatch({ type: "SET_FILTERING", payload: false })
-            props.dispatch({ type: "DELETE_FILTERED_VODS", payload: [] })
+            props.dispatch({ type: 'SET_MODE', payload: 'favs' })
+            props.dispatch({ type: 'SET_FILTERING', payload: false })
+            props.dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
           }}
         >
-          <Button
-            bg="#ff6b6b"
-            _hover={{
-              bg: "#ffa8a8",
-            }}
-            color="#fff"
-            textTransform="uppercase"
-          >
-            Favorites
-          </Button>
+          <Button>Favorites</Button>
         </NavLink>
-      </Flex>
+
+        <IconButton
+          size="lg"
+          onClick={toggleColorMode}
+          aria-label={
+            colorMode === 'light'
+              ? 'Change to dark mode'
+              : 'Change to light mode'
+          }
+          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        />
+      </ButtonGroup>
     </Flex>
   )
 }

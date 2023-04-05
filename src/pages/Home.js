@@ -1,13 +1,11 @@
-import { FaCheck, FaRegClock, FaRegCalendarAlt } from 'react-icons/fa'
 import {
   Box,
   Flex,
   Center,
-  Icon,
   Text,
   Heading,
   Image,
-  Grid,
+  SimpleGrid,
   useToast,
   useDisclosure,
   Modal,
@@ -17,21 +15,35 @@ import {
   ModalBody,
   ModalCloseButton,
   Spinner,
+  Card,
+  CardBody,
+  CardFooter,
+  IconButton,
 } from '@chakra-ui/react'
+
+import { CalendarIcon, AddIcon, RepeatClockIcon } from '@chakra-ui/icons'
 
 const Home = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
+  const handleAddFav = (id) => {
+    props.dispatch({
+      type: 'ADD_FAV',
+      payload: id,
+    })
+
+    toast({
+      description: 'VOD added to your favorites',
+      status: 'success',
+      duration: 5000,
+      position: 'top',
+      isClosable: false,
+    })
+  }
+
   return (
-    <Box
-      bg="#212529"
-      color="#ced4da"
-      flexGrow="1"
-      flexShrink="1"
-      paddingY="3.2rem"
-      paddingX={{ base: '3.2rem', md: '8rem' }}
-    >
+    <Box flexGrow="1" flexShrink="1">
       {!props.state.loaded ? (
         <Flex
           flexDirection="column"
@@ -45,25 +57,23 @@ const Home = (props) => {
       ) : (
         <Box>
           {props.state.isVodsLoading ? (
-            <Center>
-              <Spinner />
+            <Center height="75vh">
+              <Spinner size="xl" />
             </Center>
           ) : (
             <Box>
               {props.state.searchedStreamer && (
-                <Text fontSize="lg" textAlign="center" mb="2rem">
+                <Text fontSize="lg" textAlign="center" mt="2rem">
                   {props.state.searchedStreamer} is{' '}
                   {Object.keys(props.state.stream).length !== 0
                     ? 'online'
                     : 'offline'}
                 </Text>
               )}
-              <Grid
-                templateColumns={{
-                  base: 'repeat(1,1fr)',
-                  md: 'repeat(4,1fr)',
-                }}
-                gap="2.4rem"
+              <SimpleGrid
+                columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
+                spacing="1rem"
+                p="2.5rem"
               >
                 {props.state.vods.map((vod) => {
                   const { id, thumbnail_url, title, published_at, duration } =
@@ -83,33 +93,18 @@ const Home = (props) => {
                   ]
 
                   return (
-                    <Flex
-                      border="2px solid #555"
-                      borderRadius="11px"
-                      flexDirection="column"
-                      overflow="hidden"
-                      gap="1rem"
-                      key={id}
-                    >
-                      <Image src={final_src} alt="thumbnail" />
-
-                      <Flex
-                        fontSize="sm"
-                        padding="1.2rem"
-                        flexDirection="column"
-                        flexGrow="1"
-                        flexShrink="1"
-                        gap="1.75rem"
-                      >
+                    <Card key={id}>
+                      <CardBody>
+                        <Image
+                          src={final_src}
+                          fallbackSrc="https://via.placeholder.com/150"
+                          borderRadius="lg"
+                        />
                         <Heading
-                          flexGrow="1"
-                          flexShrink="1"
-                          fontSize="lg"
+                          as="h2"
+                          size="md"
+                          mt="1rem"
                           cursor="pointer"
-                          color="#ff6b6b"
-                          _hover={{
-                            color: '#ffa8a8',
-                          }}
                           onClick={() => {
                             onOpen()
                             props.dispatch({
@@ -124,56 +119,26 @@ const Home = (props) => {
                         >
                           {title}
                         </Heading>
-
-                        <Flex
-                          justifyContent="space-between"
-                          alignItems="center"
-                          gap=".5rem"
-                        >
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegCalendarAlt} />
-                            <Text>{`${day}/${month + 1}/${year}`}</Text>
-                          </Flex>
-                          <Icon
-                            as={FaCheck}
-                            data-id={id}
-                            cursor="pointer"
-                            _hover={{
-                              color: '#ffa8a8',
-                            }}
-                            onClick={(e) => {
-                              props.dispatch({
-                                type: 'ADD_FAV',
-                                payload: e.currentTarget.dataset.id,
-                              })
-
-                              toast({
-                                description: 'VOD added to your favorites',
-                                status: 'success',
-                                duration: 5000,
-                                position: 'top',
-                                isClosable: false,
-                              })
-                            }}
-                          />
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            gap=".5rem"
-                          >
-                            <Icon as={FaRegClock} />
-                            <Text>{duration}</Text>
-                          </Flex>
+                      </CardBody>
+                      <CardFooter justify="space-between" align="center">
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <CalendarIcon />
+                          <Text>{`${day}/${month + 1}/${year}`}</Text>
                         </Flex>
-                      </Flex>
-                    </Flex>
+                        <IconButton
+                          onClick={() => handleAddFav(id)}
+                          aria-label="Add to favorites"
+                          icon={<AddIcon />}
+                        />
+                        <Flex justify="center" align="center" gap="0.5rem">
+                          <RepeatClockIcon />
+                          <Text>{duration}</Text>
+                        </Flex>
+                      </CardFooter>
+                    </Card>
                   )
                 })}
-              </Grid>
+              </SimpleGrid>
             </Box>
           )}
         </Box>
@@ -181,16 +146,9 @@ const Home = (props) => {
 
       <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
         <ModalOverlay />
-        <ModalContent bg="blackAlpha.300" backdropFilter="blur(10px)">
-          <ModalHeader color="#fff">VOD</ModalHeader>
-          <ModalCloseButton
-            bg="transparent"
-            _hover={{
-              bg: 'transparent',
-              color: '#ff6b6b',
-            }}
-            color="#fff"
-          />
+        <ModalContent backdropFilter="blur(10px)">
+          <ModalHeader>VOD</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             <iframe
               title="video"

@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom"
-import { Flex, Box, Heading, Text } from "@chakra-ui/react"
+import { Flex, Box, Text } from '@chakra-ui/react'
 
 const Error = (props) => {
   return (
