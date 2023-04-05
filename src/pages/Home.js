@@ -1,5 +1,6 @@
 import {
   Box,
+  Badge,
   Flex,
   Center,
   Text,
@@ -63,12 +64,21 @@ const Home = (props) => {
           ) : (
             <Box>
               {props.state.searchedStreamer && (
-                <Text fontSize="lg" textAlign="center" mt="2rem">
-                  {props.state.searchedStreamer} is{' '}
-                  {Object.keys(props.state.stream).length !== 0
-                    ? 'online'
-                    : 'offline'}
-                </Text>
+                <Box width="15%" mt="2rem" mx="auto">
+                  <Badge
+                    fontSize="lg"
+                    colorScheme={
+                      Object.keys(props.state.stream).length !== 0
+                        ? 'green'
+                        : 'red'
+                    }
+                  >
+                    {props.state.searchedStreamer} is{' '}
+                    {Object.keys(props.state.stream).length !== 0
+                      ? 'online'
+                      : 'offline'}
+                  </Badge>
+                </Box>
               )}
               <SimpleGrid
                 columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
@@ -97,7 +107,7 @@ const Home = (props) => {
                       <CardBody>
                         <Image
                           src={final_src}
-                          fallbackSrc="https://via.placeholder.com/150"
+                          fallbackSrc="https://via.placeholder.com/1280x720"
                           borderRadius="lg"
                         />
                         <Heading
