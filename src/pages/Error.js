@@ -2,14 +2,7 @@ import { Flex, Box, Text } from '@chakra-ui/react'
 
 const Error = (props) => {
   return (
-    <Box
-      bg="#212529"
-      color="#ced4da"
-      flexGrow="1"
-      flexShrink="1"
-      paddingY="3.2rem"
-      paddingX="8rem"
-    >
+    <Box flexGrow="1" flexShrink="1">
       <Flex
         flexDirection="column"
         justifyContent="center"
