@@ -27,6 +27,7 @@ import {
   CardBody,
   CardFooter,
   IconButton,
+  Tooltip,
 } from '@chakra-ui/react'
 import { DeleteIcon, CalendarIcon, RepeatClockIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
@@ -164,6 +165,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           {title}
                         </Heading>
                       </CardBody>
+
                       <CardFooter justify="space-between" align="center">
                         <Flex justify="center" align="center" gap="0.5rem">
                           <CalendarIcon />
@@ -179,18 +181,20 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           <Text>{duration}</Text>
                         </Flex>
                       </CardFooter>
+
                       <Popover>
                         <PopoverTrigger>
-                          <Link
+                          <Text
                             mb="1rem"
                             href="#"
                             alignSelf="center"
+                            cursor="pointer"
                             onClick={() => {
                               getDetails(user_login)
                             }}
                           >
                             {user_login}
-                          </Link>
+                          </Text>
                         </PopoverTrigger>
 
                         <PopoverContent>
@@ -368,9 +372,10 @@ const Favorites = ({ state, dispatch, getDetails }) => {
         </Flex>
       ) : (
         <Flex
-          fontSize="lg"
+          fontSize="4xl"
           justifyContent="center"
           alignItems="center"
+          paddingX="15rem"
           height="75vh"
         >
           Don't have any favorite videos saved yet? No problem! Just browse
