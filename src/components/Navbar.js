@@ -15,9 +15,7 @@ import {
   Spacer,
   Kbd,
 } from '@chakra-ui/react'
-
 import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
-
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useRef } from 'react'
 
@@ -135,7 +133,7 @@ const Navbar = (props) => {
           </form>
         </FormControl>
       ) : (
-        <FormControl>
+        <FormControl isDisabled={props.state.favs.length === 0}>
           <form onSubmit={formFilterSubmit}>
             <Center>
               <InputGroup

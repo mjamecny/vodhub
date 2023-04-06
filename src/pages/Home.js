@@ -20,6 +20,8 @@ import {
   CardBody,
   CardFooter,
   IconButton,
+  Link,
+  Tooltip,
 } from '@chakra-ui/react'
 
 import { CalendarIcon, AddIcon, RepeatClockIcon } from '@chakra-ui/icons'
@@ -65,19 +67,33 @@ const Home = (props) => {
             <Box>
               {props.state.searchedStreamer && (
                 <Box width="15%" mt="2rem" mx="auto">
-                  <Badge
-                    fontSize="lg"
-                    colorScheme={
-                      Object.keys(props.state.stream).length !== 0
-                        ? 'green'
-                        : 'red'
-                    }
-                  >
-                    {props.state.searchedStreamer} is{' '}
-                    {Object.keys(props.state.stream).length !== 0
-                      ? 'online'
-                      : 'offline'}
-                  </Badge>
+                  {Object.keys(props.state.stream).length !== 0 ? (
+                    <Tooltip hasArrow label="Open stream">
+                      <Link
+                        onClick={() => {
+                          onOpen()
+                          props.dispatch({
+                            type: 'OPEN_MODAL',
+                            payload: `https://player.twitch.tv/?channel=${
+                              props.state.searchedStreamer
+                            }${
+                              process.env.NODE_ENV === 'development'
+                                ? '&parent=localhost'
+                                : `&parent=${process.env.REACT_APP_URL}`
+                            }`,
+                          })
+                        }}
+                      >
+                        <Badge fontSize="lg" colorScheme="green">
+                          {props.state.searchedStreamer} is online
+                        </Badge>
+                      </Link>
+                    </Tooltip>
+                  ) : (
+                    <Badge fontSize="lg" colorScheme="red">
+                      {props.state.searchedStreamer} is offline
+                    </Badge>
+                  )}
                 </Box>
               )}
               <SimpleGrid
