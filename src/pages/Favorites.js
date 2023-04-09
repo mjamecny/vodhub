@@ -1,3 +1,5 @@
+import NoFavs from '../components/NoFavs'
+
 import {
   SimpleGrid,
   Box,
@@ -22,17 +24,35 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   Avatar,
-  Spinner,
   Card,
   CardBody,
   CardFooter,
   IconButton,
-  Tooltip,
+  Center,
 } from '@chakra-ui/react'
+import {
+  FacebookShareButton,
+  PocketShareButton,
+  TwitterShareButton,
+  VKShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  PocketIcon,
+  TwitterIcon,
+  VKIcon,
+  WhatsappIcon,
+} from 'react-share'
 import { DeleteIcon, CalendarIcon, RepeatClockIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
 
-const Favorites = ({ state, dispatch, getDetails }) => {
+const Favorites = ({
+  state,
+  dispatch,
+  getDetails,
+  changeDateFormat,
+  changeImageSize,
+  handleOpenModal,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
@@ -85,26 +105,24 @@ const Favorites = ({ state, dispatch, getDetails }) => {
     })
   }
 
+  const handleDeleteAllFavs = () => {
+    dispatch({
+      type: 'REMOVE_FAVS',
+      payload: [],
+    })
+    dispatch({
+      type: 'REMOVE_USERS',
+      payload: [],
+    })
+    dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
+    dispatch({ type: 'SET_FILTERING', payload: false })
+  }
+
   return (
     <Box flexGrow="1" flexShrink="1">
       {state.favs.length !== 0 ? (
         <Flex flexDirection="column" gap="0.5rem" mt="2rem">
-          <Button
-            size="lg"
-            alignSelf="center"
-            onClick={() => {
-              dispatch({
-                type: 'REMOVE_FAVS',
-                payload: [],
-              })
-              dispatch({
-                type: 'REMOVE_USERS',
-                payload: [],
-              })
-              dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
-              dispatch({ type: 'SET_FILTERING', payload: false })
-            }}
-          >
+          <Button size="lg" alignSelf="center" onClick={handleDeleteAllFavs}>
             Delete All
           </Button>
           <SimpleGrid
@@ -122,20 +140,11 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                     title,
                     published_at,
                     duration,
+                    url,
                   } = fav
 
-                  const final_src = thumbnail_url.replace(
-                    /%{width}x%{height}/g,
-                    '1280x720'
-                  )
-
-                  const date = new Date(published_at)
-
-                  const [month, day, year] = [
-                    date.getMonth(),
-                    date.getDate(),
-                    date.getFullYear(),
-                  ]
+                  const final_src = changeImageSize(thumbnail_url, '1280x720')
+                  const [month, day, year] = changeDateFormat(published_at)
 
                   return (
                     <Card key={id}>
@@ -150,22 +159,11 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           size="md"
                           mt="1rem"
                           cursor="pointer"
-                          onClick={() => {
-                            onOpen()
-                            dispatch({
-                              type: 'OPEN_MODAL',
-                              payload: `https://player.twitch.tv/?video=${id}${
-                                process.env.NODE_ENV === 'development'
-                                  ? '&parent=localhost'
-                                  : `&parent=${process.env.REACT_APP_URL}`
-                              }`,
-                            })
-                          }}
+                          onClick={() => handleOpenModal(id)}
                         >
                           {title}
                         </Heading>
                       </CardBody>
-
                       <CardFooter justify="space-between" align="center">
                         <Flex justify="center" align="center" gap="0.5rem">
                           <CalendarIcon />
@@ -181,7 +179,23 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           <Text>{duration}</Text>
                         </Flex>
                       </CardFooter>
-
+                      <Center mb="1rem" gap="0.5rem">
+                        <TwitterShareButton url={url}>
+                          <TwitterIcon size={18} />
+                        </TwitterShareButton>
+                        <FacebookShareButton url={url}>
+                          <FacebookIcon size={18} />
+                        </FacebookShareButton>
+                        <WhatsappShareButton url={url}>
+                          <WhatsappIcon size={18} />
+                        </WhatsappShareButton>
+                        <PocketShareButton url={url}>
+                          <PocketIcon size={18} />
+                        </PocketShareButton>
+                        <VKShareButton url={url}>
+                          <VKIcon size={18} />
+                        </VKShareButton>
+                      </Center>
                       <Popover>
                         <PopoverTrigger>
                           <Text
@@ -249,23 +263,14 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                     thumbnail_url,
                     user_id,
                     user_login,
+                    url,
                     title,
                     published_at,
                     duration,
                   } = fav
 
-                  const final_src = thumbnail_url.replace(
-                    /%{width}x%{height}/g,
-                    '1280x720'
-                  )
-
-                  const date = new Date(published_at)
-
-                  const [month, day, year] = [
-                    date.getMonth(),
-                    date.getDate(),
-                    date.getFullYear(),
-                  ]
+                  const final_src = changeImageSize(thumbnail_url, '1280x720')
+                  const [month, day, year] = changeDateFormat(published_at)
 
                   return (
                     <Card key={id}>
@@ -281,6 +286,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           mt="1rem"
                           cursor="pointer"
                           onClick={() => {
+                            onOpen()
                             dispatch({
                               type: 'OPEN_MODAL',
                               payload: `https://player.twitch.tv/?video=${id}${
@@ -309,6 +315,23 @@ const Favorites = ({ state, dispatch, getDetails }) => {
                           <Text>{duration}</Text>
                         </Flex>
                       </CardFooter>
+                      <Center mb="1rem" gap="0.5rem">
+                        <TwitterShareButton url={url}>
+                          <TwitterIcon size={18} />
+                        </TwitterShareButton>
+                        <FacebookShareButton url={url}>
+                          <FacebookIcon size={18} />
+                        </FacebookShareButton>
+                        <WhatsappShareButton url={url}>
+                          <WhatsappIcon size={18} />
+                        </WhatsappShareButton>
+                        <PocketShareButton url={url}>
+                          <PocketIcon size={18} />
+                        </PocketShareButton>
+                        <VKShareButton url={url}>
+                          <VKIcon size={18} />
+                        </VKShareButton>
+                      </Center>
                       <Popover>
                         <PopoverTrigger>
                           <Link
@@ -371,17 +394,7 @@ const Favorites = ({ state, dispatch, getDetails }) => {
           </SimpleGrid>
         </Flex>
       ) : (
-        <Flex
-          fontSize="4xl"
-          justifyContent="center"
-          alignItems="center"
-          paddingX="15rem"
-          height="75vh"
-        >
-          Don't have any favorite videos saved yet? No problem! Just browse
-          selection of videos from any Twitch streamer and click the "plus"
-          button on any video you want to save for later.
-        </Flex>
+        <NoFavs />
       )}
       <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
         <ModalOverlay />
@@ -400,8 +413,6 @@ const Favorites = ({ state, dispatch, getDetails }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      {state.isVodsLoading && <Spinner />}
     </Box>
   )
 }

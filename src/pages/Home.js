@@ -1,37 +1,48 @@
+import OnlineChecker from '../components/OnlineChecker'
+import Welcome from '../components/Welcome'
+import SpinnerVods from '../components/SpinnerVods'
 import {
-  Box,
-  Badge,
   Flex,
-  Center,
   Text,
   Heading,
   Image,
   SimpleGrid,
-  useToast,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Spinner,
   Card,
   CardBody,
   CardFooter,
   IconButton,
-  Link,
-  Tooltip,
+  Box,
+  useToast,
+  Center,
 } from '@chakra-ui/react'
+
+import {
+  FacebookShareButton,
+  PocketShareButton,
+  TwitterShareButton,
+  VKShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  PocketIcon,
+  TwitterIcon,
+  VKIcon,
+  WhatsappIcon,
+} from 'react-share'
 
 import { CalendarIcon, AddIcon, RepeatClockIcon } from '@chakra-ui/icons'
 
-const Home = (props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+const Home = ({
+  state,
+  dispatch,
+  onOpen,
+  changeImageSize,
+  changeDateFormat,
+  handleOpenModal,
+}) => {
   const toast = useToast()
 
   const handleAddFav = (id) => {
-    props.dispatch({
+    dispatch({
       type: 'ADD_FAV',
       payload: id,
     })
@@ -47,76 +58,34 @@ const Home = (props) => {
 
   return (
     <Box flexGrow="1" flexShrink="1">
-      {!props.state.loaded ? (
-        <Flex
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          height="75vh"
-        >
-          <Heading>Welcome to VODhub</Heading>
-          <Text>Search and add to Favorites Twitch VODs</Text>
-        </Flex>
+      {!state.loaded ? (
+        <Welcome />
       ) : (
         <Box>
-          {props.state.isVodsLoading ? (
-            <Center height="75vh">
-              <Spinner size="xl" />
-            </Center>
+          {state.isVodsLoading ? (
+            <SpinnerVods />
           ) : (
             <Box>
-              {props.state.searchedStreamer && (
-                <Box width="15%" mt="2rem" mx="auto">
-                  {Object.keys(props.state.stream).length !== 0 ? (
-                    <Tooltip hasArrow label="Open stream">
-                      <Link
-                        onClick={() => {
-                          onOpen()
-                          props.dispatch({
-                            type: 'OPEN_MODAL',
-                            payload: `https://player.twitch.tv/?channel=${
-                              props.state.searchedStreamer
-                            }${
-                              process.env.NODE_ENV === 'development'
-                                ? '&parent=localhost'
-                                : `&parent=${process.env.REACT_APP_URL}`
-                            }`,
-                          })
-                        }}
-                      >
-                        <Badge fontSize="lg" colorScheme="green">
-                          {props.state.searchedStreamer} is online
-                        </Badge>
-                      </Link>
-                    </Tooltip>
-                  ) : (
-                    <Badge fontSize="lg" colorScheme="red">
-                      {props.state.searchedStreamer} is offline
-                    </Badge>
-                  )}
-                </Box>
+              {state.searchedStreamer && (
+                <OnlineChecker state={state} onOpen={onOpen} />
               )}
               <SimpleGrid
                 columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
                 spacing="1rem"
                 p="2.5rem"
               >
-                {props.state.vods.map((vod) => {
-                  const { id, thumbnail_url, title, published_at, duration } =
-                    vod
+                {state.vods.map((vod) => {
+                  const {
+                    id,
+                    thumbnail_url,
+                    title,
+                    published_at,
+                    duration,
+                    url,
+                  } = vod
 
-                  const final_src = thumbnail_url.replace(
-                    /%{width}x%{height}/g,
-                    '1280x720'
-                  )
-
-                  const date = new Date(published_at)
-
-                  const [month, day, year] = [
-                    date.getMonth(),
-                    date.getDate(),
-                    date.getFullYear(),
-                  ]
+                  const final_src = changeImageSize(thumbnail_url, '1280x720')
+                  const [month, day, year] = changeDateFormat(published_at)
 
                   return (
                     <Card key={id}>
@@ -126,27 +95,22 @@ const Home = (props) => {
                           fallbackSrc="https://via.placeholder.com/1280x720"
                           borderRadius="lg"
                         />
+
                         <Heading
                           as="h2"
                           size="md"
                           mt="1rem"
                           cursor="pointer"
-                          onClick={() => {
-                            onOpen()
-                            props.dispatch({
-                              type: 'OPEN_MODAL',
-                              payload: `https://player.twitch.tv/?video=${id}${
-                                process.env.NODE_ENV === 'development'
-                                  ? '&parent=localhost'
-                                  : `&parent=${process.env.REACT_APP_URL}`
-                              }`,
-                            })
-                          }}
+                          onClick={handleOpenModal}
                         >
                           {title}
                         </Heading>
                       </CardBody>
-                      <CardFooter justify="space-between" align="center">
+                      <CardFooter
+                        justify="space-between"
+                        align="center"
+                        flexWrap="wrap"
+                      >
                         <Flex justify="center" align="center" gap="0.5rem">
                           <CalendarIcon />
                           <Text>{`${day}/${month + 1}/${year}`}</Text>
@@ -161,6 +125,23 @@ const Home = (props) => {
                           <Text>{duration}</Text>
                         </Flex>
                       </CardFooter>
+                      <Center mb="1rem" gap="0.5rem">
+                        <TwitterShareButton url={url}>
+                          <TwitterIcon size={18} />
+                        </TwitterShareButton>
+                        <FacebookShareButton url={url}>
+                          <FacebookIcon size={18} />
+                        </FacebookShareButton>
+                        <WhatsappShareButton url={url}>
+                          <WhatsappIcon size={18} />
+                        </WhatsappShareButton>
+                        <PocketShareButton url={url}>
+                          <PocketIcon size={18} />
+                        </PocketShareButton>
+                        <VKShareButton url={url}>
+                          <VKIcon size={18} />
+                        </VKShareButton>
+                      </Center>
                     </Card>
                   )
                 })}
@@ -169,24 +150,6 @@ const Home = (props) => {
           )}
         </Box>
       )}
-
-      <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
-        <ModalOverlay />
-        <ModalContent backdropFilter="blur(10px)">
-          <ModalHeader>VOD</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <iframe
-              title="video"
-              src={props.state.videoId}
-              height="800"
-              width="100%"
-              allow="fullscreen"
-              frameBorder="0"
-            ></iframe>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </Box>
   )
 }

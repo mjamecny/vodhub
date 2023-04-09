@@ -4,6 +4,15 @@ import Error from './pages/Error'
 import SharedLayout from './pages/SharedLayout'
 import Favorites from './pages/Favorites'
 import { useEffect, useReducer } from 'react'
+import {
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+} from '@chakra-ui/react'
 
 const reducer = (state, action) => {
   if (action.type === 'ADD_FAV') {
@@ -244,6 +253,7 @@ const defaultState = {
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, defaultState)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const getTwitchUser = async (username, redirect) => {
     try {
@@ -382,6 +392,27 @@ const App = () => {
     localStorage.setItem('favs', JSON.stringify(state.favs))
   }, [state.favs])
 
+  const changeImageSize = (url, size) => {
+    return url.replace(/%{width}x%{height}/g, size)
+  }
+
+  const changeDateFormat = (date) => {
+    const newDate = new Date(date)
+    return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
+  }
+
+  const handleOpenModal = (id) => {
+    onOpen()
+    dispatch({
+      type: 'OPEN_MODAL',
+      payload: `https://player.twitch.tv/?video=${id}${
+        process.env.NODE_ENV === 'development'
+          ? '&parent=localhost'
+          : `&parent=${process.env.REACT_APP_URL}`
+      }`,
+    })
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -395,7 +426,19 @@ const App = () => {
             />
           }
         >
-          <Route index element={<Home state={state} dispatch={dispatch} />} />
+          <Route
+            index
+            element={
+              <Home
+                state={state}
+                dispatch={dispatch}
+                changeDateFormat={changeDateFormat}
+                changeImageSize={changeImageSize}
+                handleOpenModal={handleOpenModal}
+                onOpen={onOpen}
+              />
+            }
+          />
           <Route
             path="/favorites"
             element={
@@ -403,12 +446,32 @@ const App = () => {
                 state={state}
                 dispatch={dispatch}
                 getDetails={getDetails}
+                changeImageSize={changeImageSize}
+                changeDateFormat={changeDateFormat}
+                handleOpenModal={handleOpenModal}
               />
             }
           />
           <Route path="*" element={<Error state={state} />} />
         </Route>
       </Routes>
+      <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
+        <ModalOverlay />
+        <ModalContent backdropFilter="blur(10px)">
+          <ModalHeader>VOD</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <iframe
+              title="video"
+              src={state.videoId}
+              height="800"
+              width="100%"
+              allow="fullscreen"
+              frameBorder="0"
+            ></iframe>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </BrowserRouter>
   )
 }

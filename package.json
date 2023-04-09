@@ -16,6 +16,7 @@
     "react-hotkeys-hook": "^4.3.8",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "react-share": "^4.4.1",
     "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.5.4",
     "workbox-broadcast-update": "^6.5.4",
