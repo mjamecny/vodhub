@@ -14,6 +14,13 @@ import {
   Box,
   useToast,
   Center,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from '@chakra-ui/react'
 
 import {
@@ -31,15 +38,9 @@ import {
 
 import { CalendarIcon, AddIcon, RepeatClockIcon } from '@chakra-ui/icons'
 
-const Home = ({
-  state,
-  dispatch,
-  onOpen,
-  changeImageSize,
-  changeDateFormat,
-  handleOpenModal,
-}) => {
+const Home = ({ state, dispatch, changeImageSize, changeDateFormat }) => {
   const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleAddFav = (id) => {
     dispatch({
@@ -53,6 +54,18 @@ const Home = ({
       duration: 5000,
       position: 'top',
       isClosable: false,
+    })
+  }
+
+  const handleOpenModal = (id) => {
+    onOpen()
+    dispatch({
+      type: 'OPEN_MODAL',
+      payload: `https://player.twitch.tv/?video=${id}${
+        process.env.NODE_ENV === 'development'
+          ? '&parent=localhost'
+          : `&parent=${process.env.REACT_APP_URL}`
+      }`,
     })
   }
 
@@ -101,7 +114,7 @@ const Home = ({
                           size="md"
                           mt="1rem"
                           cursor="pointer"
-                          onClick={handleOpenModal}
+                          onClick={() => handleOpenModal(id)}
                         >
                           {title}
                         </Heading>
@@ -150,6 +163,23 @@ const Home = ({
           )}
         </Box>
       )}
+      <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
+        <ModalOverlay />
+        <ModalContent backdropFilter="blur(10px)">
+          <ModalHeader>VOD</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <iframe
+              title="video"
+              src={state.videoId}
+              height="800"
+              width="100%"
+              allow="fullscreen"
+              frameBorder="0"
+            ></iframe>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   )
 }

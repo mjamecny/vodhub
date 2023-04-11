@@ -4,15 +4,6 @@ import Error from './pages/Error'
 import SharedLayout from './pages/SharedLayout'
 import Favorites from './pages/Favorites'
 import { useEffect, useReducer } from 'react'
-import {
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-} from '@chakra-ui/react'
 
 const reducer = (state, action) => {
   if (action.type === 'ADD_FAV') {
@@ -43,6 +34,13 @@ const reducer = (state, action) => {
     }
   }
 
+  if (action.type === 'REMOVE_FAVS') {
+    return {
+      ...state,
+      favs: action.payload,
+    }
+  }
+
   if (action.type === 'REMOVE_FILTER_FAV') {
     const filteredFavs = state.filteredFavs.filter((fav) => {
       return fav.id !== action.payload
@@ -63,14 +61,14 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === 'REMOVE_FAVS') {
+  if (action.type === 'LOAD_VODS') {
     return {
       ...state,
-      favs: action.payload,
+      vods: action.payload,
     }
   }
 
-  if (action.type === 'LOAD_VODS') {
+  if (action.type === 'DELETE_ALL_VODS') {
     return {
       ...state,
       vods: action.payload,
@@ -81,24 +79,6 @@ const reducer = (state, action) => {
     return {
       ...state,
       user: action.payload,
-    }
-  }
-
-  if (action.type === 'SET_USERS') {
-    const isAdded = state.users.some((user) => {
-      return user.login === action.payload.login
-    })
-
-    if (!isAdded) {
-      return {
-        ...state,
-        users: [...state.users, action.payload],
-      }
-    } else {
-      return {
-        ...state,
-        users: state.users,
-      }
     }
   }
 
@@ -124,6 +104,24 @@ const reducer = (state, action) => {
     }
   }
 
+  if (action.type === 'SET_USERS') {
+    const isAdded = state.users.some((user) => {
+      return user.login === action.payload.login
+    })
+
+    if (!isAdded) {
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+      }
+    } else {
+      return {
+        ...state,
+        users: state.users,
+      }
+    }
+  }
+
   if (action.type === 'REMOVE_USERS') {
     return {
       ...state,
@@ -142,13 +140,6 @@ const reducer = (state, action) => {
     return {
       ...state,
       searchedStreamer: action.payload,
-    }
-  }
-
-  if (action.type === 'DELETE_ALL_VODS') {
-    return {
-      ...state,
-      vods: action.payload,
     }
   }
 
@@ -253,7 +244,6 @@ const defaultState = {
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, defaultState)
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const getTwitchUser = async (username, redirect) => {
     try {
@@ -298,7 +288,7 @@ const App = () => {
   const getVods = async (id) => {
     try {
       const res = await fetch(
-        `https://api.twitch.tv/helix/videos?user_id=${id}`,
+        `https://api.twitch.tv/helix/videos?user_id=${id}&type=archive`,
         {
           headers: {
             'Client-Id': process.env.REACT_APP_CLIENT_ID,
@@ -401,18 +391,6 @@ const App = () => {
     return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
   }
 
-  const handleOpenModal = (id) => {
-    onOpen()
-    dispatch({
-      type: 'OPEN_MODAL',
-      payload: `https://player.twitch.tv/?video=${id}${
-        process.env.NODE_ENV === 'development'
-          ? '&parent=localhost'
-          : `&parent=${process.env.REACT_APP_URL}`
-      }`,
-    })
-  }
-
   return (
     <BrowserRouter>
       <Routes>
@@ -434,8 +412,6 @@ const App = () => {
                 dispatch={dispatch}
                 changeDateFormat={changeDateFormat}
                 changeImageSize={changeImageSize}
-                handleOpenModal={handleOpenModal}
-                onOpen={onOpen}
               />
             }
           />
@@ -448,30 +424,12 @@ const App = () => {
                 getDetails={getDetails}
                 changeImageSize={changeImageSize}
                 changeDateFormat={changeDateFormat}
-                handleOpenModal={handleOpenModal}
               />
             }
           />
           <Route path="*" element={<Error state={state} />} />
         </Route>
       </Routes>
-      <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
-        <ModalOverlay />
-        <ModalContent backdropFilter="blur(10px)">
-          <ModalHeader>VOD</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <iframe
-              title="video"
-              src={state.videoId}
-              height="800"
-              width="100%"
-              allow="fullscreen"
-              frameBorder="0"
-            ></iframe>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </BrowserRouter>
   )
 }

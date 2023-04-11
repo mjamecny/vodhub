@@ -51,7 +51,6 @@ const Favorites = ({
   getDetails,
   changeDateFormat,
   changeImageSize,
-  handleOpenModal,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
@@ -116,6 +115,18 @@ const Favorites = ({
     })
     dispatch({ type: 'DELETE_FILTERED_VODS', payload: [] })
     dispatch({ type: 'SET_FILTERING', payload: false })
+  }
+
+  const handleOpenModal = (id) => {
+    onOpen()
+    dispatch({
+      type: 'OPEN_MODAL',
+      payload: `https://player.twitch.tv/?video=${id}${
+        process.env.NODE_ENV === 'development'
+          ? '&parent=localhost'
+          : `&parent=${process.env.REACT_APP_URL}`
+      }`,
+    })
   }
 
   return (
