@@ -43,6 +43,17 @@ const Home = ({ state, dispatch, changeImageSize, changeDateFormat }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleAddFav = (id) => {
+    if (state.favs.some((fav) => fav.id === id)) {
+      toast({
+        description: 'VOD already added to your favorites',
+        status: 'error',
+        duration: 5000,
+        position: 'top',
+        isClosable: false,
+      })
+      return
+    }
+
     dispatch({
       type: 'ADD_FAV',
       payload: id,
