@@ -1,21 +1,22 @@
 # VODhub
 
-Little app built with React for searching and saving Twitch VODs. Favorites VODs are saved to localStorage.
+Little app built with React for searching and saving Twitch VODs and clips. Favorites are saved to localStorage.
 
 ## Features
 
-- Search VODs for specific streamer
-- Add VOD to favorites
-- Delete VOD(s) from favorites
+- Search VODs and clips for specific streamer
+- Add VOD and clip to favorites
+- Delete VOD(s) or clips from favorites
 - Favorites saved to localStorage
-- Open VOD in modal window
+- Open VOD or clip in modal window
 - Check if streamer is live
+- Copy link to clipboard
 - PWA support
 - Dark mode
 
 ## Screenshot
 
-![frontpage](https://i.imgur.com/2puhQoL.png)
+![frontpage](https://i.imgur.com/bkFUWmW.png)
 
 ## Development
 
@@ -25,11 +26,12 @@ Clone the repo
 
 `cd vodhub`
 
-Create .env.local for enviroment variables
+Create .env for enviroment variables
 
 ```
-REACT_APP_CLIENT_ID=<your twitch client id>
-REACT_APP_TOKEN=<your twitch bearer token>
+VITE_URL=<your site url>
+VITE_CLIENT_ID=<your twitch client id>
+VITE_TOKEN=Bearer <your twitch bearer token>
 ```
 
 Install dependencies
@@ -38,4 +40,4 @@ Install dependencies
 
 Run dev server
 
-`npm start `
+`npm run dev `
