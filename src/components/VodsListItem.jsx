@@ -83,7 +83,7 @@ const VodsListItem = ({ vods }) => {
     const [month, day, year] = changeDateFormat(published_at)
 
     return (
-      <Card key={id}>
+      <Card key={id} size="lg">
         <CardBody>
           <Image
             src={final_src}
