@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   useGetVideosByUserIdQuery,
   useGetUserByNameQuery,
-  addedStreamer,
+  added,
 } from '../store'
 import { useEffect } from 'react'
 
@@ -38,18 +38,8 @@ const VodsList = () => {
   })
 
   const handleAddStreamer = (streamer) => {
-    if (streamers.find((s) => s.id === streamer.id)) {
-      toast({
-        description: 'Streamer already in your favorites',
-        status: 'error',
-        duration: 5000,
-        position: 'top',
-        isClosable: false,
-      })
-      return
-    }
-
-    dispatch(addedStreamer(streamer))
+    const newStreamer = { ...streamer, isStreamer: true }
+    dispatch(added(newStreamer))
     toast({
       description: 'Streamer added to your favorites',
       status: 'success',

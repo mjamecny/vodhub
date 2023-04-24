@@ -27,17 +27,7 @@ export {
   useGetStreamerFollowsQuery,
 } from './apis/twitchApi'
 
-export {
-  addedVod,
-  removedVod,
-  removedAllVods,
-  addedClip,
-  removedClip,
-  removedAllClips,
-  addedStreamer,
-  removedStreamer,
-  removedAllStreamers,
-} from './slices/favSlice'
+export { added, removed, removedAll } from './slices/favSlice'
 
 export {
   setUsername,

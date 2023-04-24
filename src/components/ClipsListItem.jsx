@@ -22,32 +22,18 @@ import ModalWindow from './ModalWindow'
 import Share from './Share'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { addedClip, setClipModalVideo } from '../store'
+import { added, setClipModalVideo } from '../store'
+import { changeDateFormat } from '../utils'
 
 const ClipsListItem = ({ clips }) => {
-  const favs = useSelector((state) => state.fav.favs.clips)
+  const favClips = useSelector((state) => state.fav.favs.clips)
   const toast = useToast()
   const dispatch = useDispatch()
   const { onOpen, onClose, isOpen } = useDisclosure()
 
-  const changeDateFormat = (date) => {
-    const newDate = new Date(date)
-    return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
-  }
-
   const handleAddFav = (clip) => {
-    if (favs.find((fav) => fav.id === clip.id)) {
-      toast({
-        description: 'Clip already in your favorites',
-        status: 'error',
-        duration: 5000,
-        position: 'top',
-        isClosable: false,
-      })
-      return
-    }
-
-    dispatch(addedClip(clip))
+    const newClip = { ...clip, isClip: true }
+    dispatch(added(newClip))
     toast({
       description: 'Clip added to your favorites',
       status: 'success',
@@ -109,6 +95,9 @@ const ClipsListItem = ({ clips }) => {
               </Flex>
               <Flex gap="0.5rem">
                 <IconButton
+                  isDisabled={favClips.find(
+                    (favClip) => favClip.id === clip.id
+                  )}
                   onClick={() => handleAddFav(clip)}
                   aria-label="Add to favorites"
                   icon={<AddIcon />}
@@ -130,43 +119,6 @@ const ClipsListItem = ({ clips }) => {
           <Share url={url} />
         </CardFooter>
       </Card>
-      // <Card key={id}>
-      //   <CardBody>
-      //     <Image
-      //       src={thumbnail_url}
-      //       fallbackSrc="https://via.placeholder.com/1280x720"
-      //       borderRadius="lg"
-      //     />
-
-      //     <Heading
-      //       as="h2"
-      //       size="md"
-      //       mt="1rem"
-      //       cursor="pointer"
-      //       transition={'all 0.3s'}
-      //       _hover={{ color: 'red.500' }}
-      //       onClick={() => handleOpenModal(id)}
-      //     >
-      //       {title}
-      //     </Heading>
-      //   </CardBody>
-      //   <CardFooter justify="space-between" align="center" flexWrap="wrap">
-      //     <Flex justify="center" align="center" gap="0.5rem">
-      //       <CalendarIcon />
-      //       <Text>{`${day}/${month + 1}/${year}`}</Text>
-      //     </Flex>
-      //     <IconButton
-      //       onClick={() => handleAddFav(clip)}
-      //       aria-label="Add to favorites"
-      //       icon={<AddIcon />}
-      //     />
-      //     <Flex justify="center" align="center" gap="0.5rem">
-      //       <RepeatClockIcon />
-      //       <Text>{Math.floor(duration)}s</Text>
-      //     </Flex>
-      //   </CardFooter>
-      //   <Share url={url} />
-      // </Card>
     )
   })
   return (

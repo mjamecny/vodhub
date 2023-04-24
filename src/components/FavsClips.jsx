@@ -1,7 +1,6 @@
 import {
   Flex,
   Text,
-  Center,
   SimpleGrid,
   Card,
   CardBody,
@@ -10,7 +9,6 @@ import {
   CardFooter,
   IconButton,
   useToast,
-  Button,
   useDisclosure,
   Box,
 } from '@chakra-ui/react'
@@ -22,14 +20,15 @@ import {
   RepeatClockIcon,
 } from '@chakra-ui/icons'
 
-import { removedClip, removedAllClips, setClipModalVideo } from '../store'
+import { removed, removedAll, setClipModalVideo } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
 
 import NoContent from './NoContent'
 import ModalWindow from './ModalWindow'
 import Share from './Share'
+import DeleteAllButton from './DeleteAllButton'
+import { changeDateFormat } from '../utils'
 
 const FavsClips = () => {
   const { clips } = useSelector((state) => state.fav.favs)
@@ -37,13 +36,8 @@ const FavsClips = () => {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const changeDateFormat = (date) => {
-    const newDate = new Date(date)
-    return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
-  }
-
-  const handleRemoveClip = (id) => {
-    dispatch(removedClip(id))
+  const handleRemoveClip = (clip) => {
+    dispatch(removed(clip))
     toast({
       description: 'Removed from your favorites',
       status: 'info',
@@ -54,7 +48,7 @@ const FavsClips = () => {
   }
 
   const handleDeleteAllClips = () => {
-    dispatch(removedAllClips())
+    dispatch(removedAll('clips'))
     toast({
       description: 'Your favorites clips are empty now',
       status: 'info',
@@ -87,32 +81,6 @@ const FavsClips = () => {
   return (
     <>
       <Box flex="1">
-        <Center mt="2rem" gap="1rem">
-          <NavLink
-            to="/favorites/vods"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Vods</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/clips"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Clips</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/streamers"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Streamers</Button>
-          </NavLink>
-        </Center>
         {clips.length === 0 ? (
           <NoContent
             msg="Do not have any favorite clips saved yet? No problem! Just browse
@@ -121,15 +89,7 @@ const FavsClips = () => {
           />
         ) : (
           <>
-            <Center mt="2rem">
-              <Button
-                size="sm"
-                alignSelf="center"
-                onClick={handleDeleteAllClips}
-              >
-                Delete All
-              </Button>
-            </Center>
+            <DeleteAllButton handleDelete={handleDeleteAllClips} />
             <SimpleGrid
               columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"
@@ -173,7 +133,7 @@ const FavsClips = () => {
                           </Flex>
                           <Flex gap="0.5rem">
                             <IconButton
-                              onClick={() => handleRemoveClip(id)}
+                              onClick={() => handleRemoveClip(clip)}
                               aria-label="Remove from favorites"
                               icon={<DeleteIcon />}
                             />

@@ -1,7 +1,6 @@
 import {
   Flex,
   Text,
-  Center,
   SimpleGrid,
   Card,
   CardBody,
@@ -10,7 +9,6 @@ import {
   CardFooter,
   IconButton,
   useToast,
-  Button,
   useDisclosure,
   Box,
 } from '@chakra-ui/react'
@@ -22,14 +20,15 @@ import {
   RepeatClockIcon,
 } from '@chakra-ui/icons'
 
-import { removedVod, removedAllVods, setVodModalVideo } from '../store'
+import { removed, removedAll, setVodModalVideo } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
 
 import NoContent from './NoContent'
 import ModalWindow from './ModalWindow'
 import Share from './Share'
+import DeleteAllButton from './DeleteAllButton'
+import { changeImageSize, changeDateFormat } from '../utils'
 
 const FavsVods = () => {
   const { vods } = useSelector((state) => state.fav.favs)
@@ -37,17 +36,8 @@ const FavsVods = () => {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const changeImageSize = (url, size) => {
-    return url.replace(/%{width}x%{height}/g, size)
-  }
-
-  const changeDateFormat = (date) => {
-    const newDate = new Date(date)
-    return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
-  }
-
-  const handleRemoveVod = (id) => {
-    dispatch(removedVod(id))
+  const handleRemoveVod = (vod) => {
+    dispatch(removed(vod))
     toast({
       description: 'Removed from your favorites',
       status: 'info',
@@ -58,7 +48,7 @@ const FavsVods = () => {
   }
 
   const handleDeleteAllVods = () => {
-    dispatch(removedAllVods())
+    dispatch(removedAll('vods'))
     toast({
       description: 'Your favorites VODs are empty now',
       status: 'info',
@@ -91,32 +81,6 @@ const FavsVods = () => {
   return (
     <>
       <Box flex="1">
-        <Center mt="2rem" gap="1rem">
-          <NavLink
-            to="/favorites/vods"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Vods</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/clips"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Clips</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/streamers"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Streamers</Button>
-          </NavLink>
-        </Center>
         {vods.length === 0 ? (
           <NoContent
             msg="Do not have any favorite VODs saved yet? No problem! Just browse
@@ -125,15 +89,7 @@ const FavsVods = () => {
           />
         ) : (
           <>
-            <Center mt="2rem">
-              <Button
-                size="sm"
-                alignSelf="center"
-                onClick={handleDeleteAllVods}
-              >
-                Delete All
-              </Button>
-            </Center>{' '}
+            <DeleteAllButton handleDelete={handleDeleteAllVods} />
             <SimpleGrid
               columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"
@@ -147,8 +103,6 @@ const FavsVods = () => {
                   title,
                   duration,
                   url,
-                  user_login,
-                  user_id,
                   published_at,
                 } = vod
                 const final_src = changeImageSize(thumbnail_url, '1280x720')
@@ -187,7 +141,7 @@ const FavsVods = () => {
                           </Flex>
                           <Flex gap="0.5rem">
                             <IconButton
-                              onClick={() => handleRemoveVod(id)}
+                              onClick={() => handleRemoveVod(vod)}
                               aria-label="Remove from favorites"
                               icon={<DeleteIcon />}
                             />
@@ -220,7 +174,6 @@ const FavsVods = () => {
           </>
         )}
       </Box>
-
       <ModalWindow isOpen={isOpen} onClose={onClose} />
     </>
   )

@@ -1,5 +1,6 @@
 import {
   Flex,
+  Box,
   FormControl,
   Input,
   InputGroup,
@@ -16,8 +17,21 @@ import {
   Stack,
   Radio,
   useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
 } from '@chakra-ui/react'
-import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+import {
+  SearchIcon,
+  MoonIcon,
+  SunIcon,
+  ChevronDownIcon,
+} from '@chakra-ui/icons'
 
 import { useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -132,24 +146,38 @@ const Navbar = () => {
         </form>
       </FormControl>
 
-      <ButtonGroup
-        spacing="3"
-        size="md"
-        mr={{ base: 0, sm: '2rem' }}
-        mt={{
-          base: '2rem',
-          lg: '0',
-        }}
-      >
-        <NavLink
-          to="/favorites/vods"
-          className={({ isActive }) =>
-            isActive ? 'activeLink' : 'nonactiveLink'
-          }
-        >
-          <Button size="lg">Favorites</Button>
-        </NavLink>
-
+      <Flex mt={{ base: '2rem', lg: 0 }} mr="1rem" gap="1rem">
+        <Menu>
+          <MenuButton size="lg" as={Button} rightIcon={<ChevronDownIcon />}>
+            Favorites
+          </MenuButton>
+          <MenuList>
+            <NavLink
+              to="/favorites/vods"
+              className={({ isActive }) =>
+                isActive ? 'activeLink' : 'nonactiveLink'
+              }
+            >
+              <MenuItem>Vods</MenuItem>
+            </NavLink>
+            <NavLink
+              to="/favorites/clips"
+              className={({ isActive }) =>
+                isActive ? 'activeLink' : 'nonactiveLink'
+              }
+            >
+              <MenuItem>Clips</MenuItem>
+            </NavLink>
+            <NavLink
+              to="/favorites/streamers"
+              className={({ isActive }) =>
+                isActive ? 'activeLink' : 'nonactiveLink'
+              }
+            >
+              <MenuItem>Streamers</MenuItem>
+            </NavLink>
+          </MenuList>
+        </Menu>
         <IconButton
           size="lg"
           onClick={toggleColorMode}
@@ -160,7 +188,7 @@ const Navbar = () => {
           }
           icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         />
-      </ButtonGroup>
+      </Flex>
     </Flex>
   )
 }

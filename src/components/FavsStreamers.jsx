@@ -1,7 +1,6 @@
 import {
   Flex,
   Text,
-  Center,
   SimpleGrid,
   Card,
   CardBody,
@@ -9,7 +8,6 @@ import {
   IconButton,
   useToast,
   Button,
-  useDisclosure,
   Box,
   Avatar,
   Tooltip,
@@ -19,33 +17,25 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons'
 import { FaHeart, FaRegCalendarAlt, FaTv } from 'react-icons/fa'
 
-import { removedStreamer, removedAllStreamers } from '../store'
+import { removed, removedAll } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import NoContent from './NoContent'
-import ModalWindow from './ModalWindow'
 import FormattedFollows from './FormattedFollows'
 import OnlineChecker from './OnlineChecker'
+import DeleteAllButton from './DeleteAllButton'
+
+import { changeNumberFormat, changeDateFormat } from '../utils'
 
 const FavsStreamers = () => {
   const { streamers } = useSelector((state) => state.fav.favs)
   const dispatch = useDispatch()
   const toast = useToast()
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const changeDateFormat = (date) => {
-    const newDate = new Date(date)
-    return [newDate.getMonth(), newDate.getDate(), newDate.getFullYear()]
-  }
-
-  const changeNumberFormat = (number) => {
-    return number.toLocaleString('en-US').replace(/,/g, ' ')
-  }
-
-  const handleRemoveStreamer = (id) => {
-    dispatch(removedStreamer(id))
+  const handleRemoveStreamer = (streamer) => {
+    dispatch(removed(streamer))
     toast({
       description: 'Removed from your favorites',
       status: 'info',
@@ -56,7 +46,7 @@ const FavsStreamers = () => {
   }
 
   const handleDeleteAllStreamers = () => {
-    dispatch(removedAllStreamers())
+    dispatch(removedAll('streamers'))
     toast({
       description: 'Your favorites streamers are empty now',
       status: 'info',
@@ -73,32 +63,6 @@ const FavsStreamers = () => {
   return (
     <>
       <Box flex="1">
-        <Center mt="2rem" gap="1rem">
-          <NavLink
-            to="/favorites/vods"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Vods</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/clips"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Clips</Button>
-          </NavLink>
-          <NavLink
-            to="/favorites/streamers"
-            className={({ isActive }) =>
-              isActive ? 'activeLink' : 'nonactiveLink'
-            }
-          >
-            <Button size="md">Streamers</Button>
-          </NavLink>
-        </Center>
         {streamers.length === 0 ? (
           <NoContent
             msg="Do not have any favorite streamers saved yet? No problem! Just browse
@@ -106,15 +70,7 @@ const FavsStreamers = () => {
           />
         ) : (
           <>
-            <Center mt="2rem">
-              <Button
-                size="sm"
-                alignSelf="center"
-                onClick={handleDeleteAllStreamers}
-              >
-                Delete All
-              </Button>
-            </Center>
+            <DeleteAllButton handleDelete={handleDeleteAllStreamers} />
             <SimpleGrid
               columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"
@@ -203,7 +159,7 @@ const FavsStreamers = () => {
                         <Button>Vods</Button>
                       </NavLink>
                       <IconButton
-                        onClick={() => handleRemoveStreamer(id)}
+                        onClick={() => handleRemoveStreamer(streamer)}
                         icon={<DeleteIcon />}
                       />
                       <NavLink
@@ -222,7 +178,6 @@ const FavsStreamers = () => {
           </>
         )}
       </Box>
-      <ModalWindow isOpen={isOpen} onClose={onClose} />
     </>
   )
 }
