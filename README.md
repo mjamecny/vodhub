@@ -1,12 +1,12 @@
 # VODhub
 
-Little app built with React for searching and saving Twitch VODs and clips. Favorites are saved to localStorage.
+Little app built with React for searching and saving Twitch VODs, clips and streamers. Favorites are saved to localStorage.
 
 ## Features
 
 - Search VODs and clips for specific streamer
-- Add VOD and clip to favorites
-- Delete VOD(s) or clips from favorites
+- Add VOD, clip or streamer to favorites
+- Delete VOD(s), clip(s) or streamer(s) from favorites
 - Favorites saved to localStorage
 - Open VOD or clip in modal window
 - Check if streamer is live

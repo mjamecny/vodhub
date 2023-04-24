@@ -22,10 +22,10 @@ import ModalWindow from './ModalWindow'
 import Share from './Share'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { added, setClipModalVideo } from '../store'
+import { addedClip, setClipModalVideo } from '../store'
 
 const ClipsListItem = ({ clips }) => {
-  const favs = useSelector((state) => state.fav.favs)
+  const favs = useSelector((state) => state.fav.favs.clips)
   const toast = useToast()
   const dispatch = useDispatch()
   const { onOpen, onClose, isOpen } = useDisclosure()
@@ -47,7 +47,7 @@ const ClipsListItem = ({ clips }) => {
       return
     }
 
-    dispatch(added({ ...clip, tag: 'clip' }))
+    dispatch(addedClip(clip))
     toast({
       description: 'Clip added to your favorites',
       status: 'success',

@@ -92,12 +92,7 @@ const Navbar = () => {
       <FormControl>
         <form onSubmit={handleSubmit}>
           <Center flexDirection={{ base: 'column', md: 'row' }}>
-            <InputGroup
-              w={{ base: '100%', md: '50%' }}
-              // ml={{ base: '1rem', md: '0' }}
-              // mr={{ base: '1rem', md: '0' }}
-              size="lg"
-            >
+            <InputGroup w={{ base: '100%', md: '50%' }} size="lg">
               <Input
                 placeholder="Twitch username"
                 name="username"
@@ -146,38 +141,17 @@ const Navbar = () => {
           lg: '0',
         }}
       >
-        {userId && (
-          <>
-            <NavLink
-              to="/vods"
-              className={({ isActive }) =>
-                isActive ? 'activeLink' : 'nonactiveLink'
-              }
-            >
-              <Button>Vods</Button>
-            </NavLink>
-            <NavLink
-              to="/clips"
-              className={({ isActive }) =>
-                isActive ? 'activeLink' : 'nonactiveLink'
-              }
-            >
-              <Button>Clips</Button>
-            </NavLink>
-          </>
-        )}
-
         <NavLink
-          to="/favorites"
+          to="/favorites/vods"
           className={({ isActive }) =>
             isActive ? 'activeLink' : 'nonactiveLink'
           }
         >
-          <Button>Favorites</Button>
+          <Button size="lg">Favorites</Button>
         </NavLink>
 
         <IconButton
-          size="md"
+          size="lg"
           onClick={toggleColorMode}
           aria-label={
             colorMode === 'light'

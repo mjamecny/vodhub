@@ -22,10 +22,12 @@ import ModalWindow from './ModalWindow'
 import Share from './Share'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { added, setVodModalVideo } from '../store'
+import { addedVod, setVodModalVideo } from '../store'
+import { useEffect } from 'react'
+import FavsVods from './FavsVods'
 
 const VodsListItem = ({ vods }) => {
-  const favs = useSelector((state) => state.fav.favs)
+  const vodsFavs = useSelector((state) => state.fav.favs.vods)
   const toast = useToast()
   const dispatch = useDispatch()
   const { onOpen, onClose, isOpen } = useDisclosure()
@@ -40,18 +42,7 @@ const VodsListItem = ({ vods }) => {
   }
 
   const handleAddFav = (vod) => {
-    if (favs.find((fav) => fav.id === vod.id)) {
-      toast({
-        description: 'VOD already in your favorites',
-        status: 'error',
-        duration: 5000,
-        position: 'top',
-        isClosable: false,
-      })
-      return
-    }
-
-    dispatch(added({ ...vod, tag: 'vod' }))
+    dispatch(addedVod(vod))
     toast({
       description: 'VOD added to your favorites',
       status: 'success',
@@ -76,6 +67,10 @@ const VodsListItem = ({ vods }) => {
     onOpen()
     dispatch(setVodModalVideo(id))
   }
+
+  useEffect(() => {
+    localStorage.setItem('vods', JSON.stringify(vodsFavs))
+  }, [vodsFavs])
 
   const renderedVods = vods.map((vod) => {
     const { id, thumbnail_url, title, published_at, duration, url } = vod
@@ -115,6 +110,7 @@ const VodsListItem = ({ vods }) => {
 
               <Flex gap="0.5rem">
                 <IconButton
+                  isDisabled={vodsFavs.find((vodFav) => vodFav.id === vod.id)}
                   onClick={() => handleAddFav(vod)}
                   aria-label="Add to favorites"
                   icon={<AddIcon />}

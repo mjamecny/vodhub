@@ -1,9 +1,13 @@
 import VodsList from './components/VodsList'
-import FavsList from './components/FavsList'
 import ClipsList from './components/ClipsList'
+import StreamerVods from './components/StreamerVods'
+import StreamerClips from './components/StreamerClips'
 import SharedLayout from './pages/SharedLayout'
 import Welcome from './components/Welcome'
 import Error from './components/Error'
+import FavsVods from './components/FavsVods'
+import FavsClips from './components/FavsClips'
+import FavsStreamers from './components/FavsStreamers'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -23,7 +27,11 @@ const App = () => {
           <Route index element={<Welcome />} />
           <Route path="/vods" element={<VodsList />} />
           <Route path="/clips" element={<ClipsList />} />
-          <Route path="/favorites" element={<FavsList />} />
+          <Route path="/favorites/vods" element={<FavsVods />} />
+          <Route path="/favorites/clips" element={<FavsClips />} />
+          <Route path="/favorites/streamers" element={<FavsStreamers />} />
+          <Route path="/streamers/vods/:userId" element={<StreamerVods />} />
+          <Route path="/streamers/clips/:userId" element={<StreamerClips />} />
           <Route path="*" element={<Error />} />
         </Route>
       </Routes>

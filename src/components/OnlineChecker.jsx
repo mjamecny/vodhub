@@ -1,48 +1,73 @@
 import ModalWindow from './ModalWindow'
 
-import {
-  Flex,
-  Badge,
-  Link,
-  Tooltip,
-  Spinner,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { Badge, Link, Tooltip, Spinner, useDisclosure } from '@chakra-ui/react'
 
 import { useGetIsStreamerOnlineQuery, setStreamModalVideo } from '../store'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
 
-const OnlineChecker = () => {
-  const searchedUsername = useSelector((state) => state.app.searchedUsername)
+const OnlineChecker = ({ streamer }) => {
   const { onOpen, onClose, isOpen } = useDisclosure()
   const dispatch = useDispatch()
-  const { data, isFetching, error } =
-    useGetIsStreamerOnlineQuery(searchedUsername)
+  const [streamStatus, setStreamStatus] = useState(false)
+  const { stream, isFetching } = useGetIsStreamerOnlineQuery(streamer, {
+    pollingInterval: 300000, // re-fetch every 5 minutes (300000)
+    selectFromResult: ({ data, isFetching }) => {
+      return {
+        stream: data?.data || [],
+        isFetching,
+      }
+    },
+  })
 
   const handleOpenModal = () => {
     onOpen()
-    dispatch(setStreamModalVideo(searchedUsername))
+    dispatch(setStreamModalVideo(streamer))
   }
 
+  // useEffect(() => {
+  //   if (!isFetching && Object.keys(stream).length !== 0 && !streamStatus) {
+  //     setStreamStatus(true)
+  //     if (Notification.permission === 'granted') {
+  //       const notification = new Notification(`${streamer} is now streaming!`, {
+  //         body: 'Click to watch the stream.',
+  //       })
+  //       notification.onclick = handleOpenModal
+  //     } else if (Notification.permission !== 'denied') {
+  //       Notification.requestPermission().then((permission) => {
+  //         if (permission === 'granted') {
+  //           const notification = new Notification(
+  //             `${streamer} is now streaming!`,
+  //             {
+  //               body: 'Click to watch the stream.',
+  //             }
+  //           )
+  //           notification.onclick = handleOpenModal
+  //         }
+  //       })
+  //     }
+  //   }
+  // }, [isFetching, stream, streamStatus, streamer])
+
   return (
-    <Flex justify="center" align="center" mt="2rem">
+    <>
       {isFetching ? (
         <Spinner />
-      ) : Object.keys(data?.data).length !== 0 ? (
+      ) : Object.keys(stream).length !== 0 ? (
         <Tooltip hasArrow label="Open stream">
           <Link onClick={handleOpenModal}>
             <Badge fontSize="lg" colorScheme="green">
-              {searchedUsername} is online
+              {streamer} is online
             </Badge>
           </Link>
         </Tooltip>
       ) : (
         <Badge fontSize="lg" colorScheme="red">
-          {searchedUsername} is offline
+          {streamer} is offline
         </Badge>
       )}
       <ModalWindow isOpen={isOpen} onClose={onClose} />
-    </Flex>
+    </>
   )
 }
 export default OnlineChecker
