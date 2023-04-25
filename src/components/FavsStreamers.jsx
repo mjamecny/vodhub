@@ -12,12 +12,13 @@ import {
   Avatar,
   Tooltip,
   Icon,
+  Center,
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '@chakra-ui/icons'
 import { FaHeart, FaRegCalendarAlt, FaTv } from 'react-icons/fa'
 
-import { removed, removedAll } from '../store'
+import { removed, removedAll, importData } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
@@ -56,6 +57,26 @@ const FavsStreamers = () => {
     })
   }
 
+  const handleExport = () => {
+    const jsonData = JSON.stringify(streamers)
+    const blob = new Blob([jsonData], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'streamers.json'
+    link.click()
+  }
+
+  const handleImport = (e) => {
+    e.preventDefault()
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const jsonData = JSON.parse(event.target.result)
+      dispatch(importData(jsonData))
+    }
+    reader.readAsText(e.target.files[0])
+  }
+
   useEffect(() => {
     localStorage.setItem('streamers', JSON.stringify(streamers))
   }, [streamers])
@@ -64,13 +85,24 @@ const FavsStreamers = () => {
     <>
       <Box flex="1">
         {streamers.length === 0 ? (
-          <NoContent
-            msg="Do not have any favorite streamers saved yet? No problem! Just browse
-            selection of videos or clips from any Twitch streamer and click the plus button to add them to your favorites."
-          />
+          <>
+            <Center mt="2rem">
+              <input type="file" onChange={handleImport} />
+            </Center>
+            <NoContent
+              msg="Do not have any favorite streamers saved yet? No problem! Just browse
+            selection of videos or clips from any Twitch streamer and click the plus button to add them to your favorites or import your own JSON file."
+            />
+          </>
         ) : (
           <>
-            <DeleteAllButton handleDelete={handleDeleteAllStreamers} />
+            <Flex justify="center" gap="1rem">
+              <DeleteAllButton handleDelete={handleDeleteAllStreamers} />
+              <Button mt="2rem" onClick={handleExport}>
+                Export JSON
+              </Button>
+            </Flex>
+
             <SimpleGrid
               columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"

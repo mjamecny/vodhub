@@ -40,8 +40,12 @@ const favSlice = createSlice({
       if (action.payload === 'clips') state.favs.clips = []
       if (action.payload === 'streamers') state.favs.streamers = []
     },
+    importData(state, action) {
+      state.favs.streamers = []
+      state.favs.streamers = action.payload
+    },
   },
 })
 
-export const { added, removed, removedAll } = favSlice.actions
+export const { added, removed, removedAll, importData } = favSlice.actions
 export default favSlice.reducer
