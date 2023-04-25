@@ -66,11 +66,11 @@ const VodsListItem = ({ vods }) => {
 
   const renderedVods = vods.map((vod) => {
     const { id, thumbnail_url, title, published_at, duration, url } = vod
-    const final_src = changeImageSize(thumbnail_url, '1280x720')
+    const final_src = changeImageSize(thumbnail_url, '640x360')
     const [month, day, year] = changeDateFormat(published_at)
 
     return (
-      <Card key={id} size="lg">
+      <Card key={id}>
         <CardBody>
           <Image
             src={final_src}

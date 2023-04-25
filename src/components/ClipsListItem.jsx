@@ -68,7 +68,7 @@ const ClipsListItem = ({ clips }) => {
         <CardBody>
           <Image
             src={thumbnail_url}
-            fallbackSrc="https://via.placeholder.com/1280x720"
+            fallbackSrc="https://via.placeholder.com/640x360"
             borderRadius="lg"
           />
           <Flex
