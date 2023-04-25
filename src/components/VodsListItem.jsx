@@ -74,7 +74,7 @@ const VodsListItem = ({ vods }) => {
         <CardBody>
           <Image
             src={final_src}
-            fallbackSrc="https://via.placeholder.com/1280x720"
+            fallbackSrc="https://via.placeholder.com/640x360"
             borderRadius="lg"
           />
           <Flex

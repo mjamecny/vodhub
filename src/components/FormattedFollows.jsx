@@ -1,22 +1,20 @@
-import { Text } from '@chakra-ui/react'
-
+import { Spinner, Text } from '@chakra-ui/react'
 import { useGetStreamerFollowsQuery } from '../store'
+import { changeNumberFormat } from '../utils'
 
 const FormattedFollows = ({ id }) => {
-  const { totalFollows } = useGetStreamerFollowsQuery(id, {
+  const { totalFollows, isFetching } = useGetStreamerFollowsQuery(id, {
     skip: !id,
-    selectFromResult: ({ data }) => {
+    selectFromResult: ({ data, isFetching }) => {
       return {
         totalFollows: data?.total || '',
+        isFetching,
       }
     },
   })
 
-  const changeNumberFormat = (number) => {
-    return number.toLocaleString('en-US').replace(/,/g, ' ')
-  }
-
   const formattedFollows = changeNumberFormat(totalFollows)
-  return <Text>{formattedFollows}</Text>
+
+  return <>{!isFetching ? <Text>{formattedFollows}</Text> : <Spinner />}</>
 }
 export default FormattedFollows

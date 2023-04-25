@@ -71,8 +71,43 @@ const FavsStreamers = () => {
     e.preventDefault()
     const reader = new FileReader()
     reader.onload = (event) => {
-      const jsonData = JSON.parse(event.target.result)
-      dispatch(importData(jsonData))
+      try {
+        const jsonData = JSON.parse(event.target.result)
+        const correctStructure = jsonData.every((streamer) => {
+          return (
+            typeof streamer.id === 'string' &&
+            typeof streamer.login === 'string' &&
+            typeof streamer.display_name === 'string' &&
+            typeof streamer.type === 'string' &&
+            typeof streamer.broadcaster_type === 'string' &&
+            typeof streamer.description === 'string' &&
+            typeof streamer.profile_image_url === 'string' &&
+            typeof streamer.offline_image_url === 'string' &&
+            typeof streamer.view_count === 'number' &&
+            typeof streamer.created_at === 'string' &&
+            typeof streamer.isStreamer === 'boolean'
+          )
+        })
+        if (correctStructure) {
+          dispatch(importData(jsonData))
+        } else {
+          toast({
+            description: 'Invalid JSON file',
+            status: 'error',
+            duration: 3000,
+            position: 'top',
+            isClosable: false,
+          })
+        }
+      } catch (error) {
+        toast({
+          description: 'Invalid format',
+          status: 'error',
+          duration: 3000,
+          position: 'top',
+          isClosable: false,
+        })
+      }
     }
     reader.readAsText(e.target.files[0])
   }
@@ -86,7 +121,8 @@ const FavsStreamers = () => {
       <Box flex="1">
         {streamers.length === 0 ? (
           <>
-            <Center mt="2rem">
+            <Center mt="2rem" gap="1rem">
+              <Text>Import streamers</Text>
               <input type="file" onChange={handleImport} />
             </Center>
             <NoContent

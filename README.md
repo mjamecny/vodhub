@@ -8,9 +8,10 @@ Little app built with React for searching and saving Twitch VODs, clips and stre
 - Add VOD, clip or streamer to favorites
 - Delete VOD(s), clip(s) or streamer(s) from favorites
 - Favorites saved to localStorage
-- Open VOD or clip in modal window
+- Open VOD, clip or stream in modal window
 - Check if streamer is live
-- Copy link to clipboard
+- Copy link of VOD or clip to clipboard
+- Import/Export streamers in JSON
 - PWA support
 - Dark mode
 
