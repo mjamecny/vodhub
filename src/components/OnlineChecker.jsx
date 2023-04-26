@@ -81,7 +81,10 @@ const OnlineChecker = ({ streamer }) => {
         <Popover>
           <PopoverTrigger>
             <Link>
-              <Badge fontSize="lg" colorScheme="green">
+              <Badge
+                fontSize={{ base: 'sm', md: 'md', lg: 'lg' }}
+                colorScheme="green"
+              >
                 {streamer} is online
               </Badge>
             </Link>
@@ -119,7 +122,7 @@ const OnlineChecker = ({ streamer }) => {
           </PopoverContent>
         </Popover>
       ) : (
-        <Badge fontSize="lg" colorScheme="red">
+        <Badge fontSize={{ base: 'sm', md: 'md', lg: 'lg' }} colorScheme="red">
           {streamer} is offline
         </Badge>
       )}

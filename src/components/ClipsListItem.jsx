@@ -37,7 +37,7 @@ const ClipsListItem = ({ clips }) => {
     toast({
       description: 'Clip added to your favorites',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -48,7 +48,7 @@ const ClipsListItem = ({ clips }) => {
     toast({
       description: 'URL copied to clipboard',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })

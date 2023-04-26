@@ -1,7 +1,14 @@
-import { SimpleGrid, Box, IconButton, Flex, useToast } from '@chakra-ui/react'
+import {
+  SimpleGrid,
+  Box,
+  IconButton,
+  Flex,
+  useToast,
+  Spinner,
+  Center,
+} from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 
-import VodsSpinner from './VodsSpinner'
 import OnlineChecker from './OnlineChecker'
 import VodsListItem from './VodsListItem'
 import NoContent from './NoContent'
@@ -43,7 +50,7 @@ const VodsList = () => {
     toast({
       description: 'Streamer added to your favorites',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -61,14 +68,16 @@ const VodsList = () => {
         have any VODs."
         />
       ) : isFetching ? (
-        <VodsSpinner />
+        <Center height="75vh">
+          <Spinner size="xl" />
+        </Center>
       ) : (
         <>
           <Flex justify="center" align="center" mt="2rem">
             <OnlineChecker streamer={searchedUsername} />
             <IconButton
               isDisabled={streamers.find((s) => s.id === userId)}
-              size="sm"
+              size={{ base: 'sm', md: 'md', lg: 'lg' }}
               icon={<AddIcon />}
               onClick={() => handleAddStreamer(streamer)}
               ml="1rem"

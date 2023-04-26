@@ -1,4 +1,12 @@
-import { SimpleGrid, Box, Flex, IconButton, useToast } from '@chakra-ui/react'
+import {
+  SimpleGrid,
+  Box,
+  Flex,
+  IconButton,
+  useToast,
+  Center,
+  Spinner,
+} from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 
 import VodsSpinner from './VodsSpinner'
@@ -43,7 +51,7 @@ const ClipsList = () => {
     toast({
       description: 'Streamer added to your favorites',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -56,7 +64,9 @@ const ClipsList = () => {
         have any clips."
         />
       ) : isFetching ? (
-        <VodsSpinner />
+        <Center height="75vh">
+          <Spinner size="xl" />
+        </Center>
       ) : (
         <>
           <Flex justify="center" align="center" mt="2rem">

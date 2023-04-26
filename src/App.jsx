@@ -1,5 +1,6 @@
 import VodsList from './components/VodsList'
 import ClipsList from './components/ClipsList'
+import StreamersList from './components/StreamersList'
 import StreamerVods from './components/StreamerVods'
 import StreamerClips from './components/StreamerClips'
 import SharedLayout from './pages/SharedLayout'
@@ -27,6 +28,7 @@ const App = () => {
           <Route index element={<Welcome />} />
           <Route path="/vods" element={<VodsList />} />
           <Route path="/clips" element={<ClipsList />} />
+          <Route path="/streamers" element={<StreamersList />} />
           <Route path="/favorites/vods" element={<FavsVods />} />
           <Route path="/favorites/clips" element={<FavsClips />} />
           <Route path="/favorites/streamers" element={<FavsStreamers />} />

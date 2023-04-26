@@ -159,18 +159,17 @@ const FavsStreamers = () => {
 
                 return (
                   <Card key={id}>
-                    <CardBody>
-                      <Flex
-                        flexDirection="column"
-                        align="center"
-                        gap="1rem"
-                        height="200px"
-                      >
-                        <Avatar name={login} src={profile_image_url} />
+                    <CardBody display="flex" flexDirection="column" gap=".5rem">
+                      <Avatar
+                        alignSelf="center"
+                        size="md"
+                        name={login}
+                        src={profile_image_url}
+                      />
+                      <Center>
                         <OnlineChecker streamer={login} />
-                        <Text>{description}</Text>
-                      </Flex>
-
+                      </Center>
+                      <Text flex="1">{description}</Text>
                       <Flex gap=".5rem" mt="1rem">
                         <Flex
                           flexDirection="column"

@@ -38,7 +38,7 @@ const VodsListItem = ({ vods }) => {
     toast({
       description: 'VOD added to your favorites',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -49,7 +49,7 @@ const VodsListItem = ({ vods }) => {
     toast({
       description: 'URL copied to clipboard',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -71,58 +71,55 @@ const VodsListItem = ({ vods }) => {
 
     return (
       <Card key={id}>
-        <CardBody>
+        <CardBody
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          gap=".5rem"
+        >
           <Image
             src={final_src}
             fallbackSrc="https://via.placeholder.com/640x360"
             borderRadius="lg"
           />
-          <Flex
-            flexDirection="column"
-            gap="2rem"
-            mt="1rem"
-            height="150px"
-            justify="space-between"
+          <Heading
+            as="h2"
+            size="sm"
+            cursor="pointer"
+            transition={'all 0.3s'}
+            _hover={{ color: 'red.500' }}
+            onClick={() => handleOpenModal(id)}
           >
-            <Heading
-              as="h2"
-              size="sm"
-              cursor="pointer"
-              transition={'all 0.3s'}
-              _hover={{ color: 'red.500' }}
-              onClick={() => handleOpenModal(id)}
-            >
-              {title}
-            </Heading>
-            <Flex justify="space-between" align="center">
-              <Flex justify="center" align="center" gap="0.5rem">
-                <CalendarIcon />
-                <Text>{`${day}/${month + 1}/${year}`}</Text>
-              </Flex>
+            {title}
+          </Heading>
 
-              <Flex gap="0.5rem">
-                <IconButton
-                  isDisabled={favVods.find((favVod) => favVod.id === vod.id)}
-                  onClick={() => handleAddFav(vod)}
-                  aria-label="Add to favorites"
-                  icon={<AddIcon />}
-                />
-                <IconButton
-                  onClick={() => handleCopyToClipboard(url)}
-                  aria-label="Copy to clipboard"
-                  icon={<CopyIcon />}
-                />
-              </Flex>
+          <Flex justify="space-between" align="center">
+            <Flex justify="center" align="center" gap="0.5rem">
+              <CalendarIcon />
+              <Text>{`${day}/${month + 1}/${year}`}</Text>
+            </Flex>
 
-              <Flex justify="center" align="center" gap="0.5rem">
-                <RepeatClockIcon />
-                <Text>{duration}</Text>
-              </Flex>
+            <Flex gap="0.5rem">
+              <IconButton
+                isDisabled={favVods.find((favVod) => favVod.id === vod.id)}
+                onClick={() => handleAddFav(vod)}
+                aria-label="Add to favorites"
+                icon={<AddIcon />}
+              />
+              <IconButton
+                onClick={() => handleCopyToClipboard(url)}
+                aria-label="Copy to clipboard"
+                icon={<CopyIcon />}
+              />
+            </Flex>
+
+            <Flex justify="center" align="center" gap="0.5rem">
+              <RepeatClockIcon />
+              <Text>{duration}</Text>
             </Flex>
           </Flex>
         </CardBody>
         <CardFooter justify="center" align="center" flexWrap="wrap">
-          {' '}
           <Share url={url} />
         </CardFooter>
       </Card>

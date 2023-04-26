@@ -1,6 +1,5 @@
 import {
   Flex,
-  Box,
   FormControl,
   Input,
   InputGroup,
@@ -10,7 +9,6 @@ import {
   Center,
   Kbd,
   Spacer,
-  ButtonGroup,
   Button,
   Image,
   RadioGroup,
@@ -21,16 +19,13 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
 } from '@chakra-ui/react'
 import {
   SearchIcon,
   MoonIcon,
   SunIcon,
   ChevronDownIcon,
+  HamburgerIcon,
 } from '@chakra-ui/icons'
 
 import { useRef } from 'react'
@@ -48,7 +43,7 @@ import {
 } from '../store'
 
 const Navbar = () => {
-  const { username, searchMode, userId } = useSelector((state) => state.app)
+  const { username, searchMode } = useSelector((state) => state.app)
   const [getUser] = useLazyGetUserByNameQuery()
   const inputRef = useRef(null)
   const { colorMode, toggleColorMode } = useColorMode()
@@ -74,18 +69,21 @@ const Navbar = () => {
       return
     }
     dispatch(setSearchedUsername(username))
-    const result = await getUser(username)
-
-    if (result.data.data.length === 0) {
-      dispatch(setErrorMsg('Streamer not found'))
-      navigate('*')
-      return
+    if (searchMode === 'streamers') {
+      dispatch(setUsername(''))
+      navigate('/streamers')
+    } else {
+      const result = await getUser(username)
+      if (result.data.data.length === 0) {
+        dispatch(setErrorMsg('Streamer not found'))
+        navigate('*')
+        return
+      }
+      dispatch(setUserId(result.data.data[0].id))
+      dispatch(setUsername(''))
+      if (searchMode === 'vods') navigate('/vods')
+      if (searchMode === 'clips') navigate('/clips')
     }
-
-    dispatch(setUserId(result.data.data[0].id))
-    dispatch(setUsername(''))
-    if (searchMode === 'vods') navigate('/vods')
-    if (searchMode === 'clips') navigate('/clips')
   }
 
   const handleChangeMode = (mode) => {
@@ -97,16 +95,73 @@ const Navbar = () => {
       mt={{ base: '0', lg: '2rem' }}
       flexDirection={{ base: 'column', lg: 'row' }}
       justify={{ base: 'center' }}
-      align={{ base: 'center' }}
+      align={{ lg: 'center' }}
     >
       <Link to="/">
-        <Image ml="1rem" width="200px" src={logo} alt="Logo" />
+        <Image
+          display={{ base: 'none', lg: 'block' }}
+          ml="1rem"
+          width="200px"
+          src={logo}
+          alt="Logo"
+        />
       </Link>
+      <Flex
+        display={{ base: 'flex', lg: 'none' }}
+        align="center"
+        justify="space-between"
+      >
+        <Link to="/">
+          <Image width="150px" src={logo} alt="Logo" />
+        </Link>
+        <Flex gap=".5rem" mr="1rem">
+          <Menu>
+            <MenuButton as={IconButton} icon={<HamburgerIcon />} />
+            <MenuList>
+              <NavLink
+                to="/favorites/vods"
+                className={({ isActive }) =>
+                  isActive ? 'activeLink' : 'nonactiveLink'
+                }
+              >
+                <MenuItem>Vods</MenuItem>
+              </NavLink>
+              <NavLink
+                to="/favorites/clips"
+                className={({ isActive }) =>
+                  isActive ? 'activeLink' : 'nonactiveLink'
+                }
+              >
+                <MenuItem>Clips</MenuItem>
+              </NavLink>
+              <NavLink
+                to="/favorites/streamers"
+                className={({ isActive }) =>
+                  isActive ? 'activeLink' : 'nonactiveLink'
+                }
+              >
+                <MenuItem>Streamers</MenuItem>
+              </NavLink>
+            </MenuList>
+          </Menu>
+          <IconButton
+            size="md"
+            onClick={toggleColorMode}
+            aria-label={
+              colorMode === 'light'
+                ? 'Change to dark mode'
+                : 'Change to light mode'
+            }
+            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          />
+        </Flex>
+      </Flex>
+
       <Spacer />
       <FormControl>
         <form onSubmit={handleSubmit}>
           <Center flexDirection={{ base: 'column', md: 'row' }}>
-            <InputGroup w={{ base: '100%', md: '50%' }} size="lg">
+            <InputGroup w={{ base: '90%', md: '50%' }} size={{ base: 'lg' }}>
               <Input
                 placeholder="Twitch username"
                 name="username"
@@ -140,13 +195,19 @@ const Navbar = () => {
               <Stack direction="row">
                 <Radio value="vods">Vods</Radio>
                 <Radio value="clips">Clips</Radio>
+                <Radio value="streamers">Streamers</Radio>
               </Stack>
             </RadioGroup>
           </Center>
         </form>
       </FormControl>
 
-      <Flex mt={{ base: '2rem', lg: 0 }} mr="1rem" gap="1rem">
+      <Flex
+        display={{ base: 'none', lg: 'flex' }}
+        mt={{ base: '2rem', lg: 0 }}
+        mr="1rem"
+        gap="1rem"
+      >
         <Menu>
           <MenuButton size="lg" as={Button} rightIcon={<ChevronDownIcon />}>
             Favorites

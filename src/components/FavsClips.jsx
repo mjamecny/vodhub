@@ -41,7 +41,7 @@ const FavsClips = () => {
     toast({
       description: 'Removed from your favorites',
       status: 'info',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -52,7 +52,7 @@ const FavsClips = () => {
     toast({
       description: 'Your favorites clips are empty now',
       status: 'info',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })
@@ -63,7 +63,7 @@ const FavsClips = () => {
     toast({
       description: 'URL copied to clipboard',
       status: 'success',
-      duration: 5000,
+      duration: 3000,
       position: 'top',
       isClosable: false,
     })

@@ -68,6 +68,17 @@ const twitchApi = createApi({
           }
         },
       }),
+      getUsers: builder.query({
+        query: (query) => {
+          return {
+            url: 'search/channels',
+            params: {
+              query,
+            },
+            method: 'GET',
+          }
+        },
+      }),
     }
   },
 })
@@ -75,10 +86,12 @@ const twitchApi = createApi({
 export const {
   useLazyGetUserByNameQuery,
   useLazyGetVideosByUserIdQuery,
+  useLazyGetUsersQuery,
   useGetUserByNameQuery,
   useGetIsStreamerOnlineQuery,
   useGetVideosByUserIdQuery,
   useGetClipsByUserIdQuery,
   useGetStreamerFollowsQuery,
+  useGetUsersQuery,
 } = twitchApi
 export { twitchApi }

@@ -20,11 +20,13 @@ setupListeners(store.dispatch)
 export {
   useLazyGetUserByNameQuery,
   useLazyGetVideosByUserIdQuery,
+  useLazyGetUsersQuery,
   useGetUserByNameQuery,
   useGetIsStreamerOnlineQuery,
   useGetVideosByUserIdQuery,
   useGetClipsByUserIdQuery,
   useGetStreamerFollowsQuery,
+  useGetUsersQuery,
 } from './apis/twitchApi'
 
 export { added, removed, removedAll, importData } from './slices/favSlice'
