@@ -1,13 +1,13 @@
 # VODhub
 
-Little app built with React for searching and saving Twitch VODs, clips and streamers. Favorites are saved to localStorage.
+Little app built with MERN stack for searching and saving Twitch VODs, clips and streamers. User can register an account and save vods, clips and streamers.
 
 ## Features
 
+- Register account
 - Search VODs and clips for specific streamer
 - Add VOD, clip or streamer to favorites
 - Delete VOD(s), clip(s) or streamer(s) from favorites
-- Favorites saved to localStorage
 - Open VOD, clip or stream in modal window
 - Check if streamer is live
 - Copy link of VOD or clip to clipboard
@@ -17,28 +17,4 @@ Little app built with React for searching and saving Twitch VODs, clips and stre
 
 ## Screenshot
 
-![frontpage](https://i.imgur.com/bkFUWmW.png)
-
-## Development
-
-Clone the repo
-
-`git clone https://github.com/mjamecny/vodhub.git`
-
-`cd vodhub`
-
-Create .env for enviroment variables
-
-```
-VITE_URL=<your site url>
-VITE_CLIENT_ID=<your twitch client id>
-VITE_TOKEN=Bearer <your twitch bearer token>
-```
-
-Install dependencies
-
-`npm i`
-
-Run dev server
-
-`npm run dev `
+![frontpage](https://i.imgur.com/MK0PVhh.png)
