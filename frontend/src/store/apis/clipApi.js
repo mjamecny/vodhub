@@ -3,7 +3,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 const clipApi = createApi({
   reducerPath: 'clipApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/clips',
+    baseUrl: `${
+      import.meta.env.DEV
+        ? 'http://localhost:5000'
+        : 'https://vodhub-api.onrender.com'
+    }/api/clips`,
   }),
   tagTypes: ['Clip'],
   endpoints(builder) {

@@ -3,7 +3,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 const streamerApi = createApi({
   reducerPath: 'streamerApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/streamers',
+    baseUrl: `${
+      import.meta.env.DEV
+        ? 'http://localhost:5000'
+        : 'https://vodhub-api.onrender.com'
+    }/api/streamers`,
   }),
   tagTypes: ['Streamer'],
   endpoints(builder) {
