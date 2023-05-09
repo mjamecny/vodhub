@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const { promisify } = require('util')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const AppError = require('../utils/appError')
@@ -12,8 +11,6 @@ const protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1]
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt
   }
 
   if (!token) {
@@ -22,7 +19,7 @@ const protect = asyncHandler(async (req, res, next) => {
     )
   }
   // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id)

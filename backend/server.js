@@ -25,6 +25,7 @@ app.use(
     origin: 'https://vodhub.netlify.app',
   })
 )
+
 // app.use(
 //   cors({
 //     origin: 'http://localhost:3000',
