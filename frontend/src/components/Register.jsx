@@ -28,6 +28,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const res = await register({ username, email, password })
+    console.log(res)
 
     if (res.isSuccess) {
       if (

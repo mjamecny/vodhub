@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }))
 // Implement CORS
 app.use(
   cors({
-    origin: 'https://vodhub.netlify.app',
+    origin: ['https://vodhub.netlify.app'],
   })
 )
 
