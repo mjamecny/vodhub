@@ -93,11 +93,10 @@ const VodsList = () => {
           <Flex justify="center" align="center" mt="2rem">
             <OnlineChecker streamer={searchedUsername} />
             <IconButton
-              // isDisabled={streamers.find((s) => s.id === userId)}
               isDisabled={streamerIds.find(
                 (streamerId) => streamerId === userId
               )}
-              size={{ base: 'sm', md: 'md', lg: 'lg' }}
+              size={{ base: 'sm' }}
               icon={<AddIcon />}
               onClick={() => handleAddStreamer(streamer.id)}
               ml="1rem"

@@ -11,19 +11,12 @@ import FavsClips from './components/FavsClips'
 import FavsStreamers from './components/FavsStreamers'
 import Register from './components/Register'
 import Login from './components/Login'
+import ResetPasswordForm from './components/ResetPasswordForm'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-// import { useEffect } from 'react'
-// import { useSelector } from 'react-redux'
 import { AuthProvider, RequireAuth } from 'react-auth-kit'
 
 const App = () => {
-  // const favs = useSelector((state) => state.fav.favs)
-
-  // useEffect(() => {
-  //   localStorage.setItem('favs', JSON.stringify(favs))
-  // }, [favs])
-
   return (
     <AuthProvider
       authType={'localstorage'}
@@ -60,6 +53,10 @@ const App = () => {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route
+              path="/resetPassword/:token"
+              element={<ResetPasswordForm />}
+            />
             <Route
               path="/favorites/vods"
               element={

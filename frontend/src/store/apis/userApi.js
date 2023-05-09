@@ -38,9 +38,39 @@ const userApi = createApi({
           }
         },
       }),
+      forgotPassword: builder.query({
+        query: (data) => {
+          const { email } = data
+          return {
+            url: '/forgotPassword',
+            body: {
+              email,
+            },
+            method: 'POST',
+          }
+        },
+      }),
+
+      resetPassword: builder.query({
+        query: (data) => {
+          const { password, token } = data
+          return {
+            url: `/resetPassword/${token}`,
+            body: {
+              password,
+            },
+            method: 'PATCH',
+          }
+        },
+      }),
     }
   },
 })
 
-export const { useLazyRegisterQuery, useLazyLoginQuery } = userApi
+export const {
+  useLazyRegisterQuery,
+  useLazyLoginQuery,
+  useLazyForgotPasswordQuery,
+  useLazyResetPasswordQuery,
+} = userApi
 export { userApi }

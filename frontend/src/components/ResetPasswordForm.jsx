@@ -1,34 +1,29 @@
 import {
-  Button,
-  Flex,
   FormControl,
+  Flex,
   FormLabel,
   Input,
+  Button,
   useToast,
   Spinner,
 } from '@chakra-ui/react'
-import {
-  setUsername,
-  setEmail,
-  setPassword,
-  useLazyRegisterQuery,
-} from '../store'
-import { useDispatch, useSelector } from 'react-redux'
-import { useSignIn } from 'react-auth-kit'
-import { useNavigate } from 'react-router-dom'
 
-const Register = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+import { useParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useLazyResetPasswordQuery } from '../store'
+import { useSignIn } from 'react-auth-kit'
+
+const ResetPasswordForm = () => {
   const toast = useToast()
+  const navigate = useNavigate()
+  const [resetPassword, result] = useLazyResetPasswordQuery()
+  const [password, setPassword] = useState('')
+  const { token } = useParams()
   const signIn = useSignIn()
-  const { username, email, password } = useSelector((state) => state.user)
-  const [register, result] = useLazyRegisterQuery()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const res = await register({ username, email, password })
-
+    const res = await resetPassword({ token, password })
     if (res.isSuccess) {
       if (
         signIn({
@@ -44,16 +39,15 @@ const Register = () => {
       )
         toast({
           position: 'top',
-          description: 'Register successfully',
+          description: 'Password reset successfully',
           status: 'success',
           duration: 3000,
           isClosable: false,
         })
-      dispatch(setUsername(''))
-      dispatch(setEmail(''))
-      dispatch(setPassword(''))
+      setPassword('')
       navigate('/')
     } else {
+      console.log(res.error)
       toast({
         position: 'top',
         description: res.error.data.message,
@@ -74,42 +68,23 @@ const Register = () => {
           gap="1rem"
           height="75vh"
         >
-          <FormLabel htmlFor="username">Username</FormLabel>
-          <Input
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => dispatch(setUsername(e.target.value))}
-            type="text"
-            required
-            w="40%"
-          />
-          <FormLabel htmlFor="email">Email</FormLabel>
-          <Input
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => dispatch(setEmail(e.target.value))}
-            type="email"
-            required
-            w="40%"
-          />
           <FormLabel htmlFor="password">Password</FormLabel>
           <Input
             id="password"
             name="password"
             value={password}
-            onChange={(e) => dispatch(setPassword(e.target.value))}
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
             required
             w="40%"
           />
           <Button type="submit">
-            {result.isLoading ? <Spinner /> : 'Register'}
+            {result.isLoading ? <Spinner /> : 'Submit'}
           </Button>
         </Flex>
       </form>
     </FormControl>
   )
 }
-export default Register
+
+export default ResetPasswordForm

@@ -36,9 +36,10 @@ import OnlineChecker from './OnlineChecker'
 import DeleteAllButton from './DeleteAllButton'
 
 import { changeNumberFormat, changeDateFormat } from '../utils'
-import { useAuthHeader } from 'react-auth-kit'
+import { useAuthHeader, useSignOut } from 'react-auth-kit'
 
 const FavsStreamers = () => {
+  const signOut = useSignOut()
   const authHeader = useAuthHeader()
   const dispatch = useDispatch()
   const toast = useToast()
@@ -51,7 +52,8 @@ const FavsStreamers = () => {
     { token: authHeader() },
     {
       skip: !authHeader(),
-      selectFromResult: ({ data }) => {
+      selectFromResult: ({ data, isError }) => {
+        if (isError) signOut()
         return {
           streamerIds: data?.streamers || [],
         }
@@ -100,37 +102,8 @@ const FavsStreamers = () => {
     const reader = new FileReader()
     reader.onload = async (event) => {
       try {
-        // console.log(event.target.result)
-        // const jsonData = JSON.parse(event.target.result)
         const streamerIds = JSON.parse(event.target.result)
         const res = await importData({ streamerIds, token: authHeader() })
-        // console.log(res)
-        // const correctStructure = jsonData.every((streamer) => {
-        //   return (
-        //     typeof streamer.id === 'string' &&
-        //     typeof streamer.login === 'string' &&
-        //     typeof streamer.display_name === 'string' &&
-        //     typeof streamer.type === 'string' &&
-        //     typeof streamer.broadcaster_type === 'string' &&
-        //     typeof streamer.description === 'string' &&
-        //     typeof streamer.profile_image_url === 'string' &&
-        //     typeof streamer.offline_image_url === 'string' &&
-        //     typeof streamer.view_count === 'number' &&
-        //     typeof streamer.created_at === 'string' &&
-        //     typeof streamer.isStreamer === 'boolean'
-        //   )
-        // })
-        // if (correctStructure) {
-        //   dispatch(importData(jsonData))
-        // } else {
-        //   toast({
-        //     description: 'Invalid JSON file',
-        //     status: 'error',
-        //     duration: 3000,
-        //     position: 'top',
-        //     isClosable: false,
-        //   })
-        // }
       } catch (error) {
         toast({
           description: 'Invalid format',

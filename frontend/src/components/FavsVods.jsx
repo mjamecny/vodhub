@@ -119,7 +119,6 @@ const FavsVods = () => {
           on any VOD you want to save for later."
           />
         ) : (
-          // <Spinner />
           <>
             <DeleteAllButton handleDelete={handleDeleteAllVods} />
             <SimpleGrid

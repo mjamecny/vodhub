@@ -21,7 +21,7 @@ import {
 import ModalWindow from './ModalWindow'
 import Share from './Share'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import {
   useAddClipMutation,
   useGetClipsQuery,
@@ -33,7 +33,6 @@ import { useAuthHeader } from 'react-auth-kit'
 const ClipsListItem = ({ clips }) => {
   const authHeader = useAuthHeader()
   const [addClip] = useAddClipMutation()
-  // const favClips = useSelector((state) => state.fav.favs.clips)
   const toast = useToast()
   const dispatch = useDispatch()
   const { onOpen, onClose, isOpen } = useDisclosure()
@@ -50,17 +49,6 @@ const ClipsListItem = ({ clips }) => {
     }
   )
 
-  // const handleAddFav = (clip) => {
-  //   const newClip = { ...clip, isClip: true }
-  //   dispatch(added(newClip))
-  //   toast({
-  //     description: 'Clip added to your favorites',
-  //     status: 'success',
-  //     duration: 3000,
-  //     position: 'top',
-  //     isClosable: false,
-  //   })
-  // }
   const handleAddFav = async (id) => {
     const res = await addClip({ id, token: authHeader() })
     if (res.isError)

@@ -4,8 +4,13 @@ const {
   registerUser,
   loginUser,
   getMe,
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/userController')
 const { protect } = require('../middleware/authMiddleware')
+
+router.post('/forgotPassword', forgotPassword)
+router.patch('/resetPassword/:token', resetPassword)
 
 router.post('/', registerUser)
 router.post('/login', loginUser)

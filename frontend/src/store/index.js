@@ -46,7 +46,12 @@ export {
   useGetUsersQuery,
 } from './apis/twitchApi'
 
-export { useLazyRegisterQuery, useLazyLoginQuery } from './apis/userApi'
+export {
+  useLazyRegisterQuery,
+  useLazyLoginQuery,
+  useLazyForgotPasswordQuery,
+  useLazyResetPasswordQuery,
+} from './apis/userApi'
 
 export {
   useAddMutation,
