@@ -56,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route POST /api/users/login
 // @access Public
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res, next) => {
   // 1) Get email and password from body
   const { email, password } = req.body
 
@@ -88,7 +88,7 @@ const getMe = asyncHandler(async (req, res) => {
 // @route POST /api/users/forgotPassword
 // @access Public
 
-const forgotPassword = asyncHandler(async (req, res) => {
+const forgotPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email })
 
@@ -130,7 +130,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 // @route POST /api/users/resetPassword/:token
 // @access Public
 
-const resetPassword = asyncHandler(async (req, res) => {
+const resetPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user based on the token
   const hashedToken = crypto
     .createHash('sha256')
