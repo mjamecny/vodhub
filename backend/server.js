@@ -22,23 +22,26 @@ app.use(express.urlencoded({ extended: false }))
 // Implement CORS
 app.use(
   cors({
-    origin: ['https://vodhub.netlify.app'],
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? ['http://localhost:3000']
+        : ['https://vodhub.netlify.app'],
   })
 )
 
 // Limit requests from same API
-// const limiter = rateLimit({
-//   max: 100,
-//   windowMs: 60 * 60 * 1000,
-//   message: 'Too many requests from this IP, please try again in an hour!',
-// })
-// app.use('/api', limiter)
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+})
+app.use('/api', limiter)
 
 // Data sanitization against NoSQL query injection
-// app.use(mongoSanitize())
+app.use(mongoSanitize())
 
 // Data sanitization against XSS
-// app.use(xss())
+app.use(xss())
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'))
