@@ -3,11 +3,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${
-      import.meta.env.DEV
-        ? 'http://localhost:5000'
-        : 'https://vodhub-api.onrender.com'
-    }/api/users`,
+    // baseUrl: `${
+    //   import.meta.env.DEV
+    //     ? 'http://localhost:5000'
+    //     : 'https://vodhub-api.onrender.com'
+    // }/api/users`,
+    baseUrl: 'https://vodhub-api.onrender.com/api/users',
   }),
   endpoints(builder) {
     return {
@@ -15,7 +16,7 @@ const userApi = createApi({
         query: (data) => {
           const { username, email, password } = data
           return {
-            url: '/',
+            // url: '/',
             body: {
               username,
               email,
