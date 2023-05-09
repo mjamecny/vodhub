@@ -22,12 +22,14 @@ app.use(express.urlencoded({ extended: false }))
 // Implement CORS
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://vodhub.netlify.app',
+    origin: 'https://vodhub.netlify.app',
   })
 )
+// app.use(
+//   cors({
+//     origin: 'http://localhost:3000',
+//   })
+// )
 
 // Limit requests from same API
 const limiter = rateLimit({

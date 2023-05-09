@@ -38,7 +38,7 @@ const createSendToken = (user, statusCode, req, res) => {
 // @route POST /api/users
 // @access Public
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const newUser = await User.create({
     username: req.body.username,
     email: req.body.email,
