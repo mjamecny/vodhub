@@ -12,6 +12,7 @@ import {
   ModalCloseButton,
   ModalBody,
   Spinner,
+  Center,
 } from '@chakra-ui/react'
 
 import { useState } from 'react'
@@ -47,21 +48,17 @@ const ForgotPassword = ({ onOpen, onClose, isOpen }) => {
       })
     }
   }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
+    <Modal isCentered isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
       <ModalContent>
         <ModalHeader>Reset password</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl flex="1">
             <form onSubmit={handleSubmit}>
-              <Flex
-                flexDirection="column"
-                align="center"
-                justify="center"
-                gap="1rem"
-              >
+              <Flex align="center" justify="center" gap="1rem">
                 <FormLabel htmlFor="email">Email</FormLabel>
                 <Input
                   id="email"
@@ -69,13 +66,16 @@ const ForgotPassword = ({ onOpen, onClose, isOpen }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
+                  placeholder="The email address you used to register"
                   required
-                  w="40%"
+                  w="60%"
                 />
+              </Flex>
+              <Center mt="2rem">
                 <Button type="submit">
                   {result.isLoading ? <Spinner /> : 'Submit'}
                 </Button>
-              </Flex>
+              </Center>
             </form>
           </FormControl>
         </ModalBody>

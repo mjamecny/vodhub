@@ -27,7 +27,7 @@ import { FaUser } from 'react-icons/fa'
 import { useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { useLazyGetUserByNameQuery } from '../store'
+import { useLazyGetUserByNameQuery, useLazyLogoutQuery } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import logo from '../assets/logo.png'
 import {
@@ -37,12 +37,19 @@ import {
   setSearchMode,
   setErrorMsg,
 } from '../store'
-import { useIsAuthenticated, useSignOut, useAuthUser } from 'react-auth-kit'
+import {
+  useIsAuthenticated,
+  useSignOut,
+  useAuthUser,
+  useAuthHeader,
+} from 'react-auth-kit'
 
 const Navbar = () => {
   const auth = useAuthUser()
+  const authHeader = useAuthHeader()
   const { streamer, searchMode } = useSelector((state) => state.app)
   const [getUser] = useLazyGetUserByNameQuery()
+  const [logout] = useLazyLogoutQuery()
   const isAuthenticated = useIsAuthenticated()
   const signOut = useSignOut()
   const inputRef = useRef(null)
@@ -90,15 +97,20 @@ const Navbar = () => {
     dispatch(setSearchMode(mode))
   }
 
-  const handleSignOut = () => {
-    signOut()
-    toast({
-      title: 'Logged out',
-      status: 'success',
-      position: 'top',
-      duration: 3000,
-      isClosable: false,
-    })
+  const handleSignOut = async () => {
+    const refreshToken = localStorage.getItem('_auth_refresh')
+    const res = await logout({ authToken: authHeader(), refreshToken })
+
+    if (res.isSuccess) {
+      signOut()
+      toast({
+        title: 'Logged out',
+        status: 'success',
+        position: 'top',
+        duration: 3000,
+        isClosable: false,
+      })
+    }
   }
 
   return (

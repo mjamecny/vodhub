@@ -22,6 +22,10 @@ const userSchema = mongoose.Schema(
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
+    refreshTokens: {
+      type: [String],
+      default: [],
+    },
     vodIds: {
       type: [String],
       default: [],
@@ -51,9 +55,10 @@ userSchema.pre('save', async function (next) {
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, salt)
 
-  // Delete passwordConfirm field
-  // this.passwordConfirm = undefined
-  next()
+  this.refreshTokens =
+    // Delete passwordConfirm field
+    // this.passwordConfirm = undefined
+    next()
 })
 
 userSchema.pre('save', function (next) {

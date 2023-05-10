@@ -35,13 +35,15 @@ const Login = () => {
       if (
         signIn({
           token: res.data.token,
-          expiresIn: 30,
+          expiresIn: 1440,
           tokenType: 'Bearer',
           authState: {
             _id: res.data._id,
             username: res.data.username,
             email: res.data.email,
           },
+          refreshToken: res.data.refreshToken, // Only if you are using refreshToken feature
+          refreshTokenExpireIn: 1,
         })
       )
         toast({

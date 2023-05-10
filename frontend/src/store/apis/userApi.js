@@ -37,6 +37,21 @@ const userApi = createApi({
           }
         },
       }),
+      logout: builder.query({
+        query: (data) => {
+          const { authToken, refreshToken } = data
+          return {
+            url: '/logout',
+            body: {
+              token: refreshToken,
+            },
+            headers: {
+              authorization: authToken,
+            },
+            method: 'DELETE',
+          }
+        },
+      }),
       forgotPassword: builder.query({
         query: (data) => {
           const { email } = data
@@ -71,5 +86,6 @@ export const {
   useLazyLoginQuery,
   useLazyForgotPasswordQuery,
   useLazyResetPasswordQuery,
+  useLazyLogoutQuery,
 } = userApi
 export { userApi }

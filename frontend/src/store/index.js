@@ -51,6 +51,7 @@ export {
   useLazyLoginQuery,
   useLazyForgotPasswordQuery,
   useLazyResetPasswordQuery,
+  useLazyLogoutQuery,
 } from './apis/userApi'
 
 export {

@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
 const Email = require('../utils/email')
 const crypto = require('crypto')
@@ -8,23 +7,94 @@ const AppError = require('./../utils/appError')
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
+    expiresIn: '1d',
   })
+}
+
+const signRefreshToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET)
+}
+
+const saveRefreshToken = async (user, token) => {
+  const currentUser = await User.findOne({ _id: user.id })
+
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401
+      )
+    )
+  }
+
+  currentUser.refreshTokens.push(token)
+  await currentUser.save()
 }
 
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id)
+  const refreshToken = signRefreshToken(user._id)
 
   // Remove password from output
   user.password = undefined
+
+  saveRefreshToken(user, refreshToken)
 
   res.status(statusCode).json({
     _id: user._id,
     username: user.username,
     email: user.email,
     token,
+    refreshToken,
   })
 }
+
+const getAccessToken = asyncHandler(async (req, res, next) => {
+  const refreshToken = req.body.refreshToken
+
+  if (!refreshToken) {
+    return next(new AppError('No refresh token', 401))
+  }
+
+  if (!req.user.refreshTokens.includes(refreshToken)) {
+    return next(new AppError('', 403))
+  }
+
+  // 2) Verification token
+  const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+  // 3) Check if user still exists
+  const currentUser = await User.findById(decoded.id)
+
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401
+      )
+    )
+  }
+
+  const token = signToken(currentUser.id)
+
+  res.status(200).json({
+    token,
+  })
+})
+
+const logout = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id)
+
+  user.refreshTokens = user.refreshTokens.filter(
+    (token) => token !== req.body.token
+  )
+
+  await user.save()
+
+  res.status(204).json({
+    message: 'Successfully logged out',
+  })
+})
 
 // @desc Register user
 // @route POST /api/users
@@ -152,7 +222,9 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 module.exports = {
   registerUser,
   loginUser,
+  logout,
   getMe,
   forgotPassword,
   resetPassword,
+  getAccessToken,
 }

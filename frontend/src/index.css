@@ -4,3 +4,8 @@ html {
   flex-direction: column;
   height: 100%;
 }
+
+.register-form {
+  display: flex;
+  flex: 1;
+}

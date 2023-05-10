@@ -15,12 +15,14 @@ import ResetPasswordForm from './components/ResetPasswordForm'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, RequireAuth } from 'react-auth-kit'
+import { refreshApi } from './utils'
 
 const App = () => {
   return (
     <AuthProvider
       authType={'localstorage'}
       authName={'_auth'}
+      refresh={refreshApi}
       cookieDomain={window.location.hostname}
     >
       <BrowserRouter>

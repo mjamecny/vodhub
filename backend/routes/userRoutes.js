@@ -3,6 +3,8 @@ const router = express.Router()
 const {
   registerUser,
   loginUser,
+  logout,
+  getAccessToken,
   getMe,
   forgotPassword,
   resetPassword,
@@ -14,6 +16,8 @@ router.patch('/resetPassword/:token', resetPassword)
 
 router.post('/', registerUser)
 router.post('/login', loginUser)
+router.delete('/logout', protect, logout)
 router.get('/me', protect, getMe)
+router.post('/token', protect, getAccessToken)
 
 module.exports = router

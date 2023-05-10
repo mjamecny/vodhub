@@ -20,12 +20,13 @@ import {
 } from '@chakra-ui/react'
 
 import { useGetIsStreamerOnlineQuery, setStreamModalVideo } from '../store'
-import { convertDurationToMin } from '../utils'
+import { convertDuration } from '../utils'
 import { useDispatch } from 'react-redux'
 
 const OnlineChecker = ({ streamer, id }) => {
   const { onOpen, onClose, isOpen } = useDisclosure()
   const dispatch = useDispatch()
+
   const { stream, isFetching } = useGetIsStreamerOnlineQuery(streamer, {
     pollingInterval: 300000, // re-fetch every 5 minutes (300000)
     selectFromResult: ({ data, isFetching }) => {
@@ -41,10 +42,10 @@ const OnlineChecker = ({ streamer, id }) => {
     dispatch(setStreamModalVideo(streamer))
   }
 
-  let durationMin
+  let duration
 
   if (stream.length !== 0) {
-    durationMin = convertDurationToMin(stream[0].started_at)
+    duration = convertDuration(stream[0].started_at)
   }
 
   return (
@@ -82,7 +83,7 @@ const OnlineChecker = ({ streamer, id }) => {
                   {stream[0].game_name}
                 </Text>
                 <Text textAlign="center" mt="1rem">
-                  {durationMin.toFixed(0)} mins
+                  {duration}
                 </Text>
               </Flex>
             </PopoverHeader>

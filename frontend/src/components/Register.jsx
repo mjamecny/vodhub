@@ -28,19 +28,20 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const res = await register({ username, email, password })
-    console.log(res)
 
     if (res.isSuccess) {
       if (
         signIn({
           token: res.data.token,
-          expiresIn: 30,
+          expiresIn: 1440,
           tokenType: 'Bearer',
           authState: {
             _id: res.data._id,
             username: res.data.username,
             email: res.data.email,
           },
+          refreshToken: res.data.refreshToken, // Only if you are using refreshToken feature
+          refreshTokenExpireIn: 1,
         })
       )
         toast({
@@ -66,14 +67,15 @@ const Register = () => {
   }
 
   return (
-    <FormControl flex="1">
-      <form onSubmit={handleSubmit}>
+    <form className="register-form" onSubmit={handleSubmit}>
+      <FormControl isRequired>
         <Flex
           flexDirection="column"
           align="center"
           justify="center"
           gap="1rem"
           height="75vh"
+          flex="1"
         >
           <FormLabel htmlFor="username">Username</FormLabel>
           <Input
@@ -82,7 +84,6 @@ const Register = () => {
             value={username}
             onChange={(e) => dispatch(setUsername(e.target.value))}
             type="text"
-            required
             w="40%"
           />
           <FormLabel htmlFor="email">Email</FormLabel>
@@ -92,7 +93,6 @@ const Register = () => {
             value={email}
             onChange={(e) => dispatch(setEmail(e.target.value))}
             type="email"
-            required
             w="40%"
           />
           <FormLabel htmlFor="password">Password</FormLabel>
@@ -102,15 +102,14 @@ const Register = () => {
             value={password}
             onChange={(e) => dispatch(setPassword(e.target.value))}
             type="password"
-            required
             w="40%"
           />
           <Button type="submit">
             {result.isLoading ? <Spinner /> : 'Register'}
           </Button>
         </Flex>
-      </form>
-    </FormControl>
+      </FormControl>
+    </form>
   )
 }
 export default Register

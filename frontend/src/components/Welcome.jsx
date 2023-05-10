@@ -7,9 +7,9 @@ const Welcome = () => {
   return (
     <Flex
       flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      height="75vh"
+      justify="center"
+      align="center"
+      // height="75vh"
       flex="1"
     >
       <Heading>Welcome to VODhub</Heading>
