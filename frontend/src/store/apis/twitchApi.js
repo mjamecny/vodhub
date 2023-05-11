@@ -103,6 +103,20 @@ const twitchApi = createApi({
           }
         },
       }),
+      subscribeToEvent: builder.query({
+        query: (query) => {
+          // console.log(query)
+          return {
+            url: 'eventsub/subscriptions',
+            body: query,
+            headers: {
+              'Client-Id': '47v1fnj00f4bpoe7nqjtbphpxs3o2x',
+              Authorization: 'Bearer 5nqf65wfkjyvwv2t714ux1exf2psqc',
+            },
+            method: 'POST',
+          }
+        },
+      }),
     }
   },
 })
@@ -114,6 +128,7 @@ export const {
   useLazyGetVideosByVideoIdQuery,
   useLazyGetClipsByClipIdQuery,
   useLazyGetStreamersByStreamerIdQuery,
+  useLazySubscribeToEventQuery,
   useGetUserByNameQuery,
   useGetVideosByVideoIdQuery,
   useGetIsStreamerOnlineQuery,

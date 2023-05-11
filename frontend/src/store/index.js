@@ -37,6 +37,7 @@ export {
   useLazyGetVideosByVideoIdQuery,
   useLazyGetClipsByClipIdQuery,
   useLazyGetStreamersByStreamerIdQuery,
+  useLazySubscribeToEventQuery,
   useGetVideosByVideoIdQuery,
   useGetUserByNameQuery,
   useGetIsStreamerOnlineQuery,

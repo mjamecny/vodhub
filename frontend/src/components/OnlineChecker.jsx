@@ -19,7 +19,11 @@ import {
   PopoverCloseButton,
 } from '@chakra-ui/react'
 
-import { useGetIsStreamerOnlineQuery, setStreamModalVideo } from '../store'
+import {
+  useGetIsStreamerOnlineQuery,
+  setStreamModalVideo,
+  useLazySubscribeToEventQuery,
+} from '../store'
 import { convertDuration } from '../utils'
 import { useDispatch } from 'react-redux'
 

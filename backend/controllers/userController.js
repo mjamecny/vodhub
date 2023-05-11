@@ -77,17 +77,9 @@ const getAccessToken = asyncHandler(async (req, res, next) => {
   res
   const token = signToken(currentUser.id)
 
-  res
-    .status(200)
-    .json({
-      token,
-    })
-    .header(
-      'Access-Control-Allow-Origin',
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://vodhub.netlify.app'
-    )
+  res.status(200).json({
+    token,
+  })
 })
 
 const logout = asyncHandler(async (req, res, next) => {
