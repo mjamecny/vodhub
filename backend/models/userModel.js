@@ -26,6 +26,11 @@ const userSchema = mongoose.Schema(
       type: [String],
       default: [],
     },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
     vodIds: {
       type: [String],
       default: [],
@@ -55,10 +60,7 @@ userSchema.pre('save', async function (next) {
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, salt)
 
-  this.refreshTokens =
-    // Delete passwordConfirm field
-    // this.passwordConfirm = undefined
-    next()
+  next()
 })
 
 userSchema.pre('save', function (next) {

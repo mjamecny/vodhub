@@ -74,12 +74,20 @@ const getAccessToken = asyncHandler(async (req, res, next) => {
       )
     )
   }
-
+  res
   const token = signToken(currentUser.id)
 
-  res.status(200).json({
-    token,
-  })
+  res
+    .status(200)
+    .json({
+      token,
+    })
+    .header(
+      'Access-Control-Allow-Origin',
+      process.env.NODE_ENV === development
+        ? 'http://localhost:3000'
+        : 'https://vodhub.netlify.app'
+    )
 })
 
 const logout = asyncHandler(async (req, res, next) => {
@@ -105,6 +113,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    role: req.body.role,
   })
 
   // Send welcome email
@@ -219,6 +228,24 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   createSendToken(user, 200, req, res)
 })
 
+// @desc Get All Users
+// @route GET /api/users
+// @access Protect
+
+const getAllUsers = asyncHandler(async (req, res, next) => {})
+
+// @desc Get user
+// @route GET /api/users/:id
+// @access Protect
+
+const getUser = asyncHandler(async (req, res, next) => {})
+
+// @desc Remove user
+// @route DELETE /api/users/:id
+// @access Protect
+
+const removeUser = asyncHandler(async (req, res, next) => {})
+
 module.exports = {
   registerUser,
   loginUser,
@@ -227,4 +254,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getAccessToken,
+  getAllUsers,
+  getUser,
+  removeUser,
 }
