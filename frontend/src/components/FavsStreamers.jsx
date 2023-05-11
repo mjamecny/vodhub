@@ -151,7 +151,7 @@ const FavsStreamers = () => {
             </Flex>
 
             <SimpleGrid
-              columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
+              columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"
               px={{ base: '1rem', sm: '2.5rem' }}
               pt="0.5rem"
