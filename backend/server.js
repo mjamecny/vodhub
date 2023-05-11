@@ -10,7 +10,7 @@ const dotenv = require('dotenv').config()
 const connectDB = require('./config/db')
 // const { errorHandler } = require('./middleware/errorMiddleware')
 const globalErrorHandler = require('./controllers/errorController')
-const allowCrossDomain = require('./middleware/crossMiddleware')
+const { allowCrossDomain } = require('./middleware/crossMiddleware')
 
 connectDB()
 
