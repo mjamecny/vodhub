@@ -30,7 +30,8 @@ app.use(
   })
 )
 
-app.use(allowCrossDomain)
+// app.use(allowCrossDomain)
+app.options('*', cors())
 
 // Limit requests from same API
 const limiter = rateLimit({
@@ -52,7 +53,6 @@ app.use('/api/vods', require('./routes/vodRoutes'))
 app.use('/api/clips', require('./routes/clipRoutes'))
 app.use('/api/streamers', require('./routes/streamerRoutes'))
 
-// app.use(errorHandler)
 app.use(globalErrorHandler)
 
 app.listen(port, () => {
