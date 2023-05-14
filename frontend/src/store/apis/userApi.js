@@ -77,6 +77,61 @@ const userApi = createApi({
           }
         },
       }),
+      getAppUsers: builder.query({
+        query: (data) => {
+          const { token } = data
+          return {
+            url: '/',
+            headers: {
+              authorization: token,
+            },
+            method: 'GET',
+          }
+        },
+        providesTags: ['USER'],
+      }),
+      removeUser: builder.mutation({
+        query: (data) => {
+          const { id, token } = data
+          return {
+            url: `/${id}`,
+            headers: {
+              authorization: token,
+            },
+            method: 'DELETE',
+          }
+        },
+        invalidatesTags: ['USER'],
+      }),
+      updateUser: builder.mutation({
+        query: (data) => {
+          return {
+            url: `/${data.id}`,
+            headers: {
+              authorization: data.token,
+            },
+            body: data.body,
+            method: 'PATCH',
+          }
+        },
+        invalidatesTags: ['USER'],
+      }),
+      removeCurrentUser: builder.mutation({
+        query: (data) => {
+          const { id, token } = data
+          return {
+            url: `/deleteMe`,
+            headers: {
+              authorization: token,
+            },
+            body: {
+              id,
+            },
+            method: 'DELETE',
+          }
+        },
+        invalidatesTags: ['USER'],
+      }),
     }
   },
 })
@@ -87,5 +142,9 @@ export const {
   useLazyForgotPasswordQuery,
   useLazyResetPasswordQuery,
   useLazyLogoutQuery,
+  useRemoveUserMutation,
+  useGetAppUsersQuery,
+  useRemoveCurrentUserMutation,
+  useUpdateUserMutation,
 } = userApi
 export { userApi }

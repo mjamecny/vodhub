@@ -8,9 +8,7 @@ const colors = require('colors')
 const port = process.env.PORT || 5000
 const dotenv = require('dotenv').config()
 const connectDB = require('./config/db')
-// const { errorHandler } = require('./middleware/errorMiddleware')
 const globalErrorHandler = require('./controllers/errorController')
-const { allowCrossDomain } = require('./middleware/crossMiddleware')
 
 connectDB()
 
@@ -30,7 +28,6 @@ app.use(
   })
 )
 
-// app.use(allowCrossDomain)
 app.options('*', cors())
 
 // Limit requests from same API

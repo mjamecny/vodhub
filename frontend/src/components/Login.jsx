@@ -41,6 +41,7 @@ const Login = () => {
             _id: res.data._id,
             username: res.data.username,
             email: res.data.email,
+            role: res.data.role,
           },
           refreshToken: res.data.refreshToken, // Only if you are using refreshToken feature
           refreshTokenExpireIn: 1,

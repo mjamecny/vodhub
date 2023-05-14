@@ -44,6 +44,7 @@ const createSendToken = (user, statusCode, req, res) => {
     _id: user._id,
     username: user.username,
     email: user.email,
+    role: user.role,
     token,
     refreshToken,
   })
@@ -135,6 +136,15 @@ const loginUser = asyncHandler(async (req, res, next) => {
     return next(new AppError('Incorrect email or password!', 401))
   }
 
+  if (!user.active) {
+    return next(
+      new AppError(
+        'Your account has been deactivated. Please contact support if you have any questions.',
+        401
+      )
+    )
+  }
+
   // 4) If everything ok, send token to client
   createSendToken(user, 200, req, res)
 })
@@ -145,6 +155,28 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
 const getMe = asyncHandler(async (req, res) => {
   res.status(200).json(req.user)
+})
+
+// @desc Delete current user
+// @route PATCH /api/users/deleteMe
+// @access Private
+
+const deleteMe = asyncHandler(async (req, res) => {
+  const { id } = req.body
+
+  const user = await User.findById(id)
+
+  if (!user) {
+    return next(new AppError('No user found', 404))
+  }
+
+  user.active = false
+
+  await user.save()
+
+  res.status(204).json({
+    message: 'User has been deleted successfully.',
+  })
 })
 
 // @desc Forgot password
@@ -224,19 +256,77 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 // @route GET /api/users
 // @access Protect
 
-const getAllUsers = asyncHandler(async (req, res, next) => {})
+const getAllUsers = asyncHandler(async (req, res, next) => {
+  const users = await User.find()
+
+  res.status(200).json({ users })
+})
 
 // @desc Get user
 // @route GET /api/users/:id
 // @access Protect
 
-const getUser = asyncHandler(async (req, res, next) => {})
+const getUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params
+  const user = await User.findOne({ _id: id })
+
+  res.status(200).json({ user })
+})
 
 // @desc Remove user
 // @route DELETE /api/users/:id
 // @access Protect
 
-const removeUser = asyncHandler(async (req, res, next) => {})
+const removeUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params
+
+  // Find the user by ID
+  const user = await User.findById(id)
+
+  // If the user doesn't exist, return a 404 error
+  if (!user) {
+    return next(new AppError('User not found', 404))
+  }
+
+  // Delete the user
+  await user.deleteOne()
+
+  // Return a success message
+  res.status(204).json({ message: 'User removed successfully' })
+})
+
+// @desc Update user
+// @route GET /api/users/:id
+// @access Protect
+
+const updateUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params
+
+  // Find the user by ID
+  const user = await User.findById(id)
+
+  // If the user doesn't exist, return a 404 error
+  if (!user) {
+    return next(new AppError('User not found', 404))
+  }
+
+  if (req.body.username) {
+    user.username = req.body.username
+  }
+
+  if (req.body.email) {
+    user.email = req.body.email
+  }
+
+  if (req.body.active) {
+    user.active = req.body.active
+  }
+
+  // Save user
+  await user.save()
+
+  res.status(200).json({ user })
+})
 
 module.exports = {
   registerUser,
@@ -249,4 +339,6 @@ module.exports = {
   getAllUsers,
   getUser,
   removeUser,
+  deleteMe,
+  updateUser,
 }

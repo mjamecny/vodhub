@@ -237,7 +237,6 @@ const FavsStreamers = () => {
                         <Button>Vods</Button>
                       </NavLink>
                       <IconButton
-                        // onClick={() => handleRemoveStreamer(streamer)}
                         onClick={() => handleRemoveStreamer(id)}
                         icon={<DeleteIcon />}
                       />

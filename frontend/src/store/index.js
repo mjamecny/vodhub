@@ -37,7 +37,6 @@ export {
   useLazyGetVideosByVideoIdQuery,
   useLazyGetClipsByClipIdQuery,
   useLazyGetStreamersByStreamerIdQuery,
-  useLazySubscribeToEventQuery,
   useGetVideosByVideoIdQuery,
   useGetUserByNameQuery,
   useGetIsStreamerOnlineQuery,
@@ -53,6 +52,10 @@ export {
   useLazyForgotPasswordQuery,
   useLazyResetPasswordQuery,
   useLazyLogoutQuery,
+  useGetAppUsersQuery,
+  useRemoveUserMutation,
+  useRemoveCurrentUserMutation,
+  useUpdateUserMutation,
 } from './apis/userApi'
 
 export {

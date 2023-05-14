@@ -12,6 +12,8 @@ import FavsStreamers from './components/FavsStreamers'
 import Register from './components/Register'
 import Login from './components/Login'
 import ResetPasswordForm from './components/ResetPasswordForm'
+import Users from './components/Users'
+import PrivateRoute from './components/PrivateRoute'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, RequireAuth } from 'react-auth-kit'
@@ -53,6 +55,15 @@ const App = () => {
                 </RequireAuth>
               }
             />
+            <Route
+              path="/users"
+              element={
+                <PrivateRoute role="admin">
+                  <Users />
+                </PrivateRoute>
+              }
+            />
+
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
