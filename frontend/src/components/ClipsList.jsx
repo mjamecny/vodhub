@@ -106,13 +106,17 @@ const ClipsList = () => {
             />
           </Flex>
 
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
-            spacing="1rem"
-            p={{ base: '1rem', sm: '2.5rem' }}
-          >
-            <ClipsListItem clips={clips} />
-          </SimpleGrid>
+          {clips.length === 0 ? (
+            <NoContent msg="Sorry, it looks like there are no clips available for this streamer at the moment. Please check back later or try again with a different streamer." />
+          ) : (
+            <SimpleGrid
+              columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+              spacing="1rem"
+              p={{ base: '1rem', sm: '2.5rem' }}
+            >
+              <ClipsListItem clips={clips} />
+            </SimpleGrid>
+          )}
         </>
       )}
     </Box>

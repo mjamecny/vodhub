@@ -13,6 +13,7 @@ import {
   Tooltip,
   Icon,
   Center,
+  Spinner,
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '@chakra-ui/icons'
@@ -48,14 +49,15 @@ const FavsStreamers = () => {
 
   const { streamers } = useSelector((state) => state.app)
 
-  const { streamerIds } = useGetStreamersQuery(
+  const { streamerIds, isFetching } = useGetStreamersQuery(
     { token: authHeader() },
     {
       skip: !authHeader(),
-      selectFromResult: ({ data, isError }) => {
+      selectFromResult: ({ data, isError, isFetching }) => {
         if (isError) signOut()
         return {
           streamerIds: data?.streamers || [],
+          isFetching,
         }
       },
     }
@@ -130,12 +132,17 @@ const FavsStreamers = () => {
   return (
     <>
       <Box flex="1">
-        {streamerIds.length === 0 ? (
+        {isFetching ? (
+          <Center height="75vh">
+            <Spinner size="xl" />
+          </Center>
+        ) : streamerIds.length === 0 ? (
           <>
             <Center mt="2rem" gap="1rem">
               <Text>Import streamers</Text>
               <input type="file" onChange={handleImport} />
             </Center>
+
             <NoContent
               msg="Do not have any favorite streamers saved yet? No problem! Just browse
             selection of videos or clips from any Twitch streamer and click the plus button to add them to your favorites or import your own JSON file."

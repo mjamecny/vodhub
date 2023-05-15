@@ -22,6 +22,8 @@ import {
   Heading,
   Text,
   Box,
+  Center,
+  Spinner,
 } from '@chakra-ui/react'
 
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
@@ -52,7 +54,7 @@ const Users = () => {
 
   const [removeUser] = useRemoveUserMutation()
   const [updateUser] = useUpdateUserMutation()
-  const { data } = useGetAppUsersQuery({
+  const { data, isFetching } = useGetAppUsersQuery({
     token: authHeader(),
   })
 
@@ -159,177 +161,185 @@ const Users = () => {
 
   return (
     <Box flex="1">
-      <SimpleGrid
-        columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
-        spacing="1rem"
-        p={{ base: '1rem', sm: '2.5rem' }}
-      >
-        {data?.users.map((user) => {
-          const { _id, username, email, role, active } = user
-          return (
-            <Card key={_id} size="sm">
-              <CardHeader>
-                <Heading size="sm" align="center">
-                  {_id}
-                </Heading>
-              </CardHeader>
-              <CardBody>
-                <Flex justify="center" align="center" gap=".5rem">
-                  <Text size="sm" justify="center" as="b">
-                    Username:
-                  </Text>
-                  {isEditing &&
-                  editing.id === _id &&
-                  editing.field === 'username' ? (
-                    <FormControl>
-                      <form onSubmit={handleSubmitUsername}>
-                        <InputGroup size="md">
-                          <Input
-                            type="text"
-                            value={editedUsername}
-                            onChange={(e) => setEditedUsername(e.target.value)}
-                          />
-                          <InputRightElement width="4.5rem">
-                            <Button
-                              size="sm"
-                              h="1.75rem"
-                              onClick={() => setIsEditing(false)}
-                            >
-                              Cancel
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>
-                      </form>
-                    </FormControl>
-                  ) : (
-                    <Flex justify="center" align="center" gap="1rem">
-                      {username}
-                      <IconButton
-                        size="sm"
-                        aria-label="Edit username"
-                        icon={<EditIcon />}
-                        onClick={() => {
-                          setEditedUsername(username)
-                          handleEdit(_id, 'username')
-                          setEditedId(_id)
-                          setIsEditing(true)
-                        }}
-                      />
-                    </Flex>
-                  )}
-                </Flex>
-                <Flex justify="center" align="center" gap=".5rem">
-                  <Text size="sm" justify="center" as="b">
-                    Email:
-                  </Text>
-                  {isEditing &&
-                  editing.id === _id &&
-                  editing.field === 'email' ? (
-                    <FormControl>
-                      <form onSubmit={handleSubmitEmail}>
-                        <InputGroup size="md">
-                          <Input
-                            type="email"
-                            value={editedEmail}
-                            onChange={(e) => setEditedEmail(e.target.value)}
-                          />
-                          <InputRightElement width="4.5rem">
-                            <Button
-                              size="sm"
-                              h="1.75rem"
-                              onClick={() => setIsEditing(false)}
-                            >
-                              Cancel
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>
-                      </form>
-                    </FormControl>
-                  ) : (
-                    <Flex justify="center" align="center" gap="1rem">
-                      {email}
-                      <IconButton
-                        size="sm"
-                        aria-label="Edit email"
-                        icon={<EditIcon />}
-                        onClick={() => {
-                          setEditedEmail(email)
-                          handleEdit(_id, 'email')
-                          setEditedId(_id)
-                          setIsEditing(true)
-                        }}
-                      />
-                    </Flex>
-                  )}
-                </Flex>
-                <Flex justify="center" align="center" gap=".5rem">
-                  <Text size="sm" justify="center" as="b">
-                    Role:
-                  </Text>
-                  <Text size="sm" justify="center">
-                    {role}
-                  </Text>
-                </Flex>
-                <Flex justify="center" align="center" gap=".5rem">
-                  <Text size="sm" justify="center" as="b">
-                    Active:
-                  </Text>
-                  {isEditing &&
-                  editing.id === _id &&
-                  editing.field === 'active' ? (
-                    <FormControl>
-                      <form onSubmit={handleSubmitActive}>
-                        <InputGroup size="md">
-                          <Input
-                            type="text"
-                            value={editedActive}
-                            onChange={(e) => setEditedActive(e.target.value)}
-                          />
-                          <InputRightElement width="4.5rem">
-                            <Button
-                              size="sm"
-                              h="1.75rem"
-                              onClick={() => setIsEditing(false)}
-                            >
-                              Cancel
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>
-                      </form>
-                    </FormControl>
-                  ) : (
-                    <Flex justify="center" align="center" gap="1rem">
-                      {active ? 'true' : 'false'}
-                      <IconButton
-                        size="sm"
-                        aria-label="Edit active"
-                        icon={<EditIcon />}
-                        onClick={() => {
-                          setEditedActive(active)
-                          handleEdit(_id, 'active')
-                          setEditedId(_id)
-                          setIsEditing(true)
-                        }}
-                      />
-                    </Flex>
-                  )}
-                </Flex>
-              </CardBody>
-              <CardFooter justify="center">
-                {' '}
-                <IconButton
-                  isDisabled={auth()._id === _id}
-                  onClick={() => handleOpen(_id)}
-                  size="md"
-                  colorScheme="red"
-                  aria-label="Remove from users"
-                  icon={<DeleteIcon />}
-                />
-              </CardFooter>
-            </Card>
-          )
-        })}
-      </SimpleGrid>
+      {isFetching ? (
+        <Center height="75vh">
+          <Spinner size="xl" />
+        </Center>
+      ) : (
+        <SimpleGrid
+          columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+          spacing="1rem"
+          p={{ base: '1rem', sm: '2.5rem' }}
+        >
+          {data?.users.map((user) => {
+            const { _id, username, email, role, active } = user
+            return (
+              <Card key={_id} size="sm">
+                <CardHeader>
+                  <Heading size="sm" align="center">
+                    {_id}
+                  </Heading>
+                </CardHeader>
+                <CardBody>
+                  <Flex justify="center" align="center" gap=".5rem">
+                    <Text size="sm" justify="center" as="b">
+                      Username:
+                    </Text>
+                    {isEditing &&
+                    editing.id === _id &&
+                    editing.field === 'username' ? (
+                      <FormControl>
+                        <form onSubmit={handleSubmitUsername}>
+                          <InputGroup size="md">
+                            <Input
+                              type="text"
+                              value={editedUsername}
+                              onChange={(e) =>
+                                setEditedUsername(e.target.value)
+                              }
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                size="sm"
+                                h="1.75rem"
+                                onClick={() => setIsEditing(false)}
+                              >
+                                Cancel
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                        </form>
+                      </FormControl>
+                    ) : (
+                      <Flex justify="center" align="center" gap="1rem">
+                        {username}
+                        <IconButton
+                          size="sm"
+                          aria-label="Edit username"
+                          icon={<EditIcon />}
+                          onClick={() => {
+                            setEditedUsername(username)
+                            handleEdit(_id, 'username')
+                            setEditedId(_id)
+                            setIsEditing(true)
+                          }}
+                        />
+                      </Flex>
+                    )}
+                  </Flex>
+                  <Flex justify="center" align="center" gap=".5rem">
+                    <Text size="sm" justify="center" as="b">
+                      Email:
+                    </Text>
+                    {isEditing &&
+                    editing.id === _id &&
+                    editing.field === 'email' ? (
+                      <FormControl>
+                        <form onSubmit={handleSubmitEmail}>
+                          <InputGroup size="md">
+                            <Input
+                              type="email"
+                              value={editedEmail}
+                              onChange={(e) => setEditedEmail(e.target.value)}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                size="sm"
+                                h="1.75rem"
+                                onClick={() => setIsEditing(false)}
+                              >
+                                Cancel
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                        </form>
+                      </FormControl>
+                    ) : (
+                      <Flex justify="center" align="center" gap="1rem">
+                        {email}
+                        <IconButton
+                          size="sm"
+                          aria-label="Edit email"
+                          icon={<EditIcon />}
+                          onClick={() => {
+                            setEditedEmail(email)
+                            handleEdit(_id, 'email')
+                            setEditedId(_id)
+                            setIsEditing(true)
+                          }}
+                        />
+                      </Flex>
+                    )}
+                  </Flex>
+                  <Flex justify="center" align="center" gap=".5rem">
+                    <Text size="sm" justify="center" as="b">
+                      Role:
+                    </Text>
+                    <Text size="sm" justify="center">
+                      {role}
+                    </Text>
+                  </Flex>
+                  <Flex justify="center" align="center" gap=".5rem">
+                    <Text size="sm" justify="center" as="b">
+                      Active:
+                    </Text>
+                    {isEditing &&
+                    editing.id === _id &&
+                    editing.field === 'active' ? (
+                      <FormControl>
+                        <form onSubmit={handleSubmitActive}>
+                          <InputGroup size="md">
+                            <Input
+                              type="text"
+                              value={editedActive}
+                              onChange={(e) => setEditedActive(e.target.value)}
+                            />
+                            <InputRightElement width="4.5rem">
+                              <Button
+                                size="sm"
+                                h="1.75rem"
+                                onClick={() => setIsEditing(false)}
+                              >
+                                Cancel
+                              </Button>
+                            </InputRightElement>
+                          </InputGroup>
+                        </form>
+                      </FormControl>
+                    ) : (
+                      <Flex justify="center" align="center" gap="1rem">
+                        {active ? 'true' : 'false'}
+                        <IconButton
+                          size="sm"
+                          aria-label="Edit active"
+                          icon={<EditIcon />}
+                          onClick={() => {
+                            setEditedActive(active)
+                            handleEdit(_id, 'active')
+                            setEditedId(_id)
+                            setIsEditing(true)
+                          }}
+                        />
+                      </Flex>
+                    )}
+                  </Flex>
+                </CardBody>
+                <CardFooter justify="center">
+                  {' '}
+                  <IconButton
+                    isDisabled={auth()._id === _id}
+                    onClick={() => handleOpen(_id)}
+                    size="md"
+                    colorScheme="red"
+                    aria-label="Remove from users"
+                    icon={<DeleteIcon />}
+                  />
+                </CardFooter>
+              </Card>
+            )
+          })}
+        </SimpleGrid>
+      )}
 
       <AlertDialog
         isOpen={isOpen}

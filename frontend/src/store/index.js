@@ -56,6 +56,7 @@ export {
   useRemoveUserMutation,
   useRemoveCurrentUserMutation,
   useUpdateUserMutation,
+  useUpdatePasswordMutation,
 } from './apis/userApi'
 
 export {

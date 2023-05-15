@@ -158,7 +158,7 @@ const getMe = asyncHandler(async (req, res) => {
 })
 
 // @desc Delete current user
-// @route PATCH /api/users/deleteMe
+// @route DELETE /api/users/deleteMe
 // @access Private
 
 const deleteMe = asyncHandler(async (req, res) => {
@@ -222,7 +222,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 })
 
 // @desc Reset password
-// @route POST /api/users/resetPassword/:token
+// @route PATCH /api/users/resetPassword/:token
 // @access Public
 
 const resetPassword = asyncHandler(async (req, res, next) => {
@@ -296,7 +296,7 @@ const removeUser = asyncHandler(async (req, res, next) => {
 })
 
 // @desc Update user
-// @route GET /api/users/:id
+// @route PATCH /api/users/:id
 // @access Protect
 
 const updateUser = asyncHandler(async (req, res, next) => {
@@ -328,6 +328,28 @@ const updateUser = asyncHandler(async (req, res, next) => {
   res.status(200).json({ user })
 })
 
+// @desc Update password
+// @route PATCH /api/users/updatePassword
+// @access Protect
+
+const updatePassword = asyncHandler(async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password')
+
+  // 2) Check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401))
+  }
+
+  // 3) If so, update password
+  user.password = req.body.password
+
+  await user.save()
+
+  // 4) Log user in, send JWT
+  createSendToken(user, 200, req, res)
+})
+
 module.exports = {
   registerUser,
   loginUser,
@@ -335,6 +357,7 @@ module.exports = {
   getMe,
   forgotPassword,
   resetPassword,
+  updatePassword,
   getAccessToken,
   getAllUsers,
   getUser,

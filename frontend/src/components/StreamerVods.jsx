@@ -8,12 +8,7 @@ import { useGetVideosByUserIdQuery } from '../store'
 
 import { useParams } from 'react-router-dom'
 
-import { useIsAuthenticated } from 'react-auth-kit'
-import { useSignOut } from 'react-auth-kit'
-
 const StreamerVods = () => {
-  // const isAuthenticated = useIsAuthenticated()
-  // const signOut = useSignOut()
   const { userId } = useParams()
   const { vods, isFetching, isError } = useGetVideosByUserIdQuery(userId, {
     skip: !userId,
@@ -26,10 +21,6 @@ const StreamerVods = () => {
     },
   })
 
-  // console.log(vods)
-
-  // if (isError) signOut()
-
   return (
     <Box flex="1">
       {!userId ? (
@@ -40,13 +31,19 @@ const StreamerVods = () => {
       ) : isFetching ? (
         <VodsSpinner />
       ) : (
-        <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
-          spacing="1rem"
-          p={{ base: '1rem', sm: '2.5rem' }}
-        >
-          <VodsListItem vods={vods} />
-        </SimpleGrid>
+        <>
+          {vods.length === 0 ? (
+            <NoContent msg="Sorry, it looks like there are no VODs available for this streamer at the moment. Please check back later or try again with a different streamer." />
+          ) : (
+            <SimpleGrid
+              columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+              spacing="1rem"
+              p={{ base: '1rem', sm: '2.5rem' }}
+            >
+              <VodsListItem vods={vods} />
+            </SimpleGrid>
+          )}
+        </>
       )}
     </Box>
   )

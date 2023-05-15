@@ -3,7 +3,7 @@ import { FaGithub } from 'react-icons/fa'
 
 const Footer = () => {
   return (
-    <Flex flexDirection="column" align="center" justify="center">
+    <Flex flexDirection="column" align="center" justify="center" mt="1rem">
       <Flex gap="0.5rem" justify="center" align="center">
         <Link href="https://github.com/mjamecny/vodhub" target="blank">
           <Icon as={FaGithub} boxSize={5} />

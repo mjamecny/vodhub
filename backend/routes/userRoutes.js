@@ -8,6 +8,7 @@ const {
   getMe,
   forgotPassword,
   resetPassword,
+  updatePassword,
   getAllUsers,
   getUser,
   removeUser,
@@ -16,9 +17,13 @@ const {
 } = require('../controllers/userController')
 
 const { protect, restrictTo } = require('../middleware/authMiddleware')
+// const {
+//   updatePassword,
+// } = require('../../../natours-what/controllers/authController')
 
 router.post('/forgotPassword', forgotPassword)
 router.patch('/resetPassword/:token', resetPassword)
+router.patch('/updatePassword', protect, updatePassword)
 router.post('/', registerUser)
 router.post('/login', loginUser)
 router.delete('/logout', protect, logout)

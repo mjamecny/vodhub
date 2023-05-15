@@ -116,6 +116,23 @@ const userApi = createApi({
         },
         invalidatesTags: ['USER'],
       }),
+      updatePassword: builder.mutation({
+        query: (data) => {
+          const { token, password, passwordCurrent } = data
+          return {
+            url: `/updatePassword`,
+            headers: {
+              authorization: token,
+            },
+            body: {
+              passwordCurrent,
+              password,
+            },
+            method: 'PATCH',
+          }
+        },
+        invalidatesTags: ['USER'],
+      }),
       removeCurrentUser: builder.mutation({
         query: (data) => {
           const { id, token } = data
@@ -146,5 +163,6 @@ export const {
   useGetAppUsersQuery,
   useRemoveCurrentUserMutation,
   useUpdateUserMutation,
+  useUpdatePasswordMutation,
 } = userApi
 export { userApi }

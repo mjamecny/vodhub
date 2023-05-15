@@ -334,6 +334,14 @@ const Navbar = () => {
                     <MenuDivider />
                     <MenuGroup title="User panel">
                       <MenuItem onClick={onOpen}>Delete account</MenuItem>
+                      <NavLink
+                        to="/updatePassword"
+                        className={({ isActive }) =>
+                          isActive ? 'activeLink' : 'nonactiveLink'
+                        }
+                      >
+                        <MenuItem>Change Password</MenuItem>
+                      </NavLink>
                     </MenuGroup>
                   </>
                 )}

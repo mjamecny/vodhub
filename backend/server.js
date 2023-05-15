@@ -9,6 +9,7 @@ const port = process.env.PORT || 5000
 const dotenv = require('dotenv').config()
 const connectDB = require('./config/db')
 const globalErrorHandler = require('./controllers/errorController')
+const AppError = require('./utils/appError')
 
 connectDB()
 
@@ -49,6 +50,10 @@ app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/vods', require('./routes/vodRoutes'))
 app.use('/api/clips', require('./routes/clipRoutes'))
 app.use('/api/streamers', require('./routes/streamerRoutes'))
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
+})
 
 app.use(globalErrorHandler)
 

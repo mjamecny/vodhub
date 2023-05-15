@@ -11,6 +11,8 @@ import {
   useToast,
   useDisclosure,
   Box,
+  Center,
+  Spinner,
 } from '@chakra-ui/react'
 
 import {
@@ -40,23 +42,23 @@ import { useAuthHeader } from 'react-auth-kit'
 
 const FavsClips = () => {
   const authHeader = useAuthHeader()
-  const { clips } = useSelector((state) => state.app)
   const dispatch = useDispatch()
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { clipIds } = useGetClipsQuery(
+  const { clips } = useSelector((state) => state.app)
+  const { clipIds, isFetching } = useGetClipsQuery(
     { token: authHeader() },
     {
       skip: !authHeader(),
-      selectFromResult: ({ data }) => {
+      selectFromResult: ({ data, isFetching }) => {
         return {
           clipIds: data?.clips || [],
+          isFetching,
         }
       },
     }
   )
-
   const [removeClip] = useRemoveClipMutation()
   const [removeAllClips] = useRemoveAllClipsMutation()
   const [getClipsByClipId] = useLazyGetClipsByClipIdQuery()
@@ -112,7 +114,11 @@ const FavsClips = () => {
   return (
     <>
       <Box flex="1">
-        {clipIds.length === 0 ? (
+        {isFetching ? (
+          <Center height="75vh">
+            <Spinner size="xl" />
+          </Center>
+        ) : clipIds.length === 0 ? (
           <NoContent
             msg="Do not have any favorite clips saved yet? No problem! Just browse
             selection of clips from any Twitch streamer and click the plus button

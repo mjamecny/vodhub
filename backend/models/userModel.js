@@ -22,6 +22,7 @@ const userSchema = mongoose.Schema(
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
+    passwordChangedAt: Date,
     refreshTokens: {
       type: [String],
       default: [],
@@ -91,6 +92,19 @@ userSchema.methods.createPasswordResetToken = function () {
     .digest('hex')
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000
   return resetToken
+}
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    )
+    return JWTTimestamp < changedTimestamp
+  }
+
+  // False means NOT changed
+  return false
 }
 
 module.exports = mongoose.model('User', userSchema)

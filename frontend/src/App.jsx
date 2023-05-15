@@ -13,6 +13,7 @@ import Register from './components/Register'
 import Login from './components/Login'
 import ResetPasswordForm from './components/ResetPasswordForm'
 import Users from './components/Users'
+import UpdatePassword from './components/UpdatePassword'
 import PrivateRoute from './components/PrivateRoute'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -91,6 +92,14 @@ const App = () => {
               element={
                 <RequireAuth loginPath={'/login'}>
                   <FavsStreamers />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/updatePassword"
+              element={
+                <RequireAuth loginPath={'/login'}>
+                  <UpdatePassword />
                 </RequireAuth>
               }
             />

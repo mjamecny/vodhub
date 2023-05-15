@@ -11,6 +11,8 @@ import {
   useToast,
   useDisclosure,
   Box,
+  Spinner,
+  Center,
 } from '@chakra-ui/react'
 
 import {
@@ -44,13 +46,14 @@ const FavsVods = () => {
   const toast = useToast()
   const { vods } = useSelector((state) => state.app)
 
-  const { vodIds } = useGetVodsQuery(
+  const { vodIds, isFetching } = useGetVodsQuery(
     { token: authHeader() },
     {
       skip: !authHeader(),
-      selectFromResult: ({ data }) => {
+      selectFromResult: ({ data, isFetching }) => {
         return {
           vodIds: data?.vods || [],
+          isFetching,
         }
       },
     }
@@ -112,7 +115,11 @@ const FavsVods = () => {
   return (
     <>
       <Box flex="1">
-        {vodIds.length === 0 ? (
+        {isFetching ? (
+          <Center height="75vh">
+            <Spinner size="xl" />
+          </Center>
+        ) : vodIds.length === 0 ? (
           <NoContent
             msg="Do not have any favorite VODs saved yet? No problem! Just browse
           selection of VODs from any Twitch streamer and click the plus button
@@ -121,6 +128,7 @@ const FavsVods = () => {
         ) : (
           <>
             <DeleteAllButton handleDelete={handleDeleteAllVods} />
+
             <SimpleGrid
               columns={{ base: 1, sm: 2, lg: 3, '2xl': 4 }}
               spacing="1rem"
