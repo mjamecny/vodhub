@@ -5,6 +5,8 @@ Little app built with MERN stack for searching and saving Twitch VODs, clips and
 ## Features
 
 - Register account
+- Deactivate account
+- Share vod,clip to social media
 - Search VODs and clips for specific streamer
 - Add VOD, clip or streamer to favorites
 - Delete VOD(s), clip(s) or streamer(s) from favorites

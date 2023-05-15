@@ -31,7 +31,7 @@ import {
   useRemoveUserMutation,
   useUpdateUserMutation,
 } from '../store'
-import { useAuthHeader } from 'react-auth-kit'
+import { useAuthHeader, useAuthUser } from 'react-auth-kit'
 import { useRef } from 'react'
 import { useState } from 'react'
 
@@ -39,6 +39,7 @@ const Users = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
   const authHeader = useAuthHeader()
+  const auth = useAuthUser()
   const cancelRef = useRef()
 
   const [userId, setUserId] = useState('')
@@ -317,6 +318,7 @@ const Users = () => {
               <CardFooter justify="center">
                 {' '}
                 <IconButton
+                  isDisabled={auth()._id === _id}
                   onClick={() => handleOpen(_id)}
                   size="md"
                   colorScheme="red"
