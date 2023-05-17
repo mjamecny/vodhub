@@ -64,7 +64,6 @@ const userApi = createApi({
           }
         },
       }),
-
       resetPassword: builder.query({
         query: (data) => {
           const { password, token } = data

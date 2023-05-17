@@ -208,7 +208,21 @@ const Navbar = () => {
                         <MenuItem>Users</MenuItem>
                       </NavLink>
                     </MenuGroup>
-                  ) : null}
+                  ) : (
+                    <>
+                      <MenuGroup title="User panel">
+                        <MenuItem onClick={onOpen}>Delete account</MenuItem>
+                        <NavLink
+                          to="/updatePassword"
+                          className={({ isActive }) =>
+                            isActive ? 'activeLink' : 'nonactiveLink'
+                          }
+                        >
+                          <MenuItem>Change Password</MenuItem>
+                        </NavLink>
+                      </MenuGroup>
+                    </>
+                  )}
 
                   <MenuDivider />
                   <MenuItem onClick={handleSignOut}>Logout</MenuItem>

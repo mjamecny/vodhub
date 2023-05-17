@@ -17,9 +17,6 @@ const {
 } = require('../controllers/userController')
 
 const { protect, restrictTo } = require('../middleware/authMiddleware')
-// const {
-//   updatePassword,
-// } = require('../../../natours-what/controllers/authController')
 
 router.post('/forgotPassword', forgotPassword)
 router.patch('/resetPassword/:token', resetPassword)

@@ -83,6 +83,10 @@ const getAccessToken = asyncHandler(async (req, res, next) => {
   })
 })
 
+// @desc Logout user
+// @route POST /api/users/logout
+// @access Private
+
 const logout = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id)
 
