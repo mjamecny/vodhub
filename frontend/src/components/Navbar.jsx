@@ -205,7 +205,16 @@ const Navbar = () => {
                           isActive ? 'activeLink' : 'nonactiveLink'
                         }
                       >
-                        <MenuItem>Users</MenuItem>
+                        <MenuItem>Manage Users</MenuItem>
+                      </NavLink>
+                      <MenuItem onClick={onOpen}>Delete account</MenuItem>
+                      <NavLink
+                        to="/updatePassword"
+                        className={({ isActive }) =>
+                          isActive ? 'activeLink' : 'nonactiveLink'
+                        }
+                      >
+                        <MenuItem>Change Password</MenuItem>
                       </NavLink>
                     </MenuGroup>
                   ) : (
@@ -339,7 +348,16 @@ const Navbar = () => {
                           isActive ? 'activeLink' : 'nonactiveLink'
                         }
                       >
-                        <MenuItem>Users</MenuItem>
+                        <MenuItem>Manage Users</MenuItem>
+                      </NavLink>
+                      <MenuItem onClick={onOpen}>Delete account</MenuItem>
+                      <NavLink
+                        to="/updatePassword"
+                        className={({ isActive }) =>
+                          isActive ? 'activeLink' : 'nonactiveLink'
+                        }
+                      >
+                        <MenuItem>Change Password</MenuItem>
                       </NavLink>
                     </MenuGroup>
                   </>

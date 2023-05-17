@@ -2,7 +2,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   useToast,
   Spinner,
@@ -67,25 +66,27 @@ const UpdatePassword = () => {
             gap="1rem"
             height="75vh"
           >
-            <FormLabel htmlFor="passwordCurrent">Password</FormLabel>
             <Input
+              size="lg"
               id="passwordCurrent"
               name="passwordCurrent"
               value={passwordCurrent}
+              placeholder="Current Password"
               onChange={(e) => setPasswordCurrent(e.target.value)}
               type="password"
               required
-              w="40%"
+              w={{ base: '80%', md: '40%' }}
             />
-            <FormLabel htmlFor="password">New password</FormLabel>
             <Input
+              size="lg"
               id="password"
               name="password"
               value={password}
+              placeholder="New Password"
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               required
-              w="40%"
+              w={{ base: '80%', md: '40%' }}
             />
             <Button type="submit">
               {result.isLoading ? <Spinner /> : 'Submit'}

@@ -2,7 +2,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   useToast,
   Spinner,
@@ -77,32 +76,37 @@ const Register = () => {
           height="75vh"
           flex="1"
         >
-          <FormLabel htmlFor="username">Username</FormLabel>
           <Input
+            size="lg"
             id="username"
             name="username"
+            placeholder="Username"
             value={username}
             onChange={(e) => dispatch(setUsername(e.target.value))}
             type="text"
-            w="40%"
+            w={{ base: '80%', md: '40%' }}
           />
-          <FormLabel htmlFor="email">Email</FormLabel>
+
           <Input
+            size="lg"
             id="email"
             name="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => dispatch(setEmail(e.target.value))}
             type="email"
-            w="40%"
+            w={{ base: '80%', md: '40%' }}
           />
-          <FormLabel htmlFor="password">Password</FormLabel>
+
           <Input
+            size="lg"
             id="password"
             name="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => dispatch(setPassword(e.target.value))}
             type="password"
-            w="40%"
+            w={{ base: '80%', md: '40%' }}
           />
           <Button type="submit">
             {result.isLoading ? <Spinner /> : 'Register'}

@@ -2,7 +2,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   Input,
   useToast,
   useDisclosure,
@@ -80,25 +79,28 @@ const Login = () => {
             gap="1rem"
             height="75vh"
           >
-            <FormLabel htmlFor="email">Email</FormLabel>
             <Input
+              size="lg"
               id="email"
               name="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => dispatch(setEmail(e.target.value))}
               type="email"
               required
-              w="40%"
+              w={{ base: '80%', md: '40%' }}
             />
-            <FormLabel htmlFor="password">Password</FormLabel>
+
             <Input
+              size="lg"
               id="password"
               name="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => dispatch(setPassword(e.target.value))}
               type="password"
               required
-              w="40%"
+              w={{ base: '80%', md: '40%' }}
             />
             <Button type="submit">
               {result.isLoading ? <Spinner /> : 'Login'}
