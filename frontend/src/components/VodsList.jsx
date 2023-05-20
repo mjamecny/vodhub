@@ -12,6 +12,7 @@ import { AddIcon } from '@chakra-ui/icons'
 import OnlineChecker from './OnlineChecker'
 import VodsListItem from './VodsListItem'
 import NoContent from './NoContent'
+import FormFilter from './FormFilter'
 
 import { useSelector } from 'react-redux'
 import {
@@ -25,7 +26,9 @@ import { useAuthHeader } from 'react-auth-kit'
 const VodsList = () => {
   const authHeader = useAuthHeader()
   const toast = useToast()
-  const { userId, searchedUsername } = useSelector((state) => state.app)
+  const { userId, searchedUsername, isFiltering, filtered } = useSelector(
+    (state) => state.app
+  )
   const { vods, isFetching } = useGetVideosByUserIdQuery(userId, {
     skip: !userId,
     selectFromResult: ({ data, isFetching }) => {
@@ -37,6 +40,7 @@ const VodsList = () => {
   })
 
   const [addStreamer] = useAddStreamerMutation()
+
   const { streamer } = useGetUserByNameQuery(searchedUsername, {
     skip: !searchedUsername,
     selectFromResult: ({ data }) => {
@@ -45,6 +49,7 @@ const VodsList = () => {
       }
     },
   })
+
   const { streamerIds } = useGetStreamersQuery(
     { token: authHeader() },
     {
@@ -106,13 +111,28 @@ const VodsList = () => {
           {vods.length === 0 ? (
             <NoContent msg="Sorry, it looks like there are no VODs available for this streamer at the moment. Please check back later or try again with a different streamer." />
           ) : (
-            <SimpleGrid
-              columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
-              spacing="1rem"
-              p={{ base: '1rem', sm: '2.5rem' }}
-            >
-              <VodsListItem vods={vods} />
-            </SimpleGrid>
+            <>
+              <FormFilter data={vods} />
+              {isFiltering ? (
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+                  spacing="1rem"
+                  px={{ base: '1rem', sm: '2.5rem' }}
+                  mt=".5rem"
+                >
+                  <VodsListItem vods={filtered} />
+                </SimpleGrid>
+              ) : (
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+                  spacing="1rem"
+                  px={{ base: '1rem', sm: '2.5rem' }}
+                  mt=".5rem"
+                >
+                  <VodsListItem vods={vods} />
+                </SimpleGrid>
+              )}
+            </>
           )}
         </>
       )}

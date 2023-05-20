@@ -93,6 +93,9 @@ export {
   setStreamModalVideo,
   setVodModalVideo,
   setClipModalVideo,
+  setIsFiltering,
+  setQuery,
+  setFiltered,
 } from './slices/appSlice'
 
 export { setUsername, setEmail, setPassword } from './slices/userSlice'

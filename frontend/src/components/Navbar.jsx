@@ -1,18 +1,9 @@
 import {
   Flex,
-  FormControl,
-  Input,
-  InputGroup,
-  InputRightElement,
   useColorMode,
   IconButton,
-  Center,
-  Kbd,
   Spacer,
   Image,
-  RadioGroup,
-  Stack,
-  Radio,
   useToast,
   Menu,
   MenuButton,
@@ -29,26 +20,19 @@ import {
   AlertDialogFooter,
   Button,
 } from '@chakra-ui/react'
-import { SearchIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 import { FaUser } from 'react-icons/fa'
 
-import { useHotkeys } from 'react-hotkeys-hook'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
-import {
-  useLazyGetUserByNameQuery,
-  useLazyLogoutQuery,
-  useRemoveCurrentUserMutation,
-} from '../store'
-import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+
+import { useLazyLogoutQuery, useRemoveCurrentUserMutation } from '../store'
+
 import logo from '../assets/logo.png'
-import {
-  setStreamer,
-  setSearchedUsername,
-  setUserId,
-  setSearchMode,
-  setErrorMsg,
-} from '../store'
+
+import FormSearch from './FormSearch'
+
 import {
   useIsAuthenticated,
   useSignOut,
@@ -62,57 +46,13 @@ const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const auth = useAuthUser()
   const authHeader = useAuthHeader()
-  const { streamer, searchMode } = useSelector((state) => state.app)
   const [removeCurrentUser] = useRemoveCurrentUserMutation()
-  const [getUser] = useLazyGetUserByNameQuery()
   const [logout] = useLazyLogoutQuery()
   const isAuthenticated = useIsAuthenticated()
   const signOut = useSignOut()
-  const inputRef = useRef(null)
   const cancelRef = useRef()
   const { colorMode, toggleColorMode } = useColorMode()
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
   const toast = useToast()
-
-  useHotkeys('ctrl + /', () => {
-    inputRef.current.focus()
-  })
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (streamer === '') {
-      toast({
-        title: 'No username provided',
-        description: 'Please enter a username',
-        status: 'warning',
-        position: 'top',
-        duration: 5000,
-        isClosable: false,
-      })
-      return
-    }
-    dispatch(setSearchedUsername(streamer))
-    if (searchMode === 'streamers') {
-      dispatch(setStreamer(''))
-      navigate('/streamers')
-    } else {
-      const result = await getUser(streamer)
-      if (result.data.data.length === 0) {
-        dispatch(setErrorMsg('Streamer not found'))
-        navigate('*')
-        return
-      }
-      dispatch(setUserId(result.data.data[0].id))
-      dispatch(setStreamer(''))
-      if (searchMode === 'vods') navigate('/vods')
-      if (searchMode === 'clips') navigate('/clips')
-    }
-  }
-
-  const handleChangeMode = (mode) => {
-    dispatch(setSearchMode(mode))
-  }
 
   const handleSignOut = async () => {
     const refreshToken = localStorage.getItem('_auth_refresh')
@@ -132,7 +72,7 @@ const Navbar = () => {
 
   const handleDeleteAccount = async () => {
     onClose()
-    const res = await removeCurrentUser({ token: authHeader(), id: auth()._id })
+    await removeCurrentUser({ token: authHeader(), id: auth()._id })
     signOut()
   }
 
@@ -153,6 +93,7 @@ const Navbar = () => {
             alt="Logo"
           />
         </Link>
+        {/* Mobile Menu */}
         <Flex
           display={{ base: 'flex', lg: 'none' }}
           align="center"
@@ -171,64 +112,34 @@ const Navbar = () => {
                 </MenuButton>
                 <MenuList>
                   <MenuGroup title="Favourites">
-                    <NavLink
-                      to="/favorites/vods"
-                      className={({ isActive }) =>
-                        isActive ? 'activeLink' : 'nonactiveLink'
-                      }
-                    >
+                    <Link to="/favorites/vods">
                       <MenuItem>Vods</MenuItem>
-                    </NavLink>
-                    <NavLink
-                      to="/favorites/clips"
-                      className={({ isActive }) =>
-                        isActive ? 'activeLink' : 'nonactiveLink'
-                      }
-                    >
+                    </Link>
+                    <Link to="/favorites/clips">
                       <MenuItem>Clips</MenuItem>
-                    </NavLink>
-                    <NavLink
-                      to="/favorites/streamers"
-                      className={({ isActive }) =>
-                        isActive ? 'activeLink' : 'nonactiveLink'
-                      }
-                    >
+                    </Link>
+                    <Link to="/favorites/streamers">
                       <MenuItem>Streamers</MenuItem>
-                    </NavLink>
+                    </Link>
                   </MenuGroup>
                   <MenuDivider />
                   {auth().role === 'admin' ? (
                     <MenuGroup title="Admin panel">
-                      <NavLink
-                        to="/users"
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
+                      <Link to="/users">
                         <MenuItem>Manage Users</MenuItem>
-                      </NavLink>
+                      </Link>
                       <MenuItem onClick={onOpen}>Delete account</MenuItem>
-                      <NavLink
-                        to="/updatePassword"
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
+                      <Link to="/updatePassword">
                         <MenuItem>Change Password</MenuItem>
-                      </NavLink>
+                      </Link>
                     </MenuGroup>
                   ) : (
                     <>
                       <MenuGroup title="User panel">
                         <MenuItem onClick={onOpen}>Delete account</MenuItem>
-                        <NavLink
-                          to="/updatePassword"
-                          className={({ isActive }) =>
-                            isActive ? 'activeLink' : 'nonactiveLink'
-                          }
-                        >
+                        <Link to="/updatePassword">
                           <MenuItem>Change Password</MenuItem>
-                        </NavLink>
+                        </Link>
                       </MenuGroup>
                     </>
                   )}
@@ -252,51 +163,9 @@ const Navbar = () => {
         </Flex>
 
         <Spacer />
-        <FormControl isDisabled={!isAuthenticated()}>
-          <form onSubmit={handleSubmit}>
-            <Center flexDirection={{ base: 'column', md: 'row' }}>
-              <InputGroup w={{ base: '90%', md: '50%' }} size={{ base: 'lg' }}>
-                <Input
-                  placeholder="Twitch username"
-                  name="streamer"
-                  value={streamer}
-                  onChange={(e) => dispatch(setStreamer(e.target.value))}
-                  ref={inputRef}
-                />
-                <InputRightElement
-                  display={{ base: 'none', lg: 'flex' }}
-                  width="4.5rem"
-                  mr="1rem"
-                >
-                  <Kbd>ctrl</Kbd> + <Kbd>/</Kbd>
-                </InputRightElement>
-              </InputGroup>
+        <FormSearch />
 
-              <IconButton
-                display={{ base: 'none', md: 'block' }}
-                size="lg"
-                marginLeft="1.5rem"
-                aria-label="Search Twitch streamer"
-                icon={<SearchIcon />}
-                onClick={handleSubmit}
-                isDisabled={!isAuthenticated()}
-              />
-              <RadioGroup
-                ml="1rem"
-                mt={{ base: '1rem', md: '0' }}
-                onChange={handleChangeMode}
-                value={searchMode}
-              >
-                <Stack direction="row">
-                  <Radio value="vods">Vods</Radio>
-                  <Radio value="clips">Clips</Radio>
-                  <Radio value="streamers">Streamers</Radio>
-                </Stack>
-              </RadioGroup>
-            </Center>
-          </form>
-        </FormControl>
-
+        {/* Desktop Menu */}
         <Flex
           display={{ base: 'none', lg: 'flex' }}
           align="center"
@@ -313,52 +182,27 @@ const Navbar = () => {
               </MenuButton>
               <MenuList>
                 <MenuGroup title="Favourites">
-                  <NavLink
-                    to="/favorites/vods"
-                    className={({ isActive }) =>
-                      isActive ? 'activeLink' : 'nonactiveLink'
-                    }
-                  >
+                  <Link to="/favorites/vods">
                     <MenuItem>Vods</MenuItem>
-                  </NavLink>
-                  <NavLink
-                    to="/favorites/clips"
-                    className={({ isActive }) =>
-                      isActive ? 'activeLink' : 'nonactiveLink'
-                    }
-                  >
+                  </Link>
+                  <Link to="/favorites/clips">
                     <MenuItem>Clips</MenuItem>
-                  </NavLink>
-                  <NavLink
-                    to="/favorites/streamers"
-                    className={({ isActive }) =>
-                      isActive ? 'activeLink' : 'nonactiveLink'
-                    }
-                  >
+                  </Link>
+                  <Link to="/favorites/streamers">
                     <MenuItem>Streamers</MenuItem>
-                  </NavLink>
+                  </Link>
                 </MenuGroup>
                 {auth().role === 'admin' ? (
                   <>
                     <MenuDivider />
                     <MenuGroup title="Admin panel">
-                      <NavLink
-                        to="/users"
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
+                      <Link to="/users">
                         <MenuItem>Manage Users</MenuItem>
-                      </NavLink>
+                      </Link>
                       <MenuItem onClick={onOpen}>Delete account</MenuItem>
-                      <NavLink
-                        to="/updatePassword"
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
+                      <Link to="/updatePassword">
                         <MenuItem>Change Password</MenuItem>
-                      </NavLink>
+                      </Link>
                     </MenuGroup>
                   </>
                 ) : (
@@ -366,14 +210,9 @@ const Navbar = () => {
                     <MenuDivider />
                     <MenuGroup title="User panel">
                       <MenuItem onClick={onOpen}>Delete account</MenuItem>
-                      <NavLink
-                        to="/updatePassword"
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
+                      <Link to="/updatePassword">
                         <MenuItem>Change Password</MenuItem>
-                      </NavLink>
+                      </Link>
                     </MenuGroup>
                   </>
                 )}

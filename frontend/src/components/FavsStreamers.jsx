@@ -2,26 +2,15 @@ import {
   Flex,
   Text,
   SimpleGrid,
-  Card,
-  CardBody,
-  CardFooter,
-  IconButton,
   useToast,
   Button,
   Box,
-  Avatar,
-  Tooltip,
-  Icon,
   Center,
   Spinner,
 } from '@chakra-ui/react'
 
-import { DeleteIcon } from '@chakra-ui/icons'
-import { FaHeart, FaRegCalendarAlt, FaTv } from 'react-icons/fa'
-
 import {
   useGetStreamersQuery,
-  useRemoveStreamerMutation,
   useRemoveAllStreamersMutation,
   useLazyGetStreamersByStreamerIdQuery,
   setStreamers,
@@ -29,14 +18,11 @@ import {
 } from '../store'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
 
 import NoContent from './NoContent'
-import FormattedFollows from './FormattedFollows'
-import OnlineChecker from './OnlineChecker'
 import DeleteAllButton from './DeleteAllButton'
+import FavStreamerItem from './FavStreamerItem'
 
-import { changeNumberFormat, changeDateFormat } from '../utils'
 import { useAuthHeader, useSignOut } from 'react-auth-kit'
 
 const FavsStreamers = () => {
@@ -46,6 +32,8 @@ const FavsStreamers = () => {
   const toast = useToast()
 
   const [importData] = useImportStreamersMutation()
+  const [getStreamersByStreamerId] = useLazyGetStreamersByStreamerIdQuery()
+  const [removedAllStreamers] = useRemoveAllStreamersMutation()
 
   const { streamers } = useSelector((state) => state.app)
 
@@ -62,21 +50,6 @@ const FavsStreamers = () => {
       },
     }
   )
-
-  const [getStreamersByStreamerId] = useLazyGetStreamersByStreamerIdQuery()
-  const [removeStreamer] = useRemoveStreamerMutation()
-  const [removedAllStreamers] = useRemoveAllStreamersMutation()
-
-  const handleRemoveStreamer = async (id) => {
-    await removeStreamer({ id, token: authHeader() })
-    toast({
-      description: 'Removed from your favorites',
-      status: 'info',
-      duration: 3000,
-      position: 'top',
-      isClosable: false,
-    })
-  }
 
   const handleDeleteAllStreamers = async () => {
     await removedAllStreamers({ token: authHeader() })
@@ -163,102 +136,7 @@ const FavsStreamers = () => {
               px={{ base: '1rem', sm: '2.5rem' }}
               pt="0.5rem"
             >
-              {streamers.map((streamer) => {
-                const {
-                  id,
-                  login,
-                  description,
-                  profile_image_url,
-                  created_at,
-                  view_count,
-                } = streamer
-                const [month, day, year] = changeDateFormat(created_at)
-                const formattedViews = changeNumberFormat(view_count)
-
-                return (
-                  <Card key={id}>
-                    <CardBody display="flex" flexDirection="column" gap=".5rem">
-                      <Avatar
-                        alignSelf="center"
-                        size="md"
-                        name={login}
-                        src={profile_image_url}
-                      />
-                      <Center>
-                        <OnlineChecker streamer={login} id={id} />
-                      </Center>
-                      <Text flex="1">{description}</Text>
-                      <Flex gap=".5rem" mt="1rem">
-                        <Flex
-                          flexDirection="column"
-                          justify="center"
-                          align="center"
-                          gap="0.25rem"
-                          flex="1"
-                        >
-                          <Tooltip label="Created">
-                            <span>
-                              <Icon as={FaRegCalendarAlt} />
-                            </span>
-                          </Tooltip>
-                          <Text>{`${day}/${month + 1}/${year}`}</Text>
-                        </Flex>
-                        <Flex
-                          flexDirection="column"
-                          justify="center"
-                          align="center"
-                          gap="0.25rem"
-                          flex="1"
-                        >
-                          <Tooltip label="Total follows">
-                            <span>
-                              <Icon as={FaHeart} />
-                            </span>
-                          </Tooltip>
-                          <FormattedFollows id={id} />
-                        </Flex>
-                        <Flex
-                          flexDirection="column"
-                          justify="center"
-                          align="center"
-                          gap="0.25rem"
-                          flex="1"
-                        >
-                          <Tooltip label="Total views">
-                            <span>
-                              <Icon as={FaTv} />
-                            </span>
-                          </Tooltip>
-                          <Text>{formattedViews}</Text>
-                        </Flex>
-                      </Flex>
-                    </CardBody>
-
-                    <CardFooter justify="space-around">
-                      <NavLink
-                        to={`/streamers/vods/${id}`}
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
-                        <Button>Vods</Button>
-                      </NavLink>
-                      <IconButton
-                        onClick={() => handleRemoveStreamer(id)}
-                        icon={<DeleteIcon />}
-                      />
-                      <NavLink
-                        to={`/streamers/clips/${id}`}
-                        className={({ isActive }) =>
-                          isActive ? 'activeLink' : 'nonactiveLink'
-                        }
-                      >
-                        <Button>Clips</Button>
-                      </NavLink>
-                    </CardFooter>
-                  </Card>
-                )
-              })}
+              <FavStreamerItem streamers={streamers} />
             </SimpleGrid>
           </>
         )}

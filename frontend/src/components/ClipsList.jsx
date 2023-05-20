@@ -12,6 +12,7 @@ import { AddIcon } from '@chakra-ui/icons'
 import OnlineChecker from './OnlineChecker'
 import ClipsListItem from './ClipsListItem'
 import NoContent from './NoContent'
+import FormFilter from './FormFilter'
 
 import { useSelector } from 'react-redux'
 import {
@@ -23,10 +24,17 @@ import {
 
 import { useAuthHeader } from 'react-auth-kit'
 
+// import { useState } from 'react'
+
 const ClipsList = () => {
+  // const [query, setQuery] = useState('')
+  // const [isFiltering, setIsFiltering] = useState(false)
+  // const [filteredClips, setFilteredClips] = useState([])
   const authHeader = useAuthHeader()
   const toast = useToast()
-  const { userId, searchedUsername } = useSelector((state) => state.app)
+  const { userId, searchedUsername, isFiltering, filtered } = useSelector(
+    (state) => state.app
+  )
 
   const { clips, isFetching } = useGetClipsByUserIdQuery(userId, {
     skip: !userId,
@@ -80,6 +88,17 @@ const ClipsList = () => {
     })
   }
 
+  // useEffect(() => {
+  //   setIsFiltering(true)
+  //   const filtered = clips.filter((clip) =>
+  //     clip.title.toLowerCase().includes(query.toLowerCase())
+  //   )
+  //   setFilteredClips(filtered)
+  //   if (!query) {
+  //     setIsFiltering(false)
+  //   }
+  // }, [query])
+
   return (
     <Box flex="1">
       {!userId ? (
@@ -109,13 +128,44 @@ const ClipsList = () => {
           {clips.length === 0 ? (
             <NoContent msg="Sorry, it looks like there are no clips available for this streamer at the moment. Please check back later or try again with a different streamer." />
           ) : (
-            <SimpleGrid
-              columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
-              spacing="1rem"
-              p={{ base: '1rem', sm: '2.5rem' }}
-            >
-              <ClipsListItem clips={clips} />
-            </SimpleGrid>
+            <>
+              {/* <FormControl mt="1rem">
+                <Center flexDirection={{ base: 'column', md: 'row' }}>
+                  <InputGroup
+                    w={{ base: '90%', md: '50%' }}
+                    size={{ base: 'lg' }}
+                    gap="1rem"
+                  >
+                    <Input
+                      placeholder="Filter by title"
+                      name="query"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                    />
+                  </InputGroup>
+                </Center>
+              </FormControl> */}
+              <FormFilter data={clips} />
+              {isFiltering ? (
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+                  spacing="1rem"
+                  px={{ base: '1rem', sm: '2.5rem' }}
+                  mt=".5rem"
+                >
+                  <ClipsListItem clips={filtered} />
+                </SimpleGrid>
+              ) : (
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, lg: 3, '2xl': 4 }}
+                  spacing="1rem"
+                  px={{ base: '1rem', sm: '2.5rem' }}
+                  mt=".5rem"
+                >
+                  <ClipsListItem clips={clips} />
+                </SimpleGrid>
+              )}
+            </>
           )}
         </>
       )}

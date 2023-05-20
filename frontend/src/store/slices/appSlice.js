@@ -10,6 +10,9 @@ const initialState = {
   vods: [],
   clips: [],
   streamers: [],
+  isFiltering: false,
+  query: '',
+  filtered: [],
 }
 
 const appSlice = createSlice({
@@ -39,6 +42,15 @@ const appSlice = createSlice({
     },
     setStreamers(state, action) {
       state.streamers = action.payload
+    },
+    setIsFiltering(state, action) {
+      state.isFiltering = action.payload
+    },
+    setQuery(state, action) {
+      state.query = action.payload
+    },
+    setFiltered(state, action) {
+      state.filtered = action.payload
     },
     setStreamModalVideo(state, action) {
       if (process.env.NODE_ENV === 'development') {
@@ -82,5 +94,8 @@ export const {
   setStreamModalVideo,
   setVodModalVideo,
   setClipModalVideo,
+  setIsFiltering,
+  setQuery,
+  setFiltered,
 } = appSlice.actions
 export default appSlice.reducer
