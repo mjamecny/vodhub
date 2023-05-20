@@ -24,12 +24,7 @@ import {
 
 import { useAuthHeader } from 'react-auth-kit'
 
-// import { useState } from 'react'
-
 const ClipsList = () => {
-  // const [query, setQuery] = useState('')
-  // const [isFiltering, setIsFiltering] = useState(false)
-  // const [filteredClips, setFilteredClips] = useState([])
   const authHeader = useAuthHeader()
   const toast = useToast()
   const { userId, searchedUsername, isFiltering, filtered } = useSelector(
@@ -88,17 +83,6 @@ const ClipsList = () => {
     })
   }
 
-  // useEffect(() => {
-  //   setIsFiltering(true)
-  //   const filtered = clips.filter((clip) =>
-  //     clip.title.toLowerCase().includes(query.toLowerCase())
-  //   )
-  //   setFilteredClips(filtered)
-  //   if (!query) {
-  //     setIsFiltering(false)
-  //   }
-  // }, [query])
-
   return (
     <Box flex="1">
       {!userId ? (
@@ -129,22 +113,6 @@ const ClipsList = () => {
             <NoContent msg="Sorry, it looks like there are no clips available for this streamer at the moment. Please check back later or try again with a different streamer." />
           ) : (
             <>
-              {/* <FormControl mt="1rem">
-                <Center flexDirection={{ base: 'column', md: 'row' }}>
-                  <InputGroup
-                    w={{ base: '90%', md: '50%' }}
-                    size={{ base: 'lg' }}
-                    gap="1rem"
-                  >
-                    <Input
-                      placeholder="Filter by title"
-                      name="query"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                    />
-                  </InputGroup>
-                </Center>
-              </FormControl> */}
               <FormFilter data={clips} />
               {isFiltering ? (
                 <SimpleGrid

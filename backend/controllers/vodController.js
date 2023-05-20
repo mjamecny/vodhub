@@ -58,6 +58,10 @@ const deleteAllVods = asyncHandler(async (req, res) => {
   })
 })
 
+// @desc get all vods
+// @route GET /api/vods
+// @access Private
+
 const getVods = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user.id })
   res.status(201).json({ vods: user.vodIds })

@@ -5,13 +5,7 @@ import { useIsAuthenticated } from 'react-auth-kit'
 const Welcome = () => {
   const isAuthenticated = useIsAuthenticated()
   return (
-    <Flex
-      flexDirection="column"
-      justify="center"
-      align="center"
-      // height="75vh"
-      flex="1"
-    >
+    <Flex flexDirection="column" justify="center" align="center" flex="1">
       <Heading>Welcome to VODhub</Heading>
       <Text>Search and add to Favorites Twitch VODs</Text>
       {!isAuthenticated() && (
