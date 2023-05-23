@@ -6,7 +6,6 @@ import {
   Image,
   Text,
   Center,
-  Badge,
   Link,
   Spinner,
   useDisclosure,
@@ -17,13 +16,15 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
+  Avatar,
+  AvatarBadge,
 } from '@chakra-ui/react'
 
 import { useGetIsStreamerOnlineQuery, setStreamModalVideo } from '../store'
 import { convertDuration } from '../utils'
 import { useDispatch } from 'react-redux'
 
-const OnlineChecker = ({ streamer, id }) => {
+const OnlineChecker = ({ streamer, id, avatar }) => {
   const { onOpen, onClose, isOpen } = useDisclosure()
   const dispatch = useDispatch()
 
@@ -56,12 +57,9 @@ const OnlineChecker = ({ streamer, id }) => {
         <Popover>
           <PopoverTrigger>
             <Link>
-              <Badge
-                fontSize={{ base: 'sm', md: 'md', lg: 'lg' }}
-                colorScheme="green"
-              >
-                {streamer} is online
-              </Badge>
+              <Avatar alignSelf="center" size="lg" name={streamer} src={avatar}>
+                <AvatarBadge boxSize="1.25em" bg="green.500" />
+              </Avatar>
             </Link>
           </PopoverTrigger>
           <PopoverContent>
@@ -97,9 +95,9 @@ const OnlineChecker = ({ streamer, id }) => {
           </PopoverContent>
         </Popover>
       ) : (
-        <Badge fontSize={{ base: 'sm', md: 'md', lg: 'lg' }} colorScheme="red">
-          {streamer} is offline
-        </Badge>
+        <Avatar alignSelf="center" size="lg" name={streamer} src={avatar}>
+          <AvatarBadge boxSize="1.25em" bg="red.500" />
+        </Avatar>
       )}
       <ModalWindow isOpen={isOpen} onClose={onClose} />
     </>

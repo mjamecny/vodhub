@@ -7,14 +7,13 @@ import {
   IconButton,
   useToast,
   Button,
-  Avatar,
   Tooltip,
   Icon,
   Center,
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '@chakra-ui/icons'
-import { FaHeart, FaRegCalendarAlt, FaTv } from 'react-icons/fa'
+import { FaHeart, FaRegCalendarAlt, FaTv, FaUser } from 'react-icons/fa'
 
 import { useRemoveStreamerMutation } from '../store'
 
@@ -46,23 +45,38 @@ const FavStreamerItem = ({ streamers }) => {
       description,
       profile_image_url,
       created_at,
-      view_count,
+      broadcaster_type,
     } = streamer
     const [month, day, year] = changeDateFormat(created_at)
-    const formattedViews = changeNumberFormat(view_count)
+
+    let streamerType
+
+    if (broadcaster_type === 'affiliate') {
+      streamerType = 'affiliate'
+    } else if (broadcaster_type === 'partner') {
+      streamerType = 'partner'
+    } else {
+      streamerType = 'normal'
+    }
 
     return (
       <Card key={id}>
         <CardBody display="flex" flexDirection="column" gap=".5rem">
-          <Avatar
-            alignSelf="center"
-            size="md"
-            name={login}
-            src={profile_image_url}
-          />
           <Center>
-            <OnlineChecker streamer={login} id={id} />
+            <OnlineChecker
+              streamer={login}
+              id={id}
+              avatar={profile_image_url}
+            />
           </Center>
+          <Text
+            fontSize="lg"
+            alignSelf="center"
+            textTransform="uppercase"
+            fontWeight="bold"
+          >
+            {login}
+          </Text>
           <Text flex="1">{description}</Text>
           <Flex gap=".5rem" mt="1rem">
             <Flex
@@ -100,12 +114,12 @@ const FavStreamerItem = ({ streamers }) => {
               gap="0.25rem"
               flex="1"
             >
-              <Tooltip label="Total views">
+              <Tooltip label="Streamer type">
                 <span>
-                  <Icon as={FaTv} />
+                  <Icon as={FaUser} />
                 </span>
               </Tooltip>
-              <Text>{formattedViews}</Text>
+              <Text>{streamerType}</Text>
             </Flex>
           </Flex>
         </CardBody>

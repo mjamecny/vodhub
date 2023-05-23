@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Card,
   CardBody,
   Center,
@@ -7,6 +6,7 @@ import {
   Button,
   IconButton,
   useToast,
+  Text,
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 
@@ -48,15 +48,20 @@ const StreamersListItem = ({ streamers }) => {
     return (
       <Card key={id} size={{ base: 'sm', md: 'md', lg: 'lg' }}>
         <CardBody display="flex" flexDirection="column" gap=".5rem">
-          <Avatar
-            alignSelf="center"
-            size={{ base: 'sm', md: 'md', lg: 'lg' }}
-            name={broadcaster_login}
-            src={thumbnail_url}
-          />
           <Center>
-            <OnlineChecker streamer={broadcaster_login} />
+            <OnlineChecker
+              streamer={broadcaster_login}
+              avatar={thumbnail_url}
+            />
           </Center>
+          <Text
+            fontSize="lg"
+            alignSelf="center"
+            textTransform="uppercase"
+            fontWeight="bold"
+          >
+            {broadcaster_login}
+          </Text>
         </CardBody>
 
         <CardFooter justify="space-around">
