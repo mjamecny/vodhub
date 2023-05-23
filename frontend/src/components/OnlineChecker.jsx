@@ -57,7 +57,12 @@ const OnlineChecker = ({ streamer, id, avatar }) => {
         <Popover>
           <PopoverTrigger>
             <Link>
-              <Avatar alignSelf="center" size="lg" name={streamer} src={avatar}>
+              <Avatar
+                alignSelf="center"
+                size={{ base: 'md', md: 'lg' }}
+                name={streamer}
+                src={avatar}
+              >
                 <AvatarBadge boxSize="1.25em" bg="green.500" />
               </Avatar>
             </Link>
@@ -95,7 +100,12 @@ const OnlineChecker = ({ streamer, id, avatar }) => {
           </PopoverContent>
         </Popover>
       ) : (
-        <Avatar alignSelf="center" size="lg" name={streamer} src={avatar}>
+        <Avatar
+          alignSelf="center"
+          size={{ base: 'md', md: 'lg' }}
+          name={streamer}
+          src={avatar}
+        >
           <AvatarBadge boxSize="1.25em" bg="red.500" />
         </Avatar>
       )}
