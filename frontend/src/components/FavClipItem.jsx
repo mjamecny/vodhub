@@ -23,7 +23,10 @@ import ModalWindow from './ModalWindow'
 import Share from './Share'
 import { changeDateFormat } from '../utils'
 
+import { useAuthHeader } from 'react-auth-kit'
+
 const FavClipItem = ({ clips }) => {
+  const authHeader = useAuthHeader()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
   const [removeClip] = useRemoveClipMutation()

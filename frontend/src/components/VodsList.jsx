@@ -6,6 +6,7 @@ import {
   useToast,
   Spinner,
   Center,
+  Text,
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 
@@ -96,7 +97,10 @@ const VodsList = () => {
       ) : (
         <>
           <Flex justify="center" align="center" mt="2rem">
-            <OnlineChecker streamer={searchedUsername} />
+            <OnlineChecker
+              streamer={searchedUsername}
+              avatar={streamer?.profile_image_url}
+            />
             <IconButton
               isDisabled={streamerIds.find(
                 (streamerId) => streamerId === userId
@@ -106,6 +110,16 @@ const VodsList = () => {
               onClick={() => handleAddStreamer(streamer.id)}
               ml="1rem"
             />
+          </Flex>
+          <Flex justify="center" mt="1rem">
+            <Text
+              fontSize="lg"
+              alignSelf="center"
+              textTransform="uppercase"
+              fontWeight="bold"
+            >
+              {searchedUsername}
+            </Text>
           </Flex>
 
           {vods.length === 0 ? (

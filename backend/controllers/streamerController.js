@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
+const AppError = require('../utils/appError')
 
 // @desc add streamer
 // @route POST /api/streamers
@@ -9,11 +10,14 @@ const addStreamer = asyncHandler(async (req, res) => {
   const { id } = req.body
   const user = await User.findOne({ _id: req.user.id })
 
-  if (user.streamerIds.includes(id)) {
-    return res.status(400).json({
-      message: 'Streamer already in your favorites',
-    })
+  if (!user) {
+    return next(new AppError('The user does no longer exist.', 401))
   }
+
+  if (user.streamerIds.includes(id)) {
+    return next(new AppError('Streamer already in your favorites', 409))
+  }
+
   user.streamerIds.push(id)
   await user.save()
   res.status(201).json({
@@ -29,10 +33,12 @@ const deleteStreamer = asyncHandler(async (req, res) => {
   const { id } = req.params
   const user = await User.findOne({ _id: req.user.id })
 
+  if (!user) {
+    return next(new AppError('The user does no longer exist.', 401))
+  }
+
   if (!user.streamerIds.includes(id)) {
-    return res.status(400).json({
-      message: 'Streamer not found in your favorites',
-    })
+    return next(new AppError('Streamer not found in your favorites', 404))
   }
 
   user.streamerIds = user.streamerIds.filter(
@@ -52,6 +58,10 @@ const deleteStreamer = asyncHandler(async (req, res) => {
 const deleteAllStreamers = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user.id })
 
+  if (!user) {
+    return next(new AppError('The user does no longer exist.', 401))
+  }
+
   user.streamerIds = []
   await user.save()
 
@@ -62,6 +72,11 @@ const deleteAllStreamers = asyncHandler(async (req, res) => {
 
 const getStreamers = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user.id })
+
+  if (!user) {
+    return next(new AppError('The user does no longer exist.', 401))
+  }
+
   res.status(201).json({ streamers: user.streamerIds })
 })
 
@@ -73,12 +88,16 @@ const importStreamers = asyncHandler(async (req, res) => {
   const { streamerIds } = req.body
 
   if (!streamerIds || !Array.isArray(streamerIds)) {
-    return res.status(400).json({
-      message: 'Invalid input: streamerIds should be an array',
-    })
+    return next(
+      new AppError('Invalid input: streamerIds should be an array', 400)
+    )
   }
 
   const user = await User.findOne({ _id: req.user.id })
+
+  if (!user) {
+    return next(new AppError('The user does no longer exist.', 401))
+  }
 
   // filter out streamerIds that are already in the user's list
   const newStreamers = streamerIds.filter(

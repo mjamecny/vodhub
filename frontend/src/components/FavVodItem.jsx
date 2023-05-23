@@ -24,7 +24,10 @@ import { changeImageSize, changeDateFormat } from '../utils'
 import Share from './Share'
 import ModalWindow from './ModalWindow'
 
+import { useAuthHeader } from 'react-auth-kit'
+
 const FavVodItem = ({ vods }) => {
+  const authHeader = useAuthHeader()
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [remove] = useRemoveMutation()

@@ -23,7 +23,10 @@ import FormattedFollows from './FormattedFollows'
 import { changeNumberFormat, changeDateFormat } from '../utils'
 import { NavLink } from 'react-router-dom'
 
+import { useAuthHeader } from 'react-auth-kit'
+
 const FavStreamerItem = ({ streamers }) => {
+  const authHeader = useAuthHeader()
   const toast = useToast()
   const [removeStreamer] = useRemoveStreamerMutation()
 
