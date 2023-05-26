@@ -26,56 +26,30 @@ const handleJWTExpiredError = () => {
 }
 
 const sendErrorDev = (err, req, res) => {
-  // A) API
   return res.status(err.statusCode).json({
     status: err.status,
     error: err,
     message: err.message,
     stack: err.stack,
   })
-
-  // B) RENDERED WEBSITE
-  // console.error('ERROR', err)
-  // return res.status(err.statusCode).render('error', {
-  //   title: 'Something went wrong!',
-  //   msg: err.message,
-  // })
 }
 
 const sendErrorProd = (err, req, res) => {
-  // A) API
-  // a) Operational, trusted error: send message to client
+  // 1) Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
     })
   }
-  // b) Programming or other unknown error: don't leak error details
-  // 1) Log error
+  // 2) Programming or other unknown error: don't leak error details
+  // 2a) Log error
   console.error('ERROR', err)
-  // 2) Send generic message
+  // 2b) Send generic message
   return res.status(500).json({
     status: 'error',
     message: 'Something went very wrong!',
   })
-
-  // B) RENDERED WEBSITE
-  // if (err.isOperational) {
-  //   // a) Operational, trusted error: send message to client
-  //   return res.status(err.statusCode).render('error', {
-  //     title: 'Something went wrong!',
-  //     msg: err.message,
-  //   })
-  // }
-  // b) Programming or other unknown error: don't leak error details
-  // 1) Log error
-  // console.error('ERROR', err)
-  // 2) Send generic message
-  // return res.status(err.statusCode).render('error', {
-  //   title: 'Something went wrong!',
-  //   msg: 'Please try again later.',
-  // })
 }
 
 module.exports = (err, req, res, next) => {
@@ -87,21 +61,27 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === 'production') {
     let error = JSON.parse(JSON.stringify(err))
     error.message = err.message
+
     if (error.name === 'CastError') {
       error = handleCastErrorDB(error)
     }
+
     if (error.code === 11000) {
       error = handleDuplicateFieldsDB(error)
     }
+
     if (error.name === 'ValidationError') {
       error = handleValidationErrorDB(error)
     }
+
     if (error.name === 'JsonWebTokenError') {
       error = handleJWTError()
     }
+
     if (error.name === 'TokenExpiredError') {
       error = handleJWTExpiredError()
     }
+
     sendErrorProd(error, req, res)
   }
 }

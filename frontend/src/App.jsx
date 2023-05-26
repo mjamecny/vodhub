@@ -15,6 +15,7 @@ import ResetPasswordForm from './components/ResetPasswordForm'
 import Users from './components/Users'
 import UpdatePassword from './components/UpdatePassword'
 import PrivateRoute from './components/PrivateRoute'
+import ContactForm from './components/ContactForm'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, RequireAuth } from 'react-auth-kit'
@@ -67,6 +68,7 @@ const App = () => {
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/contact" element={<ContactForm />} />
             <Route
               path="/resetPassword/:token"
               element={<ResetPasswordForm />}

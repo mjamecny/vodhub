@@ -7,6 +7,7 @@ import { userApi } from './apis/userApi'
 import { vodApi } from './apis/vodApi'
 import { clipApi } from './apis/clipApi'
 import { streamerApi } from './apis/streamerApi'
+import { contactApi } from './apis/contactApi'
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     [vodApi.reducerPath]: vodApi.reducer,
     [clipApi.reducerPath]: clipApi.reducer,
     [streamerApi.reducerPath]: streamerApi.reducer,
+    [contactApi.reducerPath]: contactApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -25,6 +27,7 @@ export const store = configureStore({
       .concat(vodApi.middleware)
       .concat(clipApi.middleware)
       .concat(streamerApi.middleware)
+      .concat(contactApi.middleware)
   },
 })
 
@@ -97,5 +100,7 @@ export {
   setQuery,
   setFiltered,
 } from './slices/appSlice'
+
+export { useLazyContactQuery } from './apis/contactApi'
 
 export { setUsername, setEmail, setPassword } from './slices/userSlice'
