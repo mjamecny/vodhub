@@ -4,7 +4,9 @@ const contactApi = createApi({
   reducerPath: 'contactApi',
   baseQuery: fetchBaseQuery({
     baseUrl: `${
-      import.meta.env.DEV ? 'http://localhost:5000' : 'http://localhost:5000'
+      import.meta.env.DEV
+        ? 'http://localhost:5000'
+        : 'https://vodhub-api.onrender.com'
     }/contact`,
   }),
   endpoints(builder) {
