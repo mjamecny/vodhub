@@ -74,9 +74,11 @@ const deleteAllClips = asyncHandler(async (req, res) => {
 
 const getClips = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.user.id })
+
   if (!user) {
     return next(new AppError('The user does no longer exist.', 401))
   }
+
   res.status(201).json({ clips: user.clipIds })
 })
 

@@ -24,7 +24,7 @@ const ModalWindow = ({ isOpen, onClose, title }) => {
             src={modalVideo}
             height="800"
             width="100%"
-            allow="fullscreen"
+            allowFullScreen
           ></iframe>
         </ModalBody>
       </ModalContent>
