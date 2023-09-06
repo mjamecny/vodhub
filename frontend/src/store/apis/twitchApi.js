@@ -1,11 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
 const twitchApi = createApi({
-  reducerPath: 'twitchApi',
+  reducerPath: "twitchApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.twitch.tv/helix',
+    baseUrl: "https://api.twitch.tv/helix",
     headers: {
-      'Client-Id': import.meta.env.VITE_CLIENT_ID,
+      "Client-Id": import.meta.env.VITE_CLIENT_ID,
       Authorization: import.meta.env.VITE_TOKEN,
     },
   }),
@@ -14,24 +14,24 @@ const twitchApi = createApi({
       getUserByName: builder.query({
         query: (username) => {
           return {
-            url: '/users',
+            url: "/users",
             params: {
               login: username,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
       getVideosByUserId: builder.query({
         query: (userId) => {
           return {
-            url: '/videos',
+            url: "/videos",
             params: {
               user_id: userId,
-              type: 'archive',
+              type: "archive",
               first: 100,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
@@ -39,7 +39,7 @@ const twitchApi = createApi({
         query: (vodIds) => {
           return {
             url: `/videos/?id=${vodIds}`,
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
@@ -47,59 +47,59 @@ const twitchApi = createApi({
         query: (clipIds) => {
           return {
             url: `/clips/?id=${clipIds}`,
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
       getStreamersByStreamerId: builder.query({
         query: (streamerIds) => {
           return {
-            url: `/users?id=${streamerIds.map((id) => id).join('&id=')}`,
-            method: 'GET',
+            url: `/users?id=${streamerIds.map((id) => id).join("&id=")}`,
+            method: "GET",
           }
         },
       }),
       getClipsByUserId: builder.query({
         query: (userId) => {
           return {
-            url: '/clips',
+            url: "/clips",
             params: {
               broadcaster_id: userId,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
       getIsStreamerOnline: builder.query({
         query: (username) => {
           return {
-            url: '/streams',
+            url: "/streams",
             params: {
               user_login: username,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
       getStreamerFollows: builder.query({
         query: (id) => {
           return {
-            url: 'users/follows',
+            url: "channels/followers",
             params: {
-              to_id: id,
+              broadcaster_id: id,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
       getUsers: builder.query({
         query: (query) => {
           return {
-            url: 'search/channels',
+            url: "search/channels",
             params: {
               query,
             },
-            method: 'GET',
+            method: "GET",
           }
         },
       }),
